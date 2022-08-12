@@ -1,4 +1,13 @@
 export default {
+  app: {
+    has_new_version: 'New Version!',
+    name: 'Metalet',
+  },
+  lang: {
+    en: 'English',
+    ja: '日本語',
+    zh: '中文',
+  },
   wallet: {
     // this.$t('wallet.') {{$t('wallet.')}} :placeholder="$t('wallet.')"
     create_wallet: '創建一個新的錢包',

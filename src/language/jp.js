@@ -1,16 +1,18 @@
 export default {
   app: {
     has_new_version: 'New Version!',
+    name: "Metalet"
   },
   lang: {
     en: 'English',
     ja: '日本語',
+    zh: '中文',
   },
   wallet: {
     // this.$t('wallet.') {{$t('wallet.')}} :placeholder="$t('wallet.')"
 
-    welcome: 'Sensiletへようこそ！',
-    welcome_2: 'Sensiletは、ブロックチェーン世界への接続を支援します。',
+    welcome: 'Metaletへようこそ！',
+    welcome_2: 'Metaletは、ブロックチェーン世界への接続を支援します。',
     welcome_3: '初めまして.',
     term: '利用規約',
     begin: '開始',
@@ -152,7 +154,7 @@ export default {
 
     connected_web: '接続されたウェブサイト',
     empty: '空き',
-    copyright: 'Copyright © 2021 Sensilet.com',
+    copyright: 'Copyright © 2022 www.mvc.space',
 
     view_in_explorer: 'View Account on blockcheck.info',
     change_password: 'Change Password',

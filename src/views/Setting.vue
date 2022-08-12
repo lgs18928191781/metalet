@@ -19,10 +19,10 @@
             </span>
           </div>
         </div>
-        <div class="item btn" @click="gotoExplorer">
-          <CompassOutlined class="item-icon" />
-          <span>{{ $t('setting.view_in_explorer') }}</span>
-        </div>
+        <!--        <div class="item btn" @click="gotoExplorer">-->
+        <!--          <CompassOutlined class="item-icon" />-->
+        <!--          <span>{{ $t('setting.view_in_explorer') }}</span>-->
+        <!--        </div>-->
         <!--                <div class="item btn" @click="uploadAddressConfirm()">-->
         <!--                    <img v-if="registered" src="../assets/icon-checked.svg" alt="">-->
         <!--                    <img v-else src="../assets/icon-check.svg" alt="">-->
@@ -39,10 +39,10 @@
         <!--                    <img src="../assets/icon-import.svg" alt="">-->
         <!--                    <span>{{ $t("setting.import_mnemonic") }}</span>-->
         <!--                </div>-->
-        <div class="item btn" @click="changeNetworkConfirm">
-          <GlobalOutlined class="item-icon" />
-          <span>{{ $t('setting.change_network') }}</span>
-        </div>
+        <!--        <div class="item btn" @click="changeNetworkConfirm">-->
+        <!--          <GlobalOutlined class="item-icon" />-->
+        <!--          <span>{{ $t('setting.change_network') }}</span>-->
+        <!--        </div>-->
         <div class="item btn" v-if="!isSinglePrivateKey" @click="gotoExport">
           <KeyOutlined class="item-icon" />
           <span>{{ $t('setting.export_mnemonic') }}</span>
@@ -55,36 +55,34 @@
           <KeyOutlined class="item-icon" />
           <span>{{ $t('setting.export_private_key') }}</span>
         </div>
-        <div class="item btn" @click="openEdit">
-          <EditOutlined class="item-icon" />
-          <div>
-            <span>{{ $t('setting.edit_account_alias') }}:</span>
-            <span class="value">{{ $store.getters.alias }}</span>
-          </div>
-        </div>
-        <div class="item btn" @click="openChangePassword">
-          <EditOutlined class="item-icon" />
-          <span>{{ $t('setting.change_password') }}</span>
-        </div>
-        <div class="item btn warning" @click="deleteCurrentAccountConfirm">
-          <DeleteOutlined class="item-icon" />
-          <span>{{ $t('setting.delete_current_account') }}</span>
-        </div>
+        <!--        <div class="item btn" @click="openEdit">-->
+        <!--          <EditOutlined class="item-icon" />-->
+        <!--          <div>-->
+        <!--            <span>{{ $t('setting.edit_account_alias') }}:</span>-->
+        <!--            <span class="value">{{ $store.getters.alias }}</span>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--        <div class="item btn" @click="openChangePassword">-->
+        <!--          <EditOutlined class="item-icon" />-->
+        <!--          <span>{{ $t('setting.change_password') }}</span>-->
+        <!--        </div>-->
+        <!--        <div class="item btn warning" @click="deleteCurrentAccountConfirm">-->
+        <!--          <DeleteOutlined class="item-icon" />-->
+        <!--          <span>{{ $t('setting.delete_current_account') }}</span>-->
+        <!--        </div>-->
       </div>
       <div class="bottom">
         <div class="version">
-          <a href="https://github.com/brimless-lab/sensilet/blob/main/release_notes.md" target="_blank" rel="noopener">
-            Sensilet {{ version }}
-          </a>
+          <a href="https://www.mvc.space" target="_blank" rel="noopener"> {{ $t('app.name') }} {{ version }} </a>
         </div>
-        <div class="term-container">
-          <a href="https://sensilet.com/privacy-policy.html" class="term" target="_blank" rel="noopener">
-            {{ $t('setting.privacy') }}
-          </a>
-          <a href="https://sensilet.com/term-of-service.html" class="term" target="_blank" rel="noopener">
-            {{ $t('setting.term') }}
-          </a>
-        </div>
+        <!--        <div class="term-container">-->
+        <!--          <a href="https://sensilet.com/privacy-policy.html" class="term" target="_blank" rel="noopener">-->
+        <!--            {{ $t('setting.privacy') }}-->
+        <!--          </a>-->
+        <!--          <a href="https://sensilet.com/term-of-service.html" class="term" target="_blank" rel="noopener">-->
+        <!--            {{ $t('setting.term') }}-->
+        <!--          </a>-->
+        <!--        </div>-->
       </div>
     </div>
     <Footer></Footer>

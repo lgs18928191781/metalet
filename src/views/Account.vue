@@ -85,40 +85,8 @@
           </div>
         </div>
       </div>
-      <TokenPanel v-model:showQr="showQr" ref="tokenPanel"></TokenPanel>
-      <NftPanel ref="nftPanel"></NftPanel>
-      <div class="panel">
-        <div class="panel-top">
-          <div class="title">{{ $t('account.hot_app') }}</div>
-        </div>
-        <div class="app-list" v-if="appList != null && canShowApp">
-          <!--                <div class="app-list" v-if="false">-->
-          <div class="item" v-for="item in appList">
-            <img :src="item.logo" alt="" />
-            <div class="info">
-              <div class="title">
-                {{ item.name }}
-                <img class="tag" v-if="item.tag === 'NEW'" src="../assets/icon-new.svg" />
-              </div>
-              <div class="desc ellipsis" :title="item.desc">{{ item.desc }}</div>
-            </div>
-            <a class="enter" :href="item.url" target="_blank" rel="noopener">
-              {{ $t('account.open') }}
-            </a>
-          </div>
-          <!--                    <div class="item">-->
-          <!--                        and more ...-->
-          <!--                    </div>-->
-        </div>
-        <div v-else-if="!canShowApp" class="list">
-          <div class="empty">
-            {{ $t('account.not_display_notice') }}
-          </div>
-        </div>
-        <div class="list" v-else style="text-align: center">
-          <a-spin style="padding: 16px"></a-spin>
-        </div>
-      </div>
+<!--      <TokenPanel v-model:showQr="showQr" ref="tokenPanel"></TokenPanel>-->
+<!--      <NftPanel ref="nftPanel"></NftPanel>-->
     </div>
 
     <Footer></Footer>

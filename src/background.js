@@ -12,6 +12,9 @@ const connectManager = require('./manager/ConnectManager');
 const indexedDBUtils = require('./utils/IndexedDBUtils');
 indexedDBUtils.link();
 
+const mvcOrigin = require('mvc-lib');
+window.mvcOrigin = mvcOrigin;
+console.log(mvcOrigin);
 const bsvOrigin = require('bsv');
 window.bsvOrigin = bsvOrigin;
 const Testnet = {};
