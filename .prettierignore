@@ -1,0 +1,15 @@
+*.jpg
+*.svg
+*.png
+*.bak
+*.md
+*.log
+*.lock
+dist/
+public/
+.gitignore
+.prettierignore
+.prettierrc
+.DS_Store
+.idea
+.vscode
