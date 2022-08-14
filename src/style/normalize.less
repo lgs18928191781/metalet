@@ -1,0 +1,167 @@
+// normalize css
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: none;
+  font-size: 16px;
+
+  --primary-color: #1e50fd;
+  --primary-color-hover: #0046cc;
+  --primary-color-active: #0046cc;
+  --border-color: #adadad;
+  --border-radius: 6px;
+
+  --primary-text-color: #212121;
+  --second-text-color: #2c3e50;
+  --background-color: #f4f4f4;
+
+  &.dark {
+    --primary-text-color: #fff;
+    --second-text-color: #e3e3e3;
+    --background-color: #212121;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --primary-text-color: #fff;
+    --second-text-color: #e3e3e3;
+    --background-color: #212121;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.15;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: 'liga', 'kern';
+  color: var(--primary-text-color);
+  font-size: 16px;
+}
+
+section,
+canvas {
+  display: block;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left;
+}
+
+td,
+th {
+  padding: 0;
+  font-weight: normal;
+  font-style: normal;
+}
+
+ul,
+ol,
+li,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+  list-style: none outside none;
+}
+
+a {
+  outline: medium none;
+  text-decoration: none;
+  background: transparent;
+}
+
+img {
+  border: 0;
+  vertical-align: middle;
+  font-size: 0;
+}
+
+b,
+strong {
+  font-weight: normal;
+}
+
+i,
+em {
+  font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: normal;
+}
+
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'],
+select {
+  margin: 0;
+  padding: 0;
+  text-transform: none;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  -webkit-appearance: button;
+  font-size: inherit;
+  color: inherit;
+}
+
+button[disabled],
+input[disabled] {
+  cursor: default;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+textarea,
+input {
+  outline: none;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+}
+
+textarea {
+  resize: none;
+}
+
+pre {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-family: 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}

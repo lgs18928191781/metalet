@@ -1,24 +1,30 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import store from '@/store';
+import routes from './routes';
 
-const routes = [
-  {
-    path: '/popup.html',
-    name: 'CreateWallet',
-    component: () => import('../views/CreateWallet.vue'),
-  },
-  {
-    path: '/unlock',
-    name: 'Unlock',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Unlock.vue'),
-  },
-];
-
+// 实例化路由
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes,
+});
+
+// 路由守护
+router.beforeEach((to, from, next) => {
+  if (to.meta.needAuth !== false) {
+    const user = store.state.user;
+    if (!user.wif) {
+      next({
+        path: '/login',
+      });
+      return;
+    }
+  }
+  next();
+});
+router.afterEach((to) => {
+  if (to?.meta?.title) {
+    document.title = to.meta.title;
+  }
 });
 
 export default router;

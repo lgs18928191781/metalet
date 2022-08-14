@@ -1,0 +1,20 @@
+export default {
+  app: 'Metalet',
+  pleaseInput: 'Please Input',
+  login: {
+    welcome: 'Welcome to',
+    welcome_2: 'Metalet will help you connect to the blockchain.',
+    startNow: 'Start Now',
+    createNewAccount: 'Create New Account',
+    desc: 'Create a new wallet to hold MVC and Token',
+    desc_2: 'Please write down the following 12 words and keep them in a safe place',
+    mnemonic: 'Mnemonic',
+    changeWord: 'Change Words',
+    fillInfo: 'Please fill in the information',
+    derivationPath: 'Derivation Path',
+    password: 'Password',
+    password_2: 'Repeat Password',
+    alias: 'Alias',
+    submit: 'Submit',
+  },
+};
