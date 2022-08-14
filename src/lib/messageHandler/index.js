@@ -1,6 +1,7 @@
 import Mnemonic from 'mvc-lib/mnemonic';
 import { Wallet, Api, API_NET, API_TARGET, mvc } from '@/lib/meta-contract';
 import config from '@/config';
+import { create, select } from '@/util/db';
 
 const metaSvAuthorization = config.CONFIG_METASV_AUTHORIZATION;
 
@@ -35,18 +36,37 @@ function getMnemonicWords() {
   return mnemonic.toString().split(' ');
 }
 
-function createAccount(message) {
-  const { mnemonicWords, derivationPath } = message.data;
+async function createAccount(message) {
+  const { mnemonicWords, derivationPath, alias, password } = message.data;
   const mnemonicStr = mnemonicWords.join(' ');
   const mnemonic = Mnemonic.fromString();
   const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
   const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
   const address = privateKey.toAddress().toString();
   const wif = privateKey.toString();
+
+  const hasOne = await select(wif);
+  if (hasOne) {
+    throw new Error({
+      msg: 'your account is exist',
+      code: -1,
+    });
+  } else {
+    await create({
+      address,
+      wif,
+      mnemonicStr,
+      alias,
+      password,
+    });
+  }
+
   return {
     address,
     wif,
     mnemonicStr,
+    alias,
+    password,
   };
 }
 
@@ -71,5 +91,5 @@ export default {
   getMnemonicWords,
   createAccount,
   getBalance,
-  sendAmount
+  sendAmount,
 };

@@ -9,7 +9,9 @@
   },
   "host_permissions": [
 		"https://api-mvc.metasv.com/",
-		"http://api-mvc.metasv.com/"
+		"http://api-mvc.metasv.com/",
+		"https://www.showpay.top/",
+		"http://www.showpay.top/"
 	],
   "permissions": [
     "storage",

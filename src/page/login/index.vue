@@ -12,9 +12,9 @@
       <div class="mo-card">
         <h1 class="mo-title">{{ $t('login.createNewAccount') }}</h1>
         <p class="mo-text">{{ $t('login.desc') }}</p>
-        <p class="mo-text">{{ $t('login.desc_2') }}</p>
         <hr class="mo-divider" />
         <h2 class="mo-sub-title">{{ $t('login.mnemonic') }}:</h2>
+        <p class="mo-text">{{ $t('login.desc_2') }}</p>
         <div class="word-list">
           <template v-for="(word, index) in mnemonicWords" :key="index">
             <span class="word">{{ word }}</span>
@@ -41,23 +41,33 @@
           <div class="form-item">
             <label class="form-item-label">{{ $t('login.password') }}</label>
             <div class="form-item-content">
-              <input class="mo-input" type="password" :placeholder="$t('pleaseInput')" v-model="password" />
+              <input
+                class="mo-input"
+                type="password"
+                :placeholder="$t('pleaseInput') + $t('optional')"
+                v-model="password"
+              />
             </div>
           </div>
           <div class="form-item">
             <label class="form-item-label">{{ $t('login.password_2') }}</label>
             <div class="form-item-content">
-              <input class="mo-input" type="password" :placeholder="$t('pleaseInput')" v-model="repeatPassword" />
+              <input
+                class="mo-input"
+                type="password"
+                :placeholder="$t('pleaseInput') + $t('optional')"
+                v-model="repeatPassword"
+              />
             </div>
           </div>
           <div class="form-item">
             <label class="form-item-label">{{ $t('login.alias') }}</label>
             <div class="form-item-content">
-              <input class="mo-input" type="text" :placeholder="$t('pleaseInput')" v-model="alias" />
+              <input class="mo-input" type="text" :placeholder="$t('pleaseInput') + $t('optional')" v-model="alias" />
             </div>
           </div>
-          <div class="form-item" style="text-align: right">
-            <button class="mo-btn">{{ $t('login.submit') }}</button>
+          <div class="form-item" style="text-align: center">
+            <button class="mo-btn" @click="createAccount">{{ $t('login.submit') }}</button>
           </div>
         </div>
       </div>
@@ -96,13 +106,10 @@ export default {
       const { data } = await sendMessageFromExtPageToBackground('createAccount', {
         mnemonicWords: this.mnemonicWords,
         derivationPath: this.derivationPath,
-      });
-      this.setUser({
-        ...data,
         alias: this.alias,
         password: this.password,
-        derivationPath: this.derivationPath,
       });
+      this.setUser(data);
       this.$router.replace({
         path: '/',
       });
@@ -112,7 +119,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .page-login {
-  min-height: 100vh;
+  height: 100vh;
+  height: var(--screenHeigth);
   display: flex;
   flex-direction: column;
 

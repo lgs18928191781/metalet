@@ -1,11 +1,14 @@
 import config from '@/config';
 import { ERR_CODE_ERR } from '@/constant/errCode';
 import { makeMessageResponse, openTab } from '@/util/chromeUtil';
+import { initDb } from '@/util/db';
 import messageMethods from '@/lib/messageHandler';
 
-
 // 初始化
+global.config = config;
 global.window = global;
+global.window.config = config;
+initDb();
 
 // 插件加载
 chrome.runtime.onInstalled.addListener((details) => {

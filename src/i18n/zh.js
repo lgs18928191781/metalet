@@ -1,6 +1,7 @@
 export default {
   app: 'Metalet',
   pleaseInput: '请输入',
+  optional: '(可选)',
   login: {
     welcome: '欢迎使用',
     welcome_2: 'Metalet是一个帮助你连接到区块链的工具.',
@@ -16,5 +17,14 @@ export default {
     password_2: '重复密码',
     alias: '别名',
     submit: '确认',
+  },
+  error: {
+    indexDbNotSupport: '您的浏览器不支持indexDb, 请升级您的浏览器',
+  },
+  home: {
+    receive: '接收',
+    send: '发送',
+    history: '历史',
+    dialogTitle: '您的账号接收地址',
   },
 };

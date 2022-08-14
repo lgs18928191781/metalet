@@ -7,7 +7,7 @@ export class CodeError extends Error {
     if (msg) {
       this.message = msg;
     } else {
-      this.message = "CodeError:" + code;
+      this.message = 'CodeError:' + code;
     }
   }
 }
@@ -34,6 +34,6 @@ export enum ErrCode {
 export const ErrInfo = {
   InvalidArgument: {
     code: ErrCode.EC_INVALID_ARGUMENT,
-    message: "",
+    message: '',
   },
 };

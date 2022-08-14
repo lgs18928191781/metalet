@@ -1,3 +1,3 @@
-const appConf = { env: process.env.env, mode: process.env.mode, ...process.env.appEnv };
+const appConf = { env: process.env.env, mode: process.env.mode, version: process.env.version, ...process.env.appEnv };
 
 export default appConf;

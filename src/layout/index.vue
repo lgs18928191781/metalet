@@ -3,7 +3,11 @@
     <div class="head-bar">
       <router-link to="/" class="logo">
         <img :src="appLogo" v-if="appLogo" />
+        <span>{{ appName }}</span>
       </router-link>
+      <div class="more">
+        <img src="/img/icon-more.svg" />
+      </div>
     </div>
     <div class="main-content">
       <router-view></router-view>
@@ -35,10 +39,13 @@ export default {
 </script>
 <style lang="less" scoped>
 .layout {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   .head-bar {
     width: 100%;
-    height: 60px;
-    background: var(--primary-color);
+    height: 80px;
+    background: var(--background-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -57,23 +64,35 @@ export default {
 
       img {
         display: block;
-        height: 40px;
+        height: 50px;
         width: auto;
         margin-right: 10px;
       }
 
       span {
-        color: #fff;
-        font-size: 20px;
+        color: var(--primary-text-color);
+        font-size: 32px;
+      }
+    }
+
+    .more {
+      width: 50px;
+      height: 50px;
+      img {
+        display: block;
+        width: auto;
+        height: 100%;
+        filter: invert(1);
       }
     }
   }
 
   .main-content {
     box-sizing: border-box;
-    margin: 60px 0 0 0;
-    padding: 20px;
+    margin: 80px 0 0 0;
+    padding: 36px;
     position: relative;
+    overflow: auto;
   }
 }
 </style>

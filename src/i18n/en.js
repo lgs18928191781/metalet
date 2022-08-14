@@ -1,6 +1,7 @@
 export default {
   app: 'Metalet',
   pleaseInput: 'Please Input',
+  optional: '(optional)',
   login: {
     welcome: 'Welcome to',
     welcome_2: 'Metalet will help you connect to the blockchain.',
@@ -16,5 +17,14 @@ export default {
     password_2: 'Repeat Password',
     alias: 'Alias',
     submit: 'Submit',
+  },
+  error: {
+    indexDbNotSupport: 'Your browser is not supprt indexDb, please update your browser',
+  },
+  home: {
+    receive: 'Receive',
+    send: 'Send',
+    history: 'History',
+    dialogTitle: 'Your Receive BSV Assets',
   },
 };

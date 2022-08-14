@@ -26,7 +26,7 @@ export class BrowserNet {
         console.log('REQ:', method, uri, res);
         const { status } = res;
         if (status >= 200 && status <= 207) {
-          let resultData
+          let resultData;
           try {
             resultData = await res.json();
           } catch (err) {

@@ -1,6 +1,6 @@
-import * as mvc from "../mvc";
-import { CONTRACT_TYPE, dumpTx, SigHashInfo } from "../common/utils";
-import { getPreimage, signTx, toHex } from "../scryptlib";
+import * as mvc from '../mvc';
+import { CONTRACT_TYPE, dumpTx, SigHashInfo } from '../common/utils';
+import { getPreimage, signTx, toHex } from '../scryptlib';
 const Signature = mvc.crypto.Signature;
 export const sighashType = Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID;
 const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
@@ -59,12 +59,7 @@ export class TxComposer {
     return this.tx.outputs[outputIndex];
   }
 
-  appendP2PKHInput(utxo: {
-    address: mvc.Address;
-    satoshis: number;
-    txId: string;
-    outputIndex: number;
-  }) {
+  appendP2PKHInput(utxo: { address: mvc.Address; satoshis: number; txId: string; outputIndex: number }) {
     this.tx.addInput(
       new mvc.Transaction.Input.PublicKeyHash({
         output: new mvc.Transaction.Output({
@@ -80,12 +75,7 @@ export class TxComposer {
     return inputIndex;
   }
 
-  appendInput(input: {
-    txId: string;
-    outputIndex: number;
-    lockingScript?: mvc.Script;
-    satoshis?: number;
-  }) {
+  appendInput(input: { txId: string; outputIndex: number; lockingScript?: mvc.Script; satoshis?: number }) {
     this.tx.addInput(
       new mvc.Transaction.Input({
         output: new mvc.Transaction.Output({
@@ -143,16 +133,11 @@ export class TxComposer {
   appendChangeOutput(changeAddress: mvc.Address, feeb = 0.05, extraSize = 0) {
     //Calculate the fee and determine whether to change
     //If there is change, it will be output in the last item
-    const unlockSize =
-      this.tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut())
-        .length * P2PKH_UNLOCK_SIZE;
-    let fee = Math.max(154, Math.ceil(
-      (this.tx.toBuffer().length +
-        unlockSize +
-        extraSize +
-        mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) *
-        feeb
-    ));
+    const unlockSize = this.tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
+    let fee = Math.max(
+      154,
+      Math.ceil((this.tx.toBuffer().length + unlockSize + extraSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb)
+    );
 
     let changeAmount = this.getUnspentValue() - fee;
     if (changeAmount >= P2PKH_DUST_AMOUNT) {
@@ -166,11 +151,7 @@ export class TxComposer {
     return this.changeOutputIndex;
   }
 
-  unlockP2PKHInput(
-    privateKey: mvc.PrivateKey,
-    inputIndex: number,
-    sigtype = sighashType
-  ) {
+  unlockP2PKHInput(privateKey: mvc.PrivateKey, inputIndex: number, sigtype = sighashType) {
     const tx = this.tx;
     const sig = new mvc.Transaction.Signature({
       publicKey: privateKey.publicKey,
@@ -188,20 +169,10 @@ export class TxComposer {
       sigtype,
     });
 
-    tx.inputs[inputIndex].setScript(
-      mvc.Script.buildPublicKeyHashIn(
-        sig.publicKey,
-        sig.signature.toDER(),
-        sig.sigtype
-      )
-    );
+    tx.inputs[inputIndex].setScript(mvc.Script.buildPublicKeyHashIn(sig.publicKey, sig.signature.toDER(), sig.sigtype));
   }
 
-  getTxFormatSig(
-    privateKey: mvc.PrivateKey,
-    inputIndex: number,
-    sigtype = sighashType
-  ) {
+  getTxFormatSig(privateKey: mvc.PrivateKey, inputIndex: number, sigtype = sighashType) {
     let sig: any = signTx(
       this.tx,
       privateKey,
@@ -224,14 +195,8 @@ export class TxComposer {
   }
 
   getUnspentValue() {
-    const inputAmount = this.tx.inputs.reduce(
-      (pre, cur) => cur.output.satoshis + pre,
-      0
-    );
-    const outputAmount = this.tx.outputs.reduce(
-      (pre, cur) => cur.satoshis + pre,
-      0
-    );
+    const inputAmount = this.tx.inputs.reduce((pre, cur) => cur.output.satoshis + pre, 0);
+    const outputAmount = this.tx.outputs.reduce((pre, cur) => cur.satoshis + pre, 0);
 
     let unspentAmount = inputAmount - outputAmount;
     return unspentAmount;
@@ -272,7 +237,7 @@ export class TxComposer {
     this.sigHashList.push({
       inputIndex,
       address,
-      sighash: "",
+      sighash: '',
       sighashType,
       contractType,
     });
@@ -283,13 +248,9 @@ export class TxComposer {
     this.tx.inputs.forEach((input) => {
       const indexBuf = Buffer.alloc(4, 0);
       indexBuf.writeUInt32LE(input.outputIndex);
-      prevouts = Buffer.concat([
-        prevouts,
-        Buffer.from(input.prevTxId).reverse(),
-        indexBuf,
-      ]);
+      prevouts = Buffer.concat([prevouts, Buffer.from(input.prevTxId).reverse(), indexBuf]);
     });
-    return mvc.crypto.Hash.sha256sha256(prevouts).toString("hex");
+    return mvc.crypto.Hash.sha256sha256(prevouts).toString('hex');
   }
 
   dumpTx(network?: string) {

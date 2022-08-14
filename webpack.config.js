@@ -8,6 +8,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const readDotEnv = require('./build/env');
 const readExternals = require('./build/externals');
+const packageJson = require('./package.json')
 
 // 路径常量
 const context = path.resolve(__dirname);
@@ -127,7 +128,7 @@ module.exports = (startEnv, argv) => {
         },
         // 图片文件
         {
-          test: /\.(png|jpg|gif|jpeg|svg)$/i,
+          test: /\.(png|jpg|gif|jpeg|svg|ttf)$/i,
           type: 'asset/resource',
         },
       ],
@@ -144,6 +145,7 @@ module.exports = (startEnv, argv) => {
           mode,
           env,
           appEnv: dotEnvProperties,
+          version: JSON.stringify(packageJson.version),
           __VUE_PROD_DEVTOOLS__: JSON.stringify(true),
         }),
       }),

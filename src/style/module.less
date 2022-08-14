@@ -5,15 +5,30 @@
   overflow: hidden;
 }
 
+// vue transition
+fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-from,
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+
 // root reset
-body {
-  min-width: 375px;
-  min-height: 600px;
+html {
   background-color: var(--background-color);
 }
 #root {
   margin: 0 auto;
   max-width: 1000px;
+  min-height: 600px;
 }
 
 // modules
@@ -22,6 +37,7 @@ body {
   background: #fff;
   padding: 32px;
   border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .mo-divider {
