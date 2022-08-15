@@ -18,6 +18,7 @@ export function formateDate(val, fmt = 'YYYY-MM-DD HH:mm:ss') {
 export function computeScreenSize() {
   let body = document.querySelector('body');
   let html = document.querySelector('html');
+  let rootStyle = document.querySelector('#root-style');
   let root = document.querySelector('#root');
   const div = document.createElement('DIV');
   div.setAttribute(
@@ -31,13 +32,18 @@ export function computeScreenSize() {
   if (height === 600 && height === htmlHeight && height === bodyHeight) {
     setTimeout(() => {
       root.style.height = height + 'px';
-      root.style.overflow = 'scroll';
+      root.style.overflowX = 'hidden';
+      root.style.overflowY = 'auto';
     }, 0);
   }
   div.remove();
-  const style = document.createElement('STYLE');
-  style.innerHTML = `:root {--screenHeigth: ${height}px;}`;
-  body.appendChild(style);
+
+  if (!rootStyle) {
+    const style = document.createElement('STYLE');
+    style.setAttribute('id', 'root-style');
+    style.innerHTML = `:root {--screenHeight: ${height}px;}`;
+    body.appendChild(style);
+  }
 }
 
 export function computeHtmlFontSize() {

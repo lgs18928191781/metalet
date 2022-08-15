@@ -2,6 +2,8 @@ export default {
   app: 'Metalet',
   pleaseInput: 'Please Input',
   optional: '(optional)',
+  submit: 'Submit',
+  cancel: 'Cancel',
   login: {
     welcome: 'Welcome to',
     welcome_2: 'Metalet will help you connect to the blockchain.',
@@ -25,6 +27,10 @@ export default {
     receive: 'Receive',
     send: 'Send',
     history: 'History',
-    dialogTitle: 'Your Receive BSV Assets',
+    receiveDialogTitle: 'Your Receive Assets',
+    sendDialogTitle: 'Send Assets',
+    yourAddress: 'Your Address',
+    sendAddress: 'Send Address',
+    sendAmount: 'Send Amount',
   },
 };

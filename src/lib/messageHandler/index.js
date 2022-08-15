@@ -77,11 +77,17 @@ async function getBalance(message) {
 }
 
 async function sendAmount(message) {
-  const { amount, address, wif } = message.data;
+  const { sendAmount, sendAddress, wif, feeb = 0.5 } = message.data;
   const wallet = initWallet(wif);
-  return await wallet.send(address, amount, {
+  return await wallet.send(sendAddress, sendAmount, feeb, {
     dump: true,
   });
+}
+
+async function countFee(message) {
+  const { sendAmount, wif, feeb = 0.5 } = message.data;
+  const wallet = initWallet(wif);
+
 }
 
 export default {

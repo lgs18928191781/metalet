@@ -6,7 +6,7 @@
         <span>{{ appName }}</span>
       </router-link>
       <div class="more">
-        <img src="/img/icon-more.svg" />
+        <img src="/public/img/icon-more.svg" />
       </div>
     </div>
     <div class="main-content">
@@ -90,7 +90,6 @@ export default {
   .main-content {
     box-sizing: border-box;
     margin: 80px 0 0 0;
-    padding: 36px;
     position: relative;
     overflow: auto;
   }

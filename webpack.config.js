@@ -8,7 +8,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const readDotEnv = require('./build/env');
 const readExternals = require('./build/externals');
-const packageJson = require('./package.json')
+const packageJson = require('./package.json');
 
 // 路径常量
 const context = path.resolve(__dirname);
@@ -50,7 +50,7 @@ module.exports = (startEnv, argv) => {
       filename: '[name].js',
       chunkFilename: 'chunk.[id].js',
       publicPath: dotEnvProperties.CONFIG_PUBLIC_PATH,
-      assetModuleFilename: 'assets/[name].[ext]',
+      assetModuleFilename: 'public/[name][ext]',
       crossOriginLoading: 'anonymous',
       clean: true,
       scriptType: 'text/javascript',
@@ -128,8 +128,9 @@ module.exports = (startEnv, argv) => {
         },
         // 图片文件
         {
-          test: /\.(png|jpg|gif|jpeg|svg|ttf)$/i,
+          test: /\.(png|jpg|gif|jpeg|svg|ttf|woff|woff2|otf|mp4|pdf)$/i,
           type: 'asset/resource',
+          exclude: /(node_modules)/i,
         },
       ],
     },
@@ -183,7 +184,7 @@ module.exports = (startEnv, argv) => {
         patterns: [
           {
             from: 'public',
-            to: '',
+            to: 'public',
           },
           {
             from: 'manifest.json',

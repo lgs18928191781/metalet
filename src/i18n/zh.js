@@ -2,6 +2,8 @@ export default {
   app: 'Metalet',
   pleaseInput: '请输入',
   optional: '(可选)',
+  submit: '确认',
+  cancel: '取消',
   login: {
     welcome: '欢迎使用',
     welcome_2: 'Metalet是一个帮助你连接到区块链的工具.',
@@ -25,6 +27,10 @@ export default {
     receive: '接收',
     send: '发送',
     history: '历史',
-    dialogTitle: '您的账号接收地址',
+    receiveDialogTitle: '您的账号接收地址',
+    sendDialogTitle: '发送',
+    yourAddress: '你的地址',
+    sendAddress: '发送地址',
+    sendAmount: '发送数量',
   },
 };

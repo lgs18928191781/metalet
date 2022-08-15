@@ -1,7 +1,7 @@
 <template>
   <div class="page-home">
     <div class="mo-card money-card">
-      <img class="refresh" src="/img/icon-refresh.svg" @click="fetchData" />
+      <img class="refresh" src="/public/img/icon-refresh.svg" @click="fetchData" />
 
       <div class="bsv">
         <span>{{ $filter.satoshisToBSV(balance) }}</span>
@@ -13,34 +13,67 @@
       </div>
       <div class="address">
         <div class="mo-text txt-hide">{{ user.address }}</div>
-        <img class="btn" :data-clipboard-text="user.address" src="/img/icon-copy.svg" ref="outsideBtn" />
+        <img class="btn" :data-clipboard-text="user.address" src="/public/img/icon-copy.svg" ref="outsideBtn" />
       </div>
     </div>
 
     <div class="ctrl-bar">
-      <div class="item" @click="handleOpenDialog">
-        <img src="/img/icon-qrcode.svg" />
+      <div class="item" @click="handleOpenReceiveDialog">
+        <img src="/public/img/icon-qrcode.svg" />
         <span>{{ $t('home.receive') }}</span>
       </div>
-      <div class="item">
-        <img src="/img/icon-transfer.svg" />
+      <div class="item" @click="handleOpenSendDialog">
+        <img src="/public/img/icon-transfer.svg" />
         <span>{{ $t('home.send') }}</span>
       </div>
       <div class="item" @click="handleOpenHistory">
-        <img src="/img/icon-history.svg" />
+        <img src="/public/img/icon-history.svg" />
         <span>{{ $t('home.history') }}</span>
       </div>
     </div>
   </div>
 
   <transition name="fade">
-    <div class="page-dialog" v-show="showDialog" @click="handleCloseDialog">
+    <div class="page-dialog" v-show="showReceiveDialog" @click="handleCloseReceiveDialog">
       <div class="mo-card" @click.stop="() => {}">
-        <h1 class="mo-sub-title">{{ $t('home.dialogTitle') }}</h1>
+        <h1 class="mo-sub-title">{{ $t('home.receiveDialogTitle') }}</h1>
         <img :src="qrcodeUrl" class="qrcode" />
         <div class="address">
           <div class="mo-text txt-hide">{{ user.address }}</div>
-          <img src="/img/icon-copy.svg" @click.stop="clickOutsideBtn" />
+          <img src="/public/img/icon-copy.svg" @click.stop="clickOutsideClipboardBtn" />
+        </div>
+      </div>
+    </div>
+  </transition>
+
+  <transition name="fade">
+    <div class="page-dialog" v-show="showSendDialog" @click="handleCloseSendDialog">
+      <div class="mo-card" @click.stop="() => {}">
+        <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }}</h1>
+        <div class="mo-form">
+          <div class="form-item">
+            <label class="form-item-label">{{ $t('home.yourAddress') }}</label>
+            <div class="form-item content">
+              <div class="txt-hide mo-text">{{ user.address }}</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <label class="form-item-label">{{ $t('home.sendAddress') }}</label>
+            <div class="form-item content">
+              <input class="mo-input" type="text" v-model="sendAddress" :placeholder="$t('pleaseInput')" />
+            </div>
+          </div>
+          <div class="form-item">
+            <label class="form-item-label">{{ $t('home.sendAmount') }}</label>
+            <div class="form-item content">
+              <input class="mo-input" type="number" v-model="sendAmount" :placeholder="$t('pleaseInput')" />
+            </div>
+          </div>
+          <hr class="mo-divider" />
+          <div class="form-item" style="text-align: right">
+            <button class="mo-btn simple round" @click.stop="handleCloseSendDialog">{{ $t('cancel') }}</button>
+            <button class="mo-btn round" @click="handleSubmitSend">{{ $t('submit') }}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -69,9 +102,10 @@ export default {
       balance: 0,
       rate: 0,
       sendAddress: '',
-      sendAmount: 0,
+      sendAmount: undefined,
       qrcodeUrl: '',
-      showDialog: false,
+      showReceiveDialog: false,
+      showSendDialog: false,
       clipboard: undefined,
     };
   },
@@ -139,185 +173,36 @@ export default {
       });
       console.log(res);
     },
-    handleOpenDialog() {
-      this.showDialog = true;
+    handleOpenReceiveDialog() {
+      this.showReceiveDialog = true;
     },
-    handleCloseDialog() {
-      this.showDialog = false;
+    handleCloseReceiveDialog() {
+      this.showReceiveDialog = false;
     },
-    clickOutsideBtn() {
+    clickOutsideClipboardBtn() {
       this.$refs.outsideBtn.click();
     },
     handleOpenHistory() {
       window.open(`https://scan.mvc.space/address/${this.user.address}`);
     },
+    handleOpenSendDialog() {
+      this.showSendDialog = true;
+    },
+    handleCloseSendDialog() {
+      this.showSendDialog = false;
+      this.sendAddress = '';
+      this.sendAmount = undefined;
+    },
+    async handleSubmitSend() {
+      const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
+        wif: this.user.wif,
+        sendAddress: this.sendAddress,
+        sendAmount: this.sendAmount,
+      });
+      this.handleCloseSendDialog();
+      await this.fetchData();
+    },
   },
 };
 </script>
-<style lang="less" scoped>
-.page-home {
-  .money-card {
-    background-image: linear-gradient(30deg, #316dd8, #d18f68);
-    border-radius: 18px;
-    padding: 46px 36px 24px;
-    position: relative;
-
-    .bsv {
-      font-family: 'Inter Bold';
-      color: #fff;
-      font-size: 62px;
-      text-align: right;
-      margin-top: 20px;
-      .unit {
-        font-size: 48px;
-        font-family: 'Inter';
-        width: 110px;
-        display: inline-block;
-        box-sizing: border-box;
-        text-align: left;
-        padding-left: 10px;
-      }
-    }
-
-    .lcy {
-      color: #f1f1f1;
-      font-size: 32px;
-      margin-top: 14px;
-      text-align: right;
-
-      .unit {
-        font-size: 26px;
-        font-family: 'Inter';
-        width: 110px;
-        display: inline-block;
-        box-sizing: border-box;
-        text-align: left;
-        padding-left: 10px;
-      }
-    }
-
-    .address {
-      width: 50%;
-      display: flex;
-      align-items: center;
-      margin: 40px auto 0;
-
-      div {
-        font-size: 24px;
-        color: #fff;
-      }
-      .btn {
-        margin-left: 10px;
-        width: 20px;
-        height: 20px;
-        filter: brightness(0) invert(1);
-        cursor: pointer;
-        &:hover {
-          color: var(--primary-color-hover);
-        }
-      }
-    }
-
-    .refresh {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      &:hover {
-        transition: all 0.5s linear;
-        transform: rotate(360deg);
-      }
-    }
-  }
-
-  .ctrl-bar {
-    margin-top: 26px;
-    display: flex;
-    justify-content: space-between;
-    .item {
-      background: #fff;
-      flex-grow: 1;
-      margin-right: 26px;
-      padding: 20px;
-      border-radius: 99px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-sizing: border-box;
-      border: 1px solid var(--primary-color);
-      color: var(--primary-color);
-      cursor: pointer;
-      transition: all 0.2s linear;
-
-      img {
-        height: 36px;
-        width: auto;
-        margin-right: 8px;
-        pointer-events: none;
-      }
-
-      span {
-        font-size: 28px;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      &:hover {
-        background-color: #f9f9f9;
-        color: var(--primary-color-hover);
-        border-color: var(--primary-color-hover);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      }
-    }
-  }
-}
-
-.page-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .mo-card {
-    width: 80%;
-
-    .mo-sub-title {
-      text-align: center;
-      margin-top: 60 - 36px;
-    }
-
-    .qrcode {
-      display: block;
-      margin: 60px auto 80px;
-    }
-
-    .address {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      img {
-        margin-left: 10px;
-        cursor: pointer;
-        width: 32px;
-        height: 32px;
-        filter: brightness(0) invert(0.2);
-
-        &:hover {
-          color: var(--primary-color-hover);
-        }
-      }
-    }
-  }
-}
-</style>
+<style lang="less" scoped src="./style.less"></style>

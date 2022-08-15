@@ -66,8 +66,8 @@
               <input class="mo-input" type="text" :placeholder="$t('pleaseInput') + $t('optional')" v-model="alias" />
             </div>
           </div>
-          <div class="form-item" style="text-align: center">
-            <button class="mo-btn" @click="createAccount">{{ $t('login.submit') }}</button>
+          <div class="form-item" style="text-align: right">
+            <button class="mo-btn" @click="createAccount">{{ $t('submit') }}</button>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export default {
 <style lang="less" scoped>
 .page-login {
   height: 100vh;
-  height: var(--screenHeigth);
+  height: var(--screenHeight);
   display: flex;
   flex-direction: column;
 

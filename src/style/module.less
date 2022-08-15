@@ -80,13 +80,16 @@ html {
   font-weight: bold;
   border-radius: var(--border-radius);
   transition: all 0.2s linear;
+  box-sizing: border-box;
 
   &:hover {
     background: var(--primary-color-hover);
+    box-shadow: var(--box-shadow);
   }
 
   &:active {
     background: var(--primary-color-active);
+    box-shadow: var(--box-shadow);
   }
 
   & + .mo-btn {
@@ -112,6 +115,22 @@ html {
     font-size: 32px;
     font-weight: bold;
   }
+
+  &.simple {
+    border: 1px solid var(--primary-color);
+    background-color: #fff;
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-color-hover);
+      border-color: var(--primary-color-hover);
+    }
+
+    &:active {
+      color: var(--primary-color-active);
+      border-color: var(--primary-color-active);
+    }
+  }
 }
 
 .mo-input {
@@ -125,6 +144,12 @@ html {
   font-size: 28px;
   border-radius: var(--border-radius);
   transition: all 0.2s linear;
+
+  &:active,
+  &:focus {
+    border-color: var(--primary-color-active);
+    box-shadow: var(--box-shadow);
+  }
 }
 
 .mo-form {
