@@ -51,7 +51,6 @@ export default {
   max-width: 80%;
   line-height: 1.75;
 
-
   &.white {
     background-color: rgba(255, 255, 255, 0.75);
     color: var(--primary-text-color);

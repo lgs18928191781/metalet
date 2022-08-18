@@ -37,14 +37,15 @@ function getMnemonicWords() {
 }
 
 async function createAccount(message) {
-  const { mnemonicWords, derivationPath, alias, password } = message.data;
-  const mnemonicStr = mnemonicWords.join(' ');
+  const { mnemonicStr, derivationPath, alias, password } = message.data;
   const mnemonic = Mnemonic.fromString(mnemonicStr);
   const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
-  const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
-  const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey;
+  const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey; // 0/0地址
+  const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey; // 0/0地址
   const address = privateKey.toAddress().toString();
   const wif = privateKey.toString();
+  const xpub = HDPrivateKey.xpubkey;
+  const xpriv = HDPrivateKey.xprivkey;
 
   const hasOne = await select(wif);
   if (!hasOne) {
@@ -54,6 +55,8 @@ async function createAccount(message) {
       mnemonicStr,
       alias,
       password,
+      xpub,
+      xpriv
     });
   }
 
@@ -63,9 +66,8 @@ async function createAccount(message) {
     mnemonicStr,
     alias,
     password,
-    pubWif,
-    xpubkey,
-    xprivkey,
+    xpub,
+    xpriv,
   };
 }
 
@@ -95,8 +97,7 @@ async function getAccount(message) {
 }
 
 async function restoreAccount(message) {
-  const { mnemonicStr, derivationPath, wif, restoreType } = message.data;
-  console.log(mnemonicStr, derivationPath, wif, restoreType);
+  const { mnemonicStr, derivationPath, restoreType, xpriv } = message.data;
   let obj;
   // 使用助记词恢复
   if (restoreType === 0) {
@@ -105,6 +106,8 @@ async function restoreAccount(message) {
     const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
     const address = privateKey.toAddress().toString();
     const wif = privateKey.toString();
+    const xpub = HDPrivateKey.xpubkey;
+    const xpriv = HDPrivateKey.xprivkey;
 
     obj = {
       address,
@@ -112,12 +115,19 @@ async function restoreAccount(message) {
       mnemonicStr,
       alias: null,
       password: null,
+      xpub,
+      xpriv
     };
   }
   // 使用私钥恢复
   if (restoreType === 1) {
-    const privateKey = mvc.PrivateKey.fromString(wif);
+    const HDPrivateKey = mvc.HDPrivateKey.fromString(xpriv)
+    const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey; // 0/0地址
+    const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey; // 0/0地址
     const address = privateKey.toAddress().toString();
+    const wif = privateKey.toString();
+    const xpub = HDPrivateKey.xpubkey;
+    const xpriv = HDPrivateKey.xprivkey;
 
     obj = {
       address,
@@ -125,6 +135,8 @@ async function restoreAccount(message) {
       mnemonicStr: null,
       alias: null,
       password: null,
+      xpub,
+      xpriv
     };
   }
 

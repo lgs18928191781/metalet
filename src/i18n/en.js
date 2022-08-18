@@ -15,7 +15,7 @@ export default {
     startNow: 'Start Now',
   },
   account: {
-    createNewAccount: 'Create New Account',
+    createNewAccount: 'Create Account',
     restoreAccount: 'Restore Account',
     desc: 'Create a new wallet to hold MVC and Token',
     desc_2: 'Please write down the following 12 words and keep them in a safe place',

@@ -1,11 +1,13 @@
 <template>
-  <transition name="fade">
-    <div class="mo-dialog" v-if="$attrs.modelValue" @click="handleClose">
-      <mo-card @click.stop="() => {}" :style="{ width }" v-bind="$attrs">
-        <slot></slot>
-      </mo-card>
-    </div>
-  </transition>
+  <teleport to="body">
+    <transition name="fade">
+      <div class="mo-dialog" v-if="$attrs.modelValue" @click="handleClose">
+        <mo-card @click.stop="() => {}" :style="{ width }" v-bind="$attrs">
+          <slot></slot>
+        </mo-card>
+      </div>
+    </transition>
+  </teleport>
 </template>
 <script>
 export default {

@@ -93,7 +93,7 @@ export function spaceTosatoshis(space) {
     return 0;
   }
   const d = new Decimal(space);
-  return d.mul(100000000)
+  return d.mul(100000000);
 }
 
 // 单位换算 - 转法币

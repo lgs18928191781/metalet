@@ -12,6 +12,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.needAuth !== false) {
     const account = store.state.account;
+    console.log(account.currentAccount);
     if (!account || !account.currentAccount || !account.currentAccount.wif) {
       next({
         path: '/welcome',

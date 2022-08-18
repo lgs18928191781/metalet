@@ -29,7 +29,7 @@ async function messageProcessor(message, sender, sendResponse) {
   const { type, clientId, time } = message;
   const funcId = `${clientId}_${type}_${time}`;
   sendResponse(funcId);
-  await responseOneMessage(message, sender, funcId);
+  responseOneMessage(message, sender, funcId);
 }
 // 单个消息处理与响应
 async function responseOneMessage(message, sender, funcId) {
@@ -69,6 +69,5 @@ async function responseOneMessage(message, sender, funcId) {
       (err && err.message) || ERR_CODE_ERR
     );
   }
-
   await chrome.runtime.sendMessage(finalResult);
 }
