@@ -20,7 +20,7 @@ export default {
     desc: '创建一个新的钱包来存放MVC和令牌',
     desc_2: '请写下以下12个助记词，并将它们放在安全的地方',
     desc_3: '从助记词恢复',
-    desc_4: '从私钥恢复',
+    desc_4: '从高分层私钥恢复',
     desc_5: '用私密数据恢复账户',
     mnemonic: '助记词',
     changeWord: '换一批',
@@ -33,7 +33,7 @@ export default {
     submit: '确认',
     restoreType: '恢复方式',
     restoreType_1: '使用助记词恢复',
-    restoreType_2: '使用私钥恢复',
+    restoreType_2: '使用高分层私钥恢复',
   },
   error: {
     indexDbNotSupport: '您的浏览器不支持indexDb, 请升级您的浏览器',
@@ -56,5 +56,9 @@ export default {
     amountNotEnough: '数目不足够',
     paySuccess: '支付成功',
     unit: '单位:(SPACE)',
+  },
+  menu: {
+    editAccount: 'Edit Account',
+    logout: 'Logout',
   },
 };

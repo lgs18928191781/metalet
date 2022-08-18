@@ -20,7 +20,7 @@ export default {
     desc: 'Create a new wallet to hold MVC and Token',
     desc_2: 'Please write down the following 12 words and keep them in a safe place',
     desc_3: 'Restore from Mnemonic',
-    desc_4: 'Restore from Private Key',
+    desc_4: 'Restore from HDPrivate Key',
     desc_5: 'Recover account with private data',
     mnemonic: 'Mnemonic',
     changeWord: 'Change Words',
@@ -33,7 +33,7 @@ export default {
     submit: 'Submit',
     restoreType: 'Restore Type',
     restoreType_1: 'Restore from Mnemonic',
-    restoreType_2: 'Restore from Private Key',
+    restoreType_2: 'Restore from HDPrivate Key',
   },
   error: {
     indexDbNotSupport: 'Your browser is not supprt indexDb, please update your browser',
@@ -56,5 +56,9 @@ export default {
     amountNotEnough: 'Amount is not enough',
     paySuccess: 'Send Success',
     unit: 'unit:(SPACE)',
+  },
+  menu: {
+    editAccount: 'Edit Account',
+    logout: 'Logout',
   },
 };

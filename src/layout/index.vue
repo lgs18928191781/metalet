@@ -5,7 +5,7 @@
         <img :src="appLogo" v-if="appLogo" />
         <span>{{ appName }}</span>
       </router-link>
-      <div class="more">
+      <div class="more" @click="handleOpenPicker">
         <img src="/public/img/icon-more.svg" />
       </div>
     </div>
@@ -13,9 +13,12 @@
       <router-view></router-view>
     </div>
   </div>
+
+  <mo-picker v-model="showPicker" :list="pickerList" @onItemClick="handlePickerItemClick"></mo-picker>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import i18n from '@/i18n';
 
 export default {
   name: 'layout',
@@ -29,11 +32,40 @@ export default {
       return this.config?.CONFIG_APP_NAME || '';
     },
   },
+  data() {
+    return {
+      showPicker: false,
+      pickerList: [
+        { label: i18n('menu.editAccount'), name: 'editAccount' },
+        { label: i18n('menu.logout'), name: 'logout' },
+      ],
+    };
+  },
   methods: {
     ...mapActions({
       setSession: 'system/setSession',
-      setUser: 'user/setUser',
+      removeCurrentAccount: 'account/removeCurrentAccount',
     }),
+    handleOpenPicker() {
+      this.showPicker = true;
+    },
+    handlePickerItemClick(item) {
+      switch (item.name) {
+        case 'editAccount': {
+          this.$router.push({
+            path: '/edit',
+          });
+          break;
+        }
+        case 'logout': {
+          this.removeCurrentAccount();
+          this.$router.push({
+            path: '/welcome',
+          });
+          break;
+        }
+      }
+    },
   },
 };
 </script>

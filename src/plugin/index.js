@@ -6,6 +6,7 @@ import FormItem from '@/component/module/FormItem.vue';
 import Input from '@/component/module/Input.vue';
 import RadioGroup from '@/component/module/RadioGroup.vue';
 import Dialog from '@/component/module/Dialog.vue';
+import Picker from '@/component/module/Picker.vue';
 import { toast, loading } from './feedbackPlugins';
 
 export function initPlugin(app) {
@@ -17,6 +18,7 @@ export function initPlugin(app) {
   app.component(Input.name, Input);
   app.component(RadioGroup.name, RadioGroup);
   app.component(Dialog.name, Dialog);
+  app.component(Picker.name, Picker);
   app.use(toast);
   app.use(loading);
 }

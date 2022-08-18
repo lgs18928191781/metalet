@@ -45,7 +45,7 @@ async function createAccount(message) {
   const address = privateKey.toAddress().toString();
   const wif = privateKey.toString();
   const xpub = HDPrivateKey.xpubkey;
-  const xpriv = HDPrivateKey.xprivkey;
+  const xprv = HDPrivateKey.xprivkey;
 
   const hasOne = await select(wif);
   if (!hasOne) {
@@ -56,7 +56,7 @@ async function createAccount(message) {
       alias,
       password,
       xpub,
-      xpriv
+      xprv,
     });
   }
 
@@ -67,7 +67,7 @@ async function createAccount(message) {
     alias,
     password,
     xpub,
-    xpriv,
+    xprv,
   };
 }
 
@@ -97,7 +97,7 @@ async function getAccount(message) {
 }
 
 async function restoreAccount(message) {
-  const { mnemonicStr, derivationPath, restoreType, xpriv } = message.data;
+  const { mnemonicStr, derivationPath, restoreType, privateKey: restorePrivateKey } = message.data;
   let obj;
   // 使用助记词恢复
   if (restoreType === 0) {
@@ -107,7 +107,7 @@ async function restoreAccount(message) {
     const address = privateKey.toAddress().toString();
     const wif = privateKey.toString();
     const xpub = HDPrivateKey.xpubkey;
-    const xpriv = HDPrivateKey.xprivkey;
+    const xprv = HDPrivateKey.xprivkey;
 
     obj = {
       address,
@@ -116,18 +116,17 @@ async function restoreAccount(message) {
       alias: null,
       password: null,
       xpub,
-      xpriv
+      xprv,
     };
   }
   // 使用私钥恢复
   if (restoreType === 1) {
-    const HDPrivateKey = mvc.HDPrivateKey.fromString(xpriv)
-    const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey; // 0/0地址
-    const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey; // 0/0地址
-    const address = privateKey.toAddress().toString();
+    const HDPrivateKey = mvc.HDPrivateKey.fromString(restorePrivateKey);
+    const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
     const wif = privateKey.toString();
+    const address = privateKey.toAddress().toString();
     const xpub = HDPrivateKey.xpubkey;
-    const xpriv = HDPrivateKey.xprivkey;
+    const xprv = HDPrivateKey.xprivkey;
 
     obj = {
       address,
@@ -136,7 +135,7 @@ async function restoreAccount(message) {
       alias: null,
       password: null,
       xpub,
-      xpriv
+      xprv,
     };
   }
 

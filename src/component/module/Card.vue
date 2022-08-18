@@ -24,6 +24,7 @@ export default {
   background: #fff;
   padding: 32px;
   border-radius: var(--border-radius);
+  box-sizing: border-box;
 
   &.shadow {
     box-shadow: var(--box-shadow);

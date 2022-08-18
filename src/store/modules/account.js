@@ -12,6 +12,10 @@ export default {
       state.currentAccount = payload;
       localStorage.setItem('account', payload.wif);
     },
+    removeCurrentAccount(state, payload) {
+      state.currentAccount = null;
+      localStorage.removeItem('account');
+    },
   },
   actions: {
     setAccountList(context, payload) {
@@ -19,6 +23,9 @@ export default {
     },
     setCurrentAccount(context, payload) {
       context.commit('setCurrentAccount', payload);
+    },
+    removeCurrentAccount(context, payload) {
+      context.commit('removeCurrentAccount', payload);
     },
   },
   getters: {

@@ -187,7 +187,6 @@ export default {
     },
     async handleSubmitSend() {
       const satoshi = spaceTosatoshis(+this.sendAmount).toNumber();
-      console.log(this.balance, satoshi);
       if (!this.sendAddress) {
         return this.$toast({ message: i18n('home.pleaseInputAddress') });
       }

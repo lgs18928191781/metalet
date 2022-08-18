@@ -119,7 +119,7 @@ export default {
     },
     async createAccount() {
       const { data } = await sendMessageFromExtPageToBackground('createAccount', {
-        mnemonicWords: this.mnemonicWords.join(' '),
+        mnemonicStr: this.mnemonicWords.join(' '),
         derivationPath: this.derivationPath,
         alias: this.alias,
         password: this.password,
@@ -133,7 +133,7 @@ export default {
       const { data } = await sendMessageFromExtPageToBackground('restoreAccount', {
         mnemonicStr: this.mnemonicStr,
         derivationPath: this.derivationPath,
-        xpriv: this.privateKey,
+        privateKey: this.privateKey,
         restoreType: this.restoreType,
       });
       this.setCurrentAccount(data);
