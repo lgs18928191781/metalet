@@ -55,11 +55,11 @@ module.exports = (startEnv, argv) => {
       clean: true,
       scriptType: 'text/javascript',
     },
-    cache: {
-      type: 'filesystem',
-      allowCollectingMemory: true,
-      compression: 'gzip',
-    },
+    // cache: {
+    //   type: 'filesystem',
+    //   allowCollectingMemory: true,
+    //   compression: 'gzip',
+    // },
     module: {
       rules: [
         // vue文件处理
@@ -75,9 +75,9 @@ module.exports = (startEnv, argv) => {
           test: /\.(js|msj|ts|jsx|tsx)$/,
           use: {
             loader: 'babel-loader',
-            options: {
-              cacheDirectory: true,
-            },
+            // options: {
+            //   cacheDirectory: true,
+            // },
           },
         },
         // css文件处理

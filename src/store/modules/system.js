@@ -1,11 +1,17 @@
 import config from '@/config';
-import { getNavigatorLanguage, getStorageLanguage, setStorageLanguage } from '@/util';
+import { getLocateLanguage } from '@/util';
+
+let lastLanguageCache = localStorage.getItem('lang');
+if (!lastLanguageCache) {
+  lastLanguageCache = getLocateLanguage();
+  localStorage.setItem('lang', lastLanguageCache);
+}
 
 export default {
   namespaced: true,
   state: () => ({
     config,
-    locale: getStorageLanguage() || getNavigatorLanguage(),
+    locale: lastLanguageCache,
   }),
   mutations: {
     setConfig(state, payload) {
@@ -13,7 +19,7 @@ export default {
     },
     setLocale(state, payload) {
       state.locale = payload;
-      setStorageLanguage(payload);
+      localStorage.setItem('lang', payload);
     },
   },
   actions: {

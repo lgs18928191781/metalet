@@ -4,17 +4,24 @@ import dayjs from 'dayjs';
 import { Decimal } from 'decimal.js';
 import qrcode from 'qrcode';
 
+export function randomId() {
+  return uuid();
+}
+
+// 初始化当前页面唯一名字
 export function initClientName() {
   window.name = `${config.CONFIG_APP_NAME}_${uuid()}`;
 }
 
-export function formateDate(val, fmt = 'YYYY-MM-DD HH:mm:ss') {
+// 格式化日期
+export function formatDate(val, fmt = 'YYYY-MM-DD HH:mm:ss') {
   if (!val) {
     return '';
   }
   return dayjs(val).format(fmt);
 }
 
+// 计算屏幕高度 - 用于控制弹窗大小
 export function computeScreenSize() {
   let body = document.querySelector('body');
   let html = document.querySelector('html');
@@ -38,14 +45,19 @@ export function computeScreenSize() {
   }
   div.remove();
 
-  if (!rootStyle) {
+  if (!rootStyle || rootStyle.getAttribute('data-height') !== `${height}`) {
+    if (rootStyle) {
+      rootStyle.remove();
+    }
     const style = document.createElement('STYLE');
     style.setAttribute('id', 'root-style');
+    style.setAttribute('data-height', `${height}`);
     style.innerHTML = `:root {--screenHeight: ${height}px;}`;
     body.appendChild(style);
   }
 }
 
+// 计算字体大小 - 计算html font-size
 export function computeHtmlFontSize() {
   let screenWidth = Math.min(window.innerWidth, 1000);
   let html = document.querySelector('html');
@@ -60,41 +72,14 @@ export function computeHtmlFontSize() {
   }
 }
 
-export function getStorageSession() {
-  const storageStr = localStorage.getItem('session') || null;
-  if (!storageStr) {
-    return {};
-  }
-  try {
-    return JSON.parse(storageStr);
-  } catch (err) {
-    return {};
-  }
-}
-
-export function setStorageSession(val) {
-  let valStr = JSON.stringify(val);
-  if (!val) {
-    localStorage.removeItem('session');
-    return;
-  }
-  localStorage.setItem('session', valStr);
-}
-
-export function getNavigatorLanguage() {
+// 获取用户浏览器语言
+export function getLocateLanguage() {
   const lang = ((navigator.language ? navigator.language : navigator.userLanguage) || 'en').toLowerCase();
   return lang.split('-')[0];
 }
 
-export function getStorageLanguage() {
-  return localStorage.getItem('lang');
-}
-
-export function setStorageLanguage(va) {
-  localStorage.setItem('lang', val);
-}
-
-export function satoshisToBSV(satoshis) {
+// 单位换算
+export function satoshisToSpace(satoshis) {
   if (!satoshis || satoshis <= 0) {
     return 0;
   }
@@ -102,6 +87,16 @@ export function satoshisToBSV(satoshis) {
   return d.div(100000000).toFixed(10);
 }
 
+// 单位换算
+export function spaceTosatoshis(space) {
+  if (!space || space <= 0) {
+    return 0;
+  }
+  const d = new Decimal(space);
+  return d.mul(100000000)
+}
+
+// 单位换算 - 转法币
 export function satoshisToLcy(satoshis, rate) {
   if (!satoshis || satoshis <= 0 || !rate) {
     return 0;
@@ -110,6 +105,7 @@ export function satoshisToLcy(satoshis, rate) {
   return d.div(100000000).mul(rate).toFixed(10);
 }
 
+// 创建二维码
 export function createQrCode(text) {
   return qrcode.toDataURL(text, {
     margin: 0,

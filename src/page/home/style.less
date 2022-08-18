@@ -16,19 +16,18 @@
       background: url('/public/img/bg-line.png') 0 repeat;
       background-size: 100% 100%;
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 1;
     }
 
-    .bsv {
+    .space {
       font-family: 'Inter Bold';
       color: #fff;
-      font-size: 62px;
-      text-align: right;
+      font-size: 52px;
+      text-align: center;
       margin-top: 20px;
       .unit {
-        font-size: 48px;
-        font-family: 'Inter';
-        width: 110px;
+        font-size: 38px;
+        width: 140px;
         display: inline-block;
         box-sizing: border-box;
         text-align: left;
@@ -45,7 +44,7 @@
       .unit {
         font-size: 26px;
         font-family: 'Inter';
-        width: 110px;
+        width: 140px;
         display: inline-block;
         box-sizing: border-box;
         text-align: left;
@@ -78,106 +77,102 @@
     .refresh {
       position: absolute;
       top: 20px;
-      left: 20px;
+      right: 20px;
       width: 30px;
       height: 30px;
       cursor: pointer;
+      transition: all 0.5s linear;
       &:hover {
-        transition: all 0.5s linear;
         transform: rotate(360deg);
       }
     }
   }
 
-  .ctrl-bar {
+  .mo-tab {
     margin-top: 36px;
-    display: flex;
-    justify-content: space-between;
+  }
+
+  .action-card {
+    margin-top: 36px;
     .item {
-      background: #fff;
-      flex-grow: 1;
-      margin-right: 26px;
-      padding: 20px;
-      border-radius: 99px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-sizing: border-box;
-      border: 1px solid var(--primary-color);
-      color: var(--primary-color);
       cursor: pointer;
-      transition: all 0.2s linear;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      &:hover {
+        box-shadow: var(--box-shadow);
+        img {
+          filter: brightness(1);
+        }
+        span {
+          color: var(--primary-color-hover);
+        }
+      }
 
       img {
-        height: 36px;
-        width: auto;
-        margin-right: 8px;
+        width: 40px;
+        height: auto;
+        margin-right: 16px;
         pointer-events: none;
+        filter: brightness(0);
+        transition: var(--transition);
       }
 
       span {
-        font-size: 28px;
+        font-size: 32px;
+        font-weight: bold;
+        transition: var(--transition);
       }
+    }
+  }
 
-      &:last-child {
-        margin-right: 0;
-      }
+  .coming-soon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 80px;
 
-      &:hover {
-        background-color: #f9f9f9;
-        color: var(--primary-color-hover);
-        border-color: var(--primary-color-hover);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      }
+    img {
+      width: 200px;
+    }
+
+    p {
+      color: var(--third-text-color);
+      margin-top: 30px;
     }
   }
 }
 
 .page-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .mo-sub-title {
+    text-align: center;
+  }
 
-  .mo-card {
-    width: 80%;
+  .qrcode {
+    display: block;
+    width: 400px;
+    margin: 60px auto 80px;
+  }
 
-    .mo-sub-title {
-      text-align: center;
-      margin-top: 60 - 36px;
-    }
+  .address {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    margin: 0 auto;
 
-    .qrcode {
-      display: block;
-      margin: 60px auto 80px;
-    }
+    img {
+      margin-left: 10px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      filter: brightness(0);
+      transition: var(--transition);
 
-    .address {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      img {
-        margin-left: 10px;
-        cursor: pointer;
-        width: 32px;
-        height: 32px;
-        filter: brightness(0) invert(0.2);
-
-        &:hover {
-          color: var(--primary-color-hover);
-        }
+      &:hover {
+        filter: none;
       }
-    }
-
-    .my-address {
-
     }
   }
 }

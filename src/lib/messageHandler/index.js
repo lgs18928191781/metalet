@@ -39,19 +39,15 @@ function getMnemonicWords() {
 async function createAccount(message) {
   const { mnemonicWords, derivationPath, alias, password } = message.data;
   const mnemonicStr = mnemonicWords.join(' ');
-  const mnemonic = Mnemonic.fromString();
+  const mnemonic = Mnemonic.fromString(mnemonicStr);
   const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
   const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
+  const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey;
   const address = privateKey.toAddress().toString();
   const wif = privateKey.toString();
 
   const hasOne = await select(wif);
-  if (hasOne) {
-    throw new Error({
-      msg: 'your account is exist',
-      code: -1,
-    });
-  } else {
+  if (!hasOne) {
     await create({
       address,
       wif,
@@ -67,6 +63,9 @@ async function createAccount(message) {
     mnemonicStr,
     alias,
     password,
+    pubWif,
+    xpubkey,
+    xprivkey,
   };
 }
 
@@ -84,10 +83,57 @@ async function sendAmount(message) {
   });
 }
 
+// TODO
 async function countFee(message) {
   const { sendAmount, wif, feeb = 0.5 } = message.data;
   const wallet = initWallet(wif);
+}
 
+async function getAccount(message) {
+  const { wif } = message.data || {};
+  return await select(wif || undefined);
+}
+
+async function restoreAccount(message) {
+  const { mnemonicStr, derivationPath, wif, restoreType } = message.data;
+  console.log(mnemonicStr, derivationPath, wif, restoreType);
+  let obj;
+  // 使用助记词恢复
+  if (restoreType === 0) {
+    const mnemonic = Mnemonic.fromString(mnemonicStr);
+    const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
+    const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
+    const address = privateKey.toAddress().toString();
+    const wif = privateKey.toString();
+
+    obj = {
+      address,
+      wif,
+      mnemonicStr,
+      alias: null,
+      password: null,
+    };
+  }
+  // 使用私钥恢复
+  if (restoreType === 1) {
+    const privateKey = mvc.PrivateKey.fromString(wif);
+    const address = privateKey.toAddress().toString();
+
+    obj = {
+      address,
+      wif,
+      mnemonicStr: null,
+      alias: null,
+      password: null,
+    };
+  }
+
+  const hasOne = await select(obj.wif);
+  if (!hasOne) {
+    await create(obj);
+  }
+
+  return obj;
 }
 
 export default {
@@ -98,4 +144,6 @@ export default {
   createAccount,
   getBalance,
   sendAmount,
+  getAccount,
+  restoreAccount,
 };

@@ -1,1 +1,1 @@
-export { formateDate, satoshisToBSV, satoshisToLcy } from '@/util';
+export { formatDate, satoshisToSpace, satoshisToLcy } from '@/util';

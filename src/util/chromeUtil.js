@@ -29,7 +29,7 @@ export function makeMessageResponse(matchingData = { id: 0, from: 0 }, data = nu
 }
 
 export function openTab(url, callback, otherParams = {}) {
-  chrome.tabs.create({ ...otherParams, url }, function (tab) {
+  chrome?.tabs?.create({ ...otherParams, url }, function (tab) {
     if (typeof callback === 'function') callback(tab);
   });
 }
@@ -39,7 +39,7 @@ export function initExtPageMessageListener() {
     initExtPageMessageListener.msgMap = {};
   }
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  chrome?.runtime?.onMessage?.addListener((message, sender, sendResponse) => {
     console.info('ext page | message come', message, sender);
     try {
       if (!message) {
@@ -67,13 +67,18 @@ export function sendMessageFromExtPageToBackground(type, data = null) {
   return new Promise((resolve, reject) => {
     const clientId = window.name;
     const time = Date.now();
-    chrome.runtime.sendMessage({ type, data, clientId, time });
+    chrome?.runtime?.sendMessage({ type, data, clientId, time });
     const funcId = `${clientId}_${type}_${time}`;
 
     initExtPageMessageListener.msgMap[funcId] = (finalResult) => {
-      const { code } = finalResult;
+      const { code, msg } = finalResult;
       if (code !== 0) {
         reject(finalResult);
+        if (window && window.globalToast) {
+          window.globalToast({
+            message: msg,
+          });
+        }
       } else {
         resolve(finalResult);
       }

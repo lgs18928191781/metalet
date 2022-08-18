@@ -11,10 +11,10 @@ const router = createRouter({
 // 路由守护
 router.beforeEach((to, from, next) => {
   if (to.meta.needAuth !== false) {
-    const user = store.state.user;
-    if (!user.wif) {
+    const account = store.state.account;
+    if (!account || !account.currentAccount || !account.currentAccount.wif) {
       next({
-        path: '/login',
+        path: '/welcome',
       });
       return;
     }

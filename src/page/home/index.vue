@@ -1,96 +1,103 @@
 <template>
   <div class="page-home">
-    <div class="mo-card money-card">
-      <img class="refresh" src="/public/img/icon-refresh.svg" @click="fetchData" />
+    <template v-if="account">
+      <div class="mo-card money-card">
+        <img class="refresh" src="/public/img/icon-refresh.svg" @click="fetchData" />
 
-      <div class="bsv">
-        <span>{{ $filter.satoshisToBSV(balance) }}</span>
-        <span class="unit">BSV</span>
+        <div class="space">
+          <span>{{ $filter.satoshisToSpace(balance) }}</span>
+          <span class="unit">SPACE</span>
+        </div>
+        <!--        <div class="lcy">-->
+        <!--          <span>{{ $filter.satoshisToLcy(balance, rate) }}</span>-->
+        <!--          <span class="unit">{{ rateUnit }}</span>-->
+        <!--        </div>-->
+        <div class="address">
+          <div class="mo-text txt-hide">{{ account.address }}</div>
+          <img class="btn" :data-clipboard-text="account.address" src="/public/img/icon-copy.svg" ref="outsideBtn" />
+        </div>
       </div>
-      <div class="lcy">
-        <span>{{ $filter.satoshisToLcy(balance, rate) }}</span>
-        <span class="unit">{{ rateUnit }}</span>
+    </template>
+    <mo-tab around v-model="curTab" :list="tabList" />
+    <!-- tab1 - wallet -->
+    <template v-if="curTab === 0">
+      <div class="action-card">
+        <mo-card class="item" @click="handleOpenReceiveDialog">
+          <img src="/public/img/icon-qrcode.svg" />
+          <span>{{ $t('home.receive') }}</span>
+        </mo-card>
+        <mo-card class="item" @click="handleOpenSendDialog">
+          <img src="/public/img/icon-transfer.svg" />
+          <span>{{ $t('home.send') }}</span>
+        </mo-card>
+        <mo-card class="item" @click="handleOpenHistory">
+          <img src="/public/img/icon-history.svg" />
+          <span>{{ $t('home.history') }}</span>
+        </mo-card>
       </div>
-      <div class="address">
-        <div class="mo-text txt-hide">{{ user.address }}</div>
-        <img class="btn" :data-clipboard-text="user.address" src="/public/img/icon-copy.svg" ref="outsideBtn" />
+    </template>
+    <!-- tab1 - token -->
+    <template v-if="curTab === 1">
+      <div class="coming-soon">
+        <img src="/public/img/icon-empty.svg" />
+        <p>{{ $t('comingSoon') }}</p>
       </div>
-    </div>
-
-    <div class="ctrl-bar">
-      <div class="item" @click="handleOpenReceiveDialog">
-        <img src="/public/img/icon-qrcode.svg" />
-        <span>{{ $t('home.receive') }}</span>
+    </template>
+    <!-- tab1 - others -->
+    <template v-if="curTab === 2">
+      <div class="coming-soon">
+        <img src="/public/img/icon-empty.svg" />
+        <p>{{ $t('comingSoon') }}</p>
       </div>
-      <div class="item" @click="handleOpenSendDialog">
-        <img src="/public/img/icon-transfer.svg" />
-        <span>{{ $t('home.send') }}</span>
-      </div>
-      <div class="item" @click="handleOpenHistory">
-        <img src="/public/img/icon-history.svg" />
-        <span>{{ $t('home.history') }}</span>
-      </div>
-    </div>
+    </template>
   </div>
 
-  <transition name="fade">
-    <div class="page-dialog" v-show="showReceiveDialog" @click="handleCloseReceiveDialog">
-      <div class="mo-card" @click.stop="() => {}">
-        <h1 class="mo-sub-title">{{ $t('home.receiveDialogTitle') }}</h1>
-        <img :src="qrcodeUrl" class="qrcode" />
-        <div class="address">
-          <div class="mo-text txt-hide">{{ user.address }}</div>
-          <img src="/public/img/icon-copy.svg" @click.stop="clickOutsideClipboardBtn" />
-        </div>
-      </div>
+  <mo-dialog v-model="showReceiveDialog" class="page-dialog">
+    <h1 class="mo-sub-title">{{ $t('home.receiveDialogTitle') }}</h1>
+    <img :src="qrcodeUrl" class="qrcode" />
+    <div class="address">
+      <div class="mo-text txt-hide">{{ account.address }}</div>
+      <img src="/public/img/icon-copy.svg" @click.stop="clickOutsideClipboardBtn" />
     </div>
-  </transition>
+  </mo-dialog>
 
-  <transition name="fade">
-    <div class="page-dialog" v-show="showSendDialog" @click="handleCloseSendDialog">
-      <div class="mo-card" @click.stop="() => {}">
-        <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }}</h1>
-        <div class="mo-form">
-          <div class="form-item">
-            <label class="form-item-label">{{ $t('home.yourAddress') }}</label>
-            <div class="form-item content">
-              <div class="txt-hide mo-text">{{ user.address }}</div>
-            </div>
-          </div>
-          <div class="form-item">
-            <label class="form-item-label">{{ $t('home.sendAddress') }}</label>
-            <div class="form-item content">
-              <input class="mo-input" type="text" v-model="sendAddress" :placeholder="$t('pleaseInput')" />
-            </div>
-          </div>
-          <div class="form-item">
-            <label class="form-item-label">{{ $t('home.sendAmount') }}</label>
-            <div class="form-item content">
-              <input class="mo-input" type="number" v-model="sendAmount" :placeholder="$t('pleaseInput')" />
-            </div>
-          </div>
-          <hr class="mo-divider" />
-          <div class="form-item" style="text-align: right">
-            <button class="mo-btn simple round" @click.stop="handleCloseSendDialog">{{ $t('cancel') }}</button>
-            <button class="mo-btn round" @click="handleSubmitSend">{{ $t('submit') }}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </transition>
+  <mo-dialog class="page-dialog" v-model="showSendDialog" @onClose="handleCloseSendDialog">
+    <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }}</h1>
+    <mo-form>
+      <mo-form-item :label="$t('home.yourAddress')">
+        <div class="txt-hide mo-text">{{ account.address }}</div>
+      </mo-form-item>
+      <mo-form-item :label="$t('home.sendAddress')">
+        <mo-input v-model="sendAddress" :placeholder="$t('pleaseInput')" />
+      </mo-form-item>
+      <mo-form-item :label="$t('home.sendAmount')">
+        <mo-input
+          type="number"
+          v-model="sendAmount"
+          :placeholder="$t('pleaseInput') + ' ' + $t('home.unit')"
+          :min="2000"
+        />
+      </mo-form-item>
+      <mo-form-item submitItem style="text-align: center">
+        <mo-button simple @click.stop="handleCloseSendDialog">{{ $t('cancel') }}</mo-button>
+        <mo-button @click="handleSubmitSend">{{ $t('submit') }}</mo-button>
+      </mo-form-item>
+    </mo-form>
+  </mo-dialog>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { createQrCode } from '@/util';
+import { createQrCode, spaceTosatoshis } from '@/util';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 import { getExchangeRate } from '@/api/common';
 import ClipboardJS from 'clipboard';
+import i18n from '@/i18n';
 
 export default {
   name: 'page-home',
   computed: {
     ...mapGetters({
-      user: 'user/user',
+      account: 'account/currentAccount',
       locale: 'system/locale',
     }),
     rateUnit() {
@@ -107,38 +114,43 @@ export default {
       showReceiveDialog: false,
       showSendDialog: false,
       clipboard: undefined,
+      tabList: [
+        { label: i18n('home.wallet'), name: 0 },
+        { label: i18n('home.token'), name: 1 },
+        { label: i18n('home.others'), name: 2 },
+      ],
+      curTab: 0,
     };
-  },
-  created() {
-    this.fetchData();
-    this.drawQrCode();
   },
   beforeUnmount() {
     this.clipboard.destroy();
   },
   mounted() {
+    this.fetchData();
+    this.drawQrCode();
     this.initClipboard();
   },
   methods: {
-    ...mapActions('user', ['setUser']),
     initClipboard() {
       this.clipboard = new ClipboardJS('.btn');
 
-      this.clipboard.on('success', function (e) {
-        console.log('success');
+      this.clipboard.on('success', (e) => {
+        this.$toast({ message: i18n('copy') + i18n('success') });
       });
 
-      this.clipboard.on('error', function (e) {
-        console.log('error');
+      this.clipboard.on('error', (e) => {
+        this.$toast({ message: i18n('copy') + i18n('fail') });
       });
     },
     async fetchData() {
-      await this.getExchangeRate();
+      const loading = this.$loading();
+      // await this.getExchangeRate();
       await this.getBalance();
+      loading.close();
     },
     async getBalance() {
       const { data } = await sendMessageFromExtPageToBackground('getBalance', {
-        wif: this.user.wif,
+        wif: this.account.wif,
       });
       this.balance = data;
     },
@@ -151,39 +163,19 @@ export default {
         this.rate = cnyRate;
       }
     },
-    async handleLogout() {
-      await sendMessageFromExtPageToBackground('resetWallet');
-      this.setUser();
-      this.$router.replace({
-        path: '/login',
-      });
-    },
     async drawQrCode() {
-      const dataUrl = await createQrCode(this.user.address);
-      this.qrcodeUrl = dataUrl;
-    },
-    async handleSend() {
-      if (this.sendAmount < 2000) {
-        return;
+      if (this.account.address) {
+        this.qrcodeUrl = await createQrCode(this.account.address);
       }
-      const res = await sendMessageFromExtPageToBackground('sendAmount', {
-        amount: this.sendAmount,
-        address: this.sendAddress,
-        wif: this.user.wif,
-      });
-      console.log(res);
     },
     handleOpenReceiveDialog() {
       this.showReceiveDialog = true;
-    },
-    handleCloseReceiveDialog() {
-      this.showReceiveDialog = false;
     },
     clickOutsideClipboardBtn() {
       this.$refs.outsideBtn.click();
     },
     handleOpenHistory() {
-      window.open(`https://scan.mvc.space/address/${this.user.address}`);
+      window.open(`https://scan.mvc.space/address/${this.account.address}`);
     },
     handleOpenSendDialog() {
       this.showSendDialog = true;
@@ -194,11 +186,26 @@ export default {
       this.sendAmount = undefined;
     },
     async handleSubmitSend() {
+      const satoshi = spaceTosatoshis(+this.sendAmount).toNumber();
+      console.log(this.balance, satoshi);
+      if (!this.sendAddress) {
+        return this.$toast({ message: i18n('home.pleaseInputAddress') });
+      }
+      if (!this.sendAmount) {
+        return this.$toast({ message: i18n('home.pleaseInputAmount') });
+      }
+      if (satoshi < 2000) {
+        return this.$toast({ message: i18n('home.amountMoreThan2000') });
+      }
+      if (satoshi >= this.balance) {
+        return this.$toast({ message: i18n('home.amountNotEnough') });
+      }
       const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
-        wif: this.user.wif,
+        wif: this.account.wif,
         sendAddress: this.sendAddress,
-        sendAmount: this.sendAmount,
+        sendAmount: satoshi,
       });
+      this.$toast({ message: i18n('home.paySuccess') });
       this.handleCloseSendDialog();
       await this.fetchData();
     },

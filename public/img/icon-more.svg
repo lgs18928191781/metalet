@@ -5,7 +5,7 @@
     <defs>
         <style type="text/css"></style>
     </defs>
-    <path d="M224 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2419" fill="#fff"></path>
-    <path d="M512 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2420" fill="#fff"></path>
-    <path d="M800 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2421" fill="#fff"></path>
+    <path d="M224 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2419" fill="#000"></path>
+    <path d="M512 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2420" fill="#000"></path>
+    <path d="M800 512m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="2421" fill="#000"></path>
 </svg>

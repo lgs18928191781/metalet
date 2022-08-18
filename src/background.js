@@ -5,6 +5,7 @@ import { initDb } from '@/util/db';
 import messageMethods from '@/lib/messageHandler';
 
 // 初始化
+global._service_type_ = 'background';
 global.config = config;
 global.window = global;
 global.window.config = config;

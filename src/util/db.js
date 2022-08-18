@@ -45,7 +45,7 @@ export function select(key) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction([storeName], 'readwrite');
     let objectStore = transaction.objectStore(storeName);
-    let request = objectStore.get(key);
+    let request = key === undefined ? objectStore.getAll() : objectStore.get(key);
     request.onsuccess = (e) => {
       resolve(e.target.result);
     };

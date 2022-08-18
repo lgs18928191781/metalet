@@ -8,42 +8,26 @@
     "extension_pages": "script-src 'self';object-src 'self';style-src 'unsafe-inline' 'self';"
   },
   "host_permissions": [
-		"https://api-mvc.metasv.com/",
-		"http://api-mvc.metasv.com/",
-		"https://www.showpay.top/",
-		"http://www.showpay.top/"
-	],
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "tabs"
+    "https://api-mvc.metasv.com/",
+    "http://api-mvc.metasv.com/",
+    "https://www.showpay.top/",
+    "http://www.showpay.top/"
   ],
+  "permissions": ["storage"],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
+      "matches": ["http://*/*", "https://*/*"],
       "css": [],
-      "js": [
-        "contentScript.js"
-      ]
+      "js": ["contentScript.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "*.png",
-        "*.svg"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ]
+      "resources": ["*.png", "*.svg"],
+      "matches": ["http://*/*", "https://*/*"]
     }
   ],
   "options_page": "options.html",

@@ -55,12 +55,16 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 20;
+    z-index: 1;
 
     .logo {
       font-weight: 500;
       display: inline-flex;
       align-items: center;
+      transition: var(--transition);
+      &:hover {
+        opacity: 0.8;
+      }
 
       img {
         display: block;
@@ -72,17 +76,23 @@ export default {
       span {
         color: var(--primary-text-color);
         font-size: 32px;
+        font-weight: bold;
+        font-family: 'Inter Black';
       }
     }
 
     .more {
       width: 50px;
       height: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      &:hover {
+        opacity: 0.8;
+      }
       img {
         display: block;
         width: auto;
         height: 100%;
-        filter: invert(1);
       }
     }
   }

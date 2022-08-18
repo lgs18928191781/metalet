@@ -1,3 +1,3 @@
-import { initApp } from './main';
+import { loadApp } from './main';
 
-initApp('options');
+loadApp('options');

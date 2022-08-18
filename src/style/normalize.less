@@ -24,27 +24,23 @@ html {
   --primary-color: #1e50fd;
   --primary-color-hover: #3f7af1;
   --primary-color-active: #0046cc;
+  --primary-color-disabled: #a0cfff;
+  --danger-color: #f56c6c;
+  --danger-color-hover: #f89898;
+  --danger-color-active: #c45656;
+  --danger-color-disabled: #fab6b6;
   --border-color: #adadad;
   --border-radius: 6px;
-  --box-shadow: 0 2px 24px rgba(0, 0, 0, 0.12);
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --transition: all 0.2s linear;
+  --transition-fast: all 0.1s linear;
+  --transition-slow: all 0.4s linear;
 
   --primary-text-color: #212121;
-  --second-text-color: #2c3e50;
+  --second-text-color: #525252;
+  --third-text-color: #929292;
   --background-color: #f4f4f4;
-
-  &.dark {
-    --primary-text-color: #fff;
-    --second-text-color: #e3e3e3;
-    --background-color: #212121;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    --primary-text-color: #fff;
-    --second-text-color: #e3e3e3;
-    --background-color: #212121;
-  }
 }
 
 body {
