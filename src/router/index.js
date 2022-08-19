@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import store from '@/store';
 import routes from './routes';
+import config from '@/config';
 
 // 实例化路由
 const router = createRouter({
@@ -22,9 +23,7 @@ router.beforeEach((to, from, next) => {
   next();
 });
 router.afterEach((to) => {
-  if (to?.meta?.title) {
-    document.title = to.meta.title;
-  }
+  document.title = to?.meta?.title || config.CONFIG_APP_NAME;
 });
 
 export default router;

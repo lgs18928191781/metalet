@@ -9,7 +9,6 @@ import i18n from '@/i18n';
 import App from '@/App.vue';
 import { initClientName, computeHtmlFontSize, computeScreenSize } from '@/util';
 import { initExtPageMessageListener, sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
-import { initDb } from '@/util/db';
 
 // 实例化界面前先初始化数据
 async function initData(cb) {
@@ -33,7 +32,6 @@ export async function loadApp(type) {
   initClientName();
   computeScreenSize();
   computeHtmlFontSize();
-  await initDb();
   window.onresize = () => {
     computeHtmlFontSize();
     computeScreenSize();

@@ -53,7 +53,7 @@ export class Wallet {
     return balance + pendingBalance;
   }
 
-  public async send(address: string, amount: number, feeb: number = 0.05, options?: BroadcastOptions) {
+  public async send(address: string, amount: number, options?: BroadcastOptions) {
     const txComposer = new TxComposer();
     let utxos = await this.blockChainApi.getUnspents(this.address.toString());
     utxos.forEach((v) => {
@@ -68,7 +68,7 @@ export class Wallet {
       address: new mvc.Address(address, this.network),
       satoshis: amount,
     });
-    txComposer.appendChangeOutput(this.address, feeb || this.feeb);
+    txComposer.appendChangeOutput(this.address, this.feeb);
     utxos.forEach((v, index) => {
       txComposer.unlockP2PKHInput(this.privateKey, index);
     });

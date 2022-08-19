@@ -18,17 +18,23 @@ function initApi() {
 }
 
 function initWallet(wif) {
-  if (!mvcWallet) {
+  if (!mvcWallet || wif !== mvcWallet.privateKey.toString()) {
     mvcWallet = new Wallet(wif, API_NET.MAIN, Number(config.CONFIG_TX_FEEB) || 0.1, API_TARGET.MVC);
     mvcWallet.blockChainApi.authorize({
       authorization: metaSvAuthorization,
     });
   }
+  console.log(mvcWallet.privateKey.toString());
   return mvcWallet;
 }
 
-function resetWallet() {
-  mvcWallet = undefined;
+async function resetWallet(message) {
+  const { wif } = message.data || {};
+  if (wif) {
+    initWallet(wif);
+  } else {
+    mvcWallet = undefined;
+  }
 }
 
 function getMnemonicWords() {
@@ -78,11 +84,23 @@ async function getBalance(message) {
 }
 
 async function sendAmount(message) {
-  const { sendAmount, sendAddress, wif, feeb = 0.5 } = message.data;
+  const { sendAmount, sendAddress, wif } = message.data;
   const wallet = initWallet(wif);
-  return await wallet.send(sendAddress, sendAmount, feeb, {
+  return await wallet.send(sendAddress, sendAmount, {
     dump: true,
   });
+}
+
+async function changeFeeb(message) {
+  const { feeb, wif } = message.data;
+  const wallet = initWallet(wif);
+  wallet.feeb = feeb;
+}
+
+async function getFeeb(message) {
+  const { wif } = message.data;
+  const wallet = initWallet(wif);
+  return wallet.feeb;
 }
 
 // TODO
@@ -157,4 +175,6 @@ export default {
   sendAmount,
   getAccount,
   restoreAccount,
+  changeFeeb,
+  getFeeb
 };

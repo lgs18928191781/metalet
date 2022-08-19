@@ -19,6 +19,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import i18n from '@/i18n';
+import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 
 export default {
   name: 'layout',
@@ -59,6 +60,7 @@ export default {
         }
         case 'logout': {
           this.removeCurrentAccount();
+          sendMessageFromExtPageToBackground('resetWallet');
           this.$router.push({
             path: '/welcome',
           });

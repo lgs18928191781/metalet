@@ -26,16 +26,14 @@ export default [
         name: 'home',
         path: '/',
         component: () => import('@/page/home/index.vue'),
-        meta: {
-          title: '',
-        },
+        meta: {},
       },
       {
         name: 'test',
         path: '/test',
         component: () => import('@/page/test/index.vue'),
         meta: {
-          title: '',
+          needAuth: false,
         },
       },
     ],
