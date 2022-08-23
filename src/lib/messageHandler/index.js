@@ -122,9 +122,9 @@ async function getFeeb(message) {
 
 async function countFee(message) {
   const { sendAmount, sendAddress, wif, address, unspents } = message.data;
-  let utxos;
+  let utxos
   if (unspents) {
-    utxos = unspents;
+    utxos = unspents
   } else {
     utxos = await mvcApi.getUnspents(address);
   }

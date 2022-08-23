@@ -84,7 +84,7 @@ export function satoshisToSpace(satoshis) {
     return 0;
   }
   const d = new Decimal(satoshis);
-  return d.div(100000000).toFixed(10);
+  return d.div(100000000).toFixed(8);
 }
 
 // 单位换算
