@@ -37,7 +37,6 @@ export default {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  padding-bottom: 100px;
 
   h1 {
     font-size: 60px;

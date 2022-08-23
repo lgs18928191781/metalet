@@ -76,11 +76,9 @@
 import i18n from '@/i18n';
 import { mapActions } from 'vuex';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
-import MoFormItem from '@/component/module/FormItem';
 
 export default {
   name: 'page-account',
-  components: { MoFormItem },
   data() {
     return {
       curTab: +this.$route.query.tab || 0,
@@ -101,10 +99,10 @@ export default {
           label: i18n('account.restoreType_1'),
           name: 0,
         },
-        {
-          label: i18n('account.restoreType_2'),
-          name: 1,
-        },
+        // {
+        //   label: i18n('account.restoreType_2'),
+        //   name: 1,
+        // },
       ],
     };
   },
@@ -118,25 +116,31 @@ export default {
       this.mnemonicWords = data;
     },
     async createAccount() {
+      const loading = this.$loading({});
       const { data } = await sendMessageFromExtPageToBackground('createAccount', {
         mnemonicStr: this.mnemonicWords.join(' '),
         derivationPath: this.derivationPath,
         alias: this.alias,
         password: this.password,
       });
+      await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
       this.setCurrentAccount(data);
+      loading.close();
       this.$router.replace({
         path: '/',
       });
     },
     async restoreAccount() {
+      const loading = this.$loading({});
       const { data } = await sendMessageFromExtPageToBackground('restoreAccount', {
         mnemonicStr: this.mnemonicStr,
         derivationPath: this.derivationPath,
         privateKey: this.privateKey,
         restoreType: this.restoreType,
       });
+      await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
       this.setCurrentAccount(data);
+      loading.close();
       this.$router.replace({
         path: '/',
       });

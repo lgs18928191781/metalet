@@ -24,7 +24,7 @@ import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 export default {
   name: 'layout',
   computed: {
-    ...mapGetters('system', ['config']),
+    ...mapGetters('system', ['config', 'locale']),
     ...mapGetters('user', ['user']),
     appLogo() {
       return this.config?.CONFIG_APP_LOGO || '';
@@ -32,12 +32,16 @@ export default {
     appName() {
       return this.config?.CONFIG_APP_NAME || '';
     },
+    version() {
+      return this.config?.version || '';
+    },
   },
   data() {
     return {
       showPicker: false,
       pickerList: [
         { label: i18n('menu.editAccount'), name: 'editAccount' },
+        { label: i18n('menu.changeLang'), name: 'changeLang' },
         { label: i18n('menu.logout'), name: 'logout' },
       ],
     };
@@ -45,6 +49,7 @@ export default {
   methods: {
     ...mapActions({
       setSession: 'system/setSession',
+      setLocale: 'system/setLocale',
       removeCurrentAccount: 'account/removeCurrentAccount',
     }),
     handleOpenPicker() {
@@ -60,11 +65,14 @@ export default {
         }
         case 'logout': {
           this.removeCurrentAccount();
-          sendMessageFromExtPageToBackground('resetWallet');
           this.$router.push({
             path: '/welcome',
           });
           break;
+        }
+        case 'changeLang': {
+          this.setLocale(this.locale === 'en' ? 'zh' : 'en');
+          window.location.reload(true);
         }
       }
     },
@@ -136,6 +144,7 @@ export default {
     margin: 80px 0 0 0;
     position: relative;
     overflow: auto;
+    padding-bottom: 60px;
   }
 }
 </style>

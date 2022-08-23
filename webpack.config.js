@@ -146,8 +146,8 @@ module.exports = (startEnv, argv) => {
           mode,
           env,
           appEnv: dotEnvProperties,
-          version: JSON.stringify(packageJson.version),
-          __VUE_PROD_DEVTOOLS__: JSON.stringify(true),
+          version: packageJson.version,
+          __VUE_PROD_DEVTOOLS__: true,
         }),
       }),
       // html模板

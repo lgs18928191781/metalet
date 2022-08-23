@@ -29,6 +29,12 @@ export default [
         meta: {},
       },
       {
+        name: 'edit',
+        path: '/edit',
+        component: () => import('@/page/edit/index.vue'),
+        meta: {},
+      },
+      {
         name: 'test',
         path: '/test',
         component: () => import('@/page/test/index.vue'),

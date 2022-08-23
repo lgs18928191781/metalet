@@ -10,7 +10,7 @@ export default {
     },
     setCurrentAccount(state, payload) {
       state.currentAccount = payload;
-      localStorage.setItem('account', payload.wif);
+      localStorage.setItem('account', payload.xprv);
     },
     removeCurrentAccount(state, payload) {
       state.currentAccount = null;

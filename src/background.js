@@ -10,6 +10,7 @@ global.config = config;
 global.window = global;
 global.window.config = config;
 initDb();
+messageMethods.initApi();
 
 // 插件加载
 chrome.runtime.onInstalled.addListener((details) => {

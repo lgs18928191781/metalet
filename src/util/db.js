@@ -19,8 +19,9 @@ export function initDb() {
       console.log('open db upgrad');
       db = event.target.result;
       if (!db.objectStoreNames.contains(storeName)) {
-        const objectStore = db.createObjectStore(storeName, { keyPath: 'wif' });
+        const objectStore = db.createObjectStore(storeName, { keyPath: 'xprv' });
         objectStore.createIndex('address', 'address', { unique: false });
+        objectStore.createIndex('wif', 'wif', { unique: false });
       }
     };
   });

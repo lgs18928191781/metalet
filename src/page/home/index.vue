@@ -64,11 +64,13 @@
   <mo-dialog class="page-dialog" v-model="showSendDialog" @onClose="handleCloseSendDialog">
     <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }}</h1>
     <mo-form>
-      <mo-form-item :label="$t('home.yourAddress')">
-        <div class="txt-hide mo-text">{{ account.address }}</div>
-      </mo-form-item>
       <mo-form-item :label="$t('home.sendAddress')">
-        <mo-input v-model="sendAddress" :placeholder="$t('pleaseInput')" />
+        <mo-input
+          v-model="sendAddress"
+          :placeholder="$t('pleaseInput')"
+          @input="handleAmountInput"
+          @change="handleAmountInput"
+        />
       </mo-form-item>
       <mo-form-item :label="$t('home.sendAmount')">
         <mo-input
@@ -76,8 +78,20 @@
           v-model="sendAmount"
           :placeholder="$t('pleaseInput') + ' ' + $t('home.unit')"
           :min="2000"
+          @input="handleAmountInput"
+          @change="handleAmountInput"
         />
       </mo-form-item>
+      <hr class="mo-divider" />
+      <mo-form-item inline :label="$t('home.yourBalance')">
+        <div class="txt-hide mo-text dark">{{ $filter.satoshisToSpace(balance) }} SPACE</div>
+      </mo-form-item>
+      <mo-form-item inline :label="$t('home.fee')">
+        <div class="txt-hide mo-text dark">{{ $filter.satoshisToSpace(fee) }} SPACE</div>
+      </mo-form-item>
+      <!--      <mo-form-item inline :label="$t('home.total')">-->
+      <!--        <div class="txt-hide mo-text dark">{{ $filter.satoshisToSpace(sendAmount + fee) }} SPACE</div>-->
+      <!--      </mo-form-item>-->
       <mo-form-item submitItem style="text-align: center">
         <mo-button simple @click.stop="handleCloseSendDialog">{{ $t('cancel') }}</mo-button>
         <mo-button @click="handleSubmitSend">{{ $t('submit') }}</mo-button>
@@ -120,6 +134,9 @@ export default {
         { label: i18n('home.others'), name: 2 },
       ],
       curTab: 0,
+      inputAmountTimer: undefined,
+      fee: 0,
+      unspents: [],
     };
   },
   beforeUnmount() {
@@ -135,11 +152,11 @@ export default {
       this.clipboard = new ClipboardJS('.btn');
 
       this.clipboard.on('success', (e) => {
-        this.$toast({ message: i18n('copy') + i18n('success') });
+        this.$toast({ message: i18n('copy') + ' ' + i18n('success') });
       });
 
       this.clipboard.on('error', (e) => {
-        this.$toast({ message: i18n('copy') + i18n('fail') });
+        this.$toast({ message: i18n('copy') + ' ' + i18n('fail') });
       });
     },
     async fetchData() {
@@ -150,7 +167,7 @@ export default {
     },
     async getBalance() {
       const { data } = await sendMessageFromExtPageToBackground('getBalance', {
-        wif: this.account.wif,
+        address: this.account.address,
       });
       this.balance = data;
     },
@@ -177,8 +194,12 @@ export default {
     handleOpenHistory() {
       window.open(`https://scan.mvc.space/address/${this.account.address}`);
     },
-    handleOpenSendDialog() {
+    async handleOpenSendDialog() {
       this.showSendDialog = true;
+      const { data } = await sendMessageFromExtPageToBackground('getUnspents', {
+        address: this.account.address,
+      });
+      this.unspents = data;
     },
     handleCloseSendDialog() {
       this.showSendDialog = false;
@@ -196,17 +217,34 @@ export default {
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
-      if (satoshi >= this.balance) {
+      if (satoshi + this.fee >= this.balance) {
         return this.$toast({ message: i18n('home.amountNotEnough') });
       }
       const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
         wif: this.account.wif,
         sendAddress: this.sendAddress,
         sendAmount: satoshi,
+        address: this.account.address,
       });
       this.$toast({ message: i18n('home.paySuccess') });
       this.handleCloseSendDialog();
       await this.fetchData();
+    },
+    handleAmountInput(e) {
+      clearTimeout(this.inputAmountTimer);
+      this.inputAmountTimer = setTimeout(async () => {
+        if (+this.sendAmount > 0 && this.sendAddress) {
+          const { data } = await sendMessageFromExtPageToBackground('countFee', {
+            address: this.account.address,
+            sendAmount: this.sendAmount,
+            sendAddress: this.sendAddress,
+            wif: this.account.wif,
+            unspents: this.unspents
+          });
+          console.log(data);
+          this.fee = data;
+        }
+      }, 1000);
     },
   },
 };

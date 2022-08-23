@@ -16,7 +16,7 @@ async function initData(cb) {
   store.dispatch('account/setAccountList', data);
   const lastAccount = localStorage.getItem('account');
   if (lastAccount && data.length) {
-    const hasAccount = data.find((v) => v.wif === lastAccount);
+    const hasAccount = data.find((v) => v.xprv === lastAccount);
     if (hasAccount) {
       store.dispatch('account/setCurrentAccount', hasAccount);
     }

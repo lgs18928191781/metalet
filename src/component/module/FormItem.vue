@@ -1,5 +1,5 @@
 <template>
-  <div :class="['form-item', submitItem && 'submit-item']">
+  <div :class="['form-item', submitItem && 'submit-item', inline && 'inline']">
     <label class="form-item-label" v-if="label">{{ label }}</label>
     <div class="form-item-content">
       <slot></slot>
@@ -15,6 +15,10 @@ export default {
       default: '',
     },
     submitItem: {
+      type: Boolean,
+      default: false,
+    },
+    inline: {
       type: Boolean,
       default: false,
     },
@@ -44,6 +48,15 @@ export default {
 
   &.submit-item {
     margin-top: 40px;
+  }
+
+  &.inline {
+    display: flex;
+    align-items: center;
+
+    .form-item-content {
+      margin-left: 20px;
+    }
   }
 }
 </style>
