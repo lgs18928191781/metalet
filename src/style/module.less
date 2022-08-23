@@ -1,0 +1,64 @@
+// usage classes
+.txt-hide {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+// vue transition
+fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-from,
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+// root reset
+html {
+  background-color: var(--background-color);
+}
+#root {
+  margin: 0 auto;
+  max-width: 1000px;
+  min-height: 600px;
+}
+
+// modules
+.mo-divider {
+  height: 1px;
+  border: 0;
+  outline: 0;
+  background: var(--border-color);
+  margin: 36px 0;
+  padding: 0;
+}
+
+.mo-title {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--primary-text-color);
+}
+
+.mo-sub-title {
+  font-size: 34px;
+  font-weight: bold;
+  color: var(--primary-text-color);
+}
+
+.mo-text {
+  font-size: 28px;
+  color: var(--second-text-color);
+  line-height: 1.6;
+
+  &.dark {
+    color: var(--primary-text-color);
+  }
+}

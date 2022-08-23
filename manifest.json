@@ -1,0 +1,50 @@
+{
+  "name": "Metalet-mvc-wallet",
+  "description": "A Browser Extension Wallet",
+  "author": "showmoney",
+  "version": "0.0.2",
+  "manifest_version": 3,
+  "content_security_policy": {
+    "extension_pages": "script-src 'self';object-src 'self';style-src 'unsafe-inline' 'self';"
+  },
+  "host_permissions": [
+    "https://api-mvc.metasv.com/",
+    "http://api-mvc.metasv.com/",
+    "https://www.showpay.top/",
+    "http://www.showpay.top/"
+  ],
+  "permissions": [],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "css": [],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["*.png", "*.svg"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/public/icons/16.png",
+      "32": "/public/icons/32.png",
+      "48": "/public/icons/48.png",
+      "128": "/public/icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "/public/icons/16.png",
+    "32": "/public/icons/32.png",
+    "48": "/public/icons/48.png",
+    "128": "/public/icons/128.png"
+  },
+  "offline_enabled": true
+}
