@@ -4,6 +4,8 @@ import store from '@/store';
 import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
 
 export async function initData(cb) {
+  const { data: networkType} = await sendMessageFromExtPageToBackground('getNetwork');
+  await store.dispatch('system/setNetworkType', networkType);
   const { data } = await sendMessageFromExtPageToBackground('getAccount');
   await store.dispatch('account/setAccountList', data);
   const lastAccount = localStorage.getItem('account');

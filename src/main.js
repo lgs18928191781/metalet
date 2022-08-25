@@ -10,9 +10,11 @@ import App from '@/App.vue';
 import { initClientName, computeHtmlFontSize, computeScreenSize } from '@/util';
 import { initExtPageMessageListener } from '@/util/chromeUtil';
 import { initData } from '@/initData';
+import { globalLoading } from '@/plugin/feedbackPlugins';
 
 // 加载vue app
 export function loadApp(type) {
+  const loading = globalLoading({});
   // 初始化环境
   window._service_type_ = type;
   initExtPageMessageListener();
@@ -34,5 +36,6 @@ export function loadApp(type) {
     app.use(router);
     app.use(i18n);
     app.mount('#root');
+    loading.close();
   });
 }

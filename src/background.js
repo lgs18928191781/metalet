@@ -3,6 +3,7 @@ import { ERR_CODE_ERR } from '@/constant/errCode';
 import { makeMessageResponse, openTab } from '@/util/chromeUtil';
 import { initDb } from '@/util/db';
 import * as messageMethods from '@/lib/messageHandler';
+import { checkNetwork } from '@/util';
 
 // 初始化
 global._service_type_ = 'background';
@@ -15,10 +16,16 @@ messageMethods.initApi();
 // 插件加载
 chrome.runtime.onInstalled.addListener((details) => {
   console.info('runtime installed', details);
-  // 加载后打开popup页面
-  if (config.env === 'development') {
-    openTab('/popup.html');
-  }
+  checkNetwork()
+    .then((res) => {
+      config.networkType = res || 'main';
+    })
+    .finally(() => {
+      // 加载后打开popup页面
+      if (config.env === 'development') {
+        openTab('/popup.html');
+      }
+    });
 });
 
 // 消息互通

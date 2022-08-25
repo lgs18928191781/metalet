@@ -76,5 +76,6 @@ export default {
     editAccount: 'Edit Account',
     logout: 'Logout',
     changeLang: 'Change Language',
+    changeNetwork: 'Change Network',
   },
 };

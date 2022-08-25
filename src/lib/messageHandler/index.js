@@ -1,6 +1,6 @@
 import Mnemonic from 'mvc-lib/mnemonic';
 import { Api, API_NET, API_TARGET, mvc } from '@/lib/meta-contract';
-import config from '@/config';
+import config, { changeNetworkType } from '@/config';
 import { create, select, update } from '@/util/db';
 import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
 import { initMetaId, repairMetaNode } from './helper';
@@ -64,6 +64,7 @@ export async function createAccount(message) {
 
 // 获取余额
 export async function getBalance(message) {
+  initApi();
   const { address } = message.data;
   let { pendingBalance, balance } = await mvcApi.getBalance(address);
   return balance + pendingBalance;
@@ -71,12 +72,14 @@ export async function getBalance(message) {
 
 // 获取utxo
 export async function getUnspents(message) {
+  initApi();
   const { address } = message.data;
   return await mvcApi.getUnspents(address);
 }
 
 // 发送
 export async function sendAmount(message) {
+  initApi();
   const { sendAmount, sendAddress, wif, address } = message.data;
   const utxos = await mvcApi.getUnspents(address);
   const tx = new mvc.Transaction();
@@ -131,6 +134,7 @@ export async function getFeeb(message) {
 
 // 计算上链费
 export async function countFee(message) {
+  initApi();
   const { sendAmount, sendAddress, wif, address, unspents } = message.data;
   let utxos;
   if (unspents) {
@@ -261,6 +265,7 @@ export async function updateAccount(message) {
 
 // 检查创建metaId
 export async function checkOrCreateMetaId(message) {
+  initApi();
   const { xprv } = message.data;
   const hasOne = await select(xprv);
   if (!hasOne) {
@@ -331,4 +336,15 @@ export async function checkOrCreateMetaId(message) {
     return hasOne;
   }
   return hasOne;
+}
+
+// 切换网络
+export async function changeNetwork(message) {
+  const { networkType } = message.data;
+  changeNetworkType(networkType);
+}
+
+// 获取当前网络
+export function getNetwork() {
+  return config.networkType;
 }

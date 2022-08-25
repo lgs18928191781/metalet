@@ -4,14 +4,14 @@ import { get, post } from '@/util/request';
 export function getExchangeRate() {
   return get({
     url: '/wxcore/legalbsv/getExchangeRate',
-    host: config.CONFIG_API_SHOWMONEY_HOST_TEST,
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
   });
 }
 
 export function getMetaIdByZeroAddress(data) {
   return post({
     url: '/serviceapi/api/v1/metago/getMetaIdByZoreAddress',
-    host: config.CONFIG_API_SHOWMONEY_HOST_TEST,
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
     data,
   });
 }
@@ -19,7 +19,7 @@ export function getMetaIdByZeroAddress(data) {
 export function getShowDIDUserInfo(data) {
   return post({
     url: '/serviceapi/api/v1/metago/getShowDIDUserInfo',
-    host: config.CONFIG_API_SHOWMONEY_HOST_TEST,
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
     data,
   });
 }

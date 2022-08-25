@@ -7,7 +7,7 @@
           <div v-if="list && list.length" class="list">
             <template v-for="item in list">
               <div class="item" @click="handleClick(item)">
-                <span>{{ item.label }}</span>
+                <span>{{ labelToText(item.label) }}</span>
               </div>
             </template>
           </div>
@@ -45,6 +45,12 @@ export default {
     handleClose() {
       this.$emit('onClose');
       this.$emit('update:modelValue', false);
+    },
+    labelToText(label) {
+      if (typeof label === 'function') {
+        return label();
+      }
+      return label;
     },
   },
 };

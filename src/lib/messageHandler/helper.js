@@ -1,5 +1,5 @@
-import { getAddressBalance, getAddressUtxo, getInitSat } from '@/api/common';
-import { sendAmount } from './index';
+import config from '@/config';
+import { getAddressUtxo, getInitSat } from '@/api/common';
 
 const { mvc } = require('/Users/leiwenwei/dev/meta-contract');
 const ECIES = require('mvc-lib/ecies');
@@ -134,6 +134,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     phone: '',
     email: '',
   };
+  const metaIdTag = config.networkType === 'test' ? 'testmetaid' : 'metaid';
 
   // 创建root节点
   await createNode({
@@ -141,7 +142,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'Root',
     parentTxId: 'NULL',
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     encrypt: 'NULL',
     encoding: 'NULL',
     dataType: 'NULL',
@@ -165,7 +166,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'Protocols',
     parentTxId: userMetaIdInfo.metaId,
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     version: 'NULL',
     utxos: utxoTmp,
     changeAddress: rootAddress.toString(),
@@ -187,7 +188,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'Info',
     parentTxId: userMetaIdInfo.metaId,
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     version: 'NULL',
     utxos: utxoTmp,
     changeAddress: infoAddress.toString(),
@@ -209,7 +210,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'name',
     parentTxId: userMetaIdInfo.infoTxId,
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     version: 'NULL',
     utxos: utxoTmp,
     data: name,
@@ -232,7 +233,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'email',
     parentTxId: userMetaIdInfo.infoTxId,
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     version: 'NULL',
     utxos: utxoTmp,
     encrypt: 1,
@@ -256,7 +257,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     HDPrivateKey,
     nodeName: 'phone',
     parentTxId: 'userMetaIdInfo.infoTxId',
-    metaIdTag: 'testmetaid',
+    metaIdTag,
     version: 'NULL',
     utxos: utxoTmp,
     encrypt: 1,
@@ -419,6 +420,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
     phone: '',
     email: '',
   };
+  const metaIdTag = config.networkType === 'test' ? 'testmetaid' : 'metaid';
 
   // 判断情况
   switch (didCode) {
@@ -488,7 +490,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       HDPrivateKey,
       nodeName: 'Protocols',
       parentTxId: userMetaIdInfo.metaId,
-      metaIdTag: 'testmetaid',
+      metaIdTag,
       version: 'NULL',
       utxos: utxoTmp,
       changeAddress: rootAddress.toString(),
@@ -512,7 +514,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       HDPrivateKey,
       nodeName: 'Info',
       parentTxId: userMetaIdInfo.metaId,
-      metaIdTag: 'testmetaid',
+      metaIdTag,
       version: 'NULL',
       utxos: utxoTmp,
       changeAddress: infoAddress.toString(),
@@ -536,7 +538,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       HDPrivateKey,
       nodeName: 'name',
       parentTxId: userMetaIdInfo.infoTxId,
-      metaIdTag: 'testmetaid',
+      metaIdTag,
       version: 'NULL',
       utxos: utxoTmp,
       data: name,
@@ -561,7 +563,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       HDPrivateKey,
       nodeName: 'email',
       parentTxId: userMetaIdInfo.infoTxId,
-      metaIdTag: 'testmetaid',
+      metaIdTag,
       version: 'NULL',
       utxos: utxoTmp,
       encrypt: 1,
@@ -587,7 +589,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       HDPrivateKey,
       nodeName: 'phone',
       parentTxId: 'userMetaIdInfo.infoTxId',
-      metaIdTag: 'testmetaid',
+      metaIdTag,
       version: 'NULL',
       utxos: utxoTmp,
       encrypt: 1,

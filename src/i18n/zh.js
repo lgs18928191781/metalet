@@ -76,5 +76,6 @@ export default {
     editAccount: '编辑账号',
     logout: '登出',
     changeLang: '切换语言',
+    changeNetwork: '切换网络',
   },
 };
