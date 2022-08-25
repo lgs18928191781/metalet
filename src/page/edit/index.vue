@@ -22,7 +22,7 @@
           <mo-input disabled="disabled" v-model="address" />
         </mo-form-item>
         <!--        <mo-form-item :label="$t('account.HDPrivateKey')">-->
-        <!--          <mo-input disabled="disabled" v-model="privateKey" />-->
+        <!--          <mo-input disabled="disabled" v-model="xprv" />-->
         <!--        </mo-form-item>-->
         <!--        <mo-form-item :label="$t('account.xpub')">-->
         <!--          <mo-input disabled="disabled" v-model="xpub" />-->
@@ -36,6 +36,12 @@
         <mo-form-item :label="$t('account.alias')">
           <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="alias" />
         </mo-form-item>
+        <mo-form-item :label="$t('account.email')">
+          <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="email" />
+        </mo-form-item>
+        <mo-form-item :label="$t('account.phone')">
+          <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="phone" />
+        </mo-form-item>
         <mo-form-item submitItem style="text-align: center">
           <mo-button @click="updateAccount">{{ $t('account.update') }}</mo-button>
         </mo-form-item>
@@ -45,7 +51,7 @@
       <h2 class="mo-sub-title">{{ $t('account.configurations') }}:</h2>
       <mo-form>
         <mo-form-item :label="$t('account.feeb')">
-          <mo-input v-model="feeb" type="number" min="0.5" max="1" step="0.1" />
+          <mo-input v-model="feeb" type="number" min="0.2" max="1" step="0.1" />
         </mo-form-item>
         <mo-form-item submitItem style="text-align: center">
           <mo-button @click="updateFeeb">{{ $t('account.update') }}</mo-button>
@@ -65,10 +71,12 @@ export default {
     return {
       mnemonicWords: [],
       mnemonicStr: '',
-      privateKey: '',
+      xprv: '',
       derivationPath: "m/44'/10001'/0'",
       password: '',
       alias: '',
+      email: '',
+      phone: '',
       address: '',
       xpub: '',
       feeb: 0,
@@ -94,19 +102,23 @@ export default {
       }
       this.mnemonicStr = this.currentAccount.mnemonicStr;
       this.mnemonicWords = this.currentAccount.mnemonicStr.split(' ');
-      this.privateKey = this.currentAccount.xprv;
+      this.xprv = this.currentAccount.xprv;
       this.password = this.currentAccount.password;
       this.alias = this.currentAccount.alias;
       this.address = this.currentAccount.address;
+      this.email = this.currentAccount.email;
+      this.phone = this.currentAccount.phone;
 
       const { data } = await sendMessageFromExtPageToBackground('getFeeb');
       this.feeb = data;
     },
     async updateAccount() {
       await sendMessageFromExtPageToBackground('updateAccount', {
-        privateKey: this.privateKey,
+        xprv: this.xprv,
         password: this.password,
         alias: this.alias,
+        email: this.email,
+        phone: this.phone,
       });
       this.$toast({
         message: i18n('success'),

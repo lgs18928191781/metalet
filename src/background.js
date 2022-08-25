@@ -2,7 +2,7 @@ import config from '@/config';
 import { ERR_CODE_ERR } from '@/constant/errCode';
 import { makeMessageResponse, openTab } from '@/util/chromeUtil';
 import { initDb } from '@/util/db';
-import messageMethods from '@/lib/messageHandler';
+import * as messageMethods from '@/lib/messageHandler';
 
 // 初始化
 global._service_type_ = 'background';

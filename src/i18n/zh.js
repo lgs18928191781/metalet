@@ -33,6 +33,8 @@ export default {
     password: '密码',
     password_2: '重复密码',
     alias: '别名',
+    email: '邮箱',
+    phone: '手机号',
     submit: '确认',
     restoreType: '恢复方式',
     restoreType_1: '使用助记词恢复',

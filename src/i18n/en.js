@@ -33,6 +33,8 @@ export default {
     password: 'Password',
     password_2: 'Repeat Password',
     alias: 'Alias',
+    email: 'Email',
+    phone: 'Phone',
     submit: 'Submit',
     restoreType: 'Restore Type',
     restoreType_1: 'Restore from Mnemonic',

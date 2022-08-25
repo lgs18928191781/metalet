@@ -2,14 +2,18 @@ import Mnemonic from 'mvc-lib/mnemonic';
 import { Api, API_NET, API_TARGET, mvc } from '@/lib/meta-contract';
 import config from '@/config';
 import { create, select, update } from '@/util/db';
+import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
+import { initMetaId, repairMetaNode } from './helper';
 
 const metaSvAuthorization = config.CONFIG_METASV_AUTHORIZATION;
 const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
 const P2PKH_DUST_AMOUNT = 1;
+
 let mvcApi;
 let feeb = config.CONFIG_TX_FEEB;
 
-function initApi() {
+// 初始化api
+export function initApi() {
   if (!mvcApi) {
     mvcApi = new Api(API_NET.MAIN, API_TARGET.MVC);
     mvcApi.authorize({
@@ -19,13 +23,15 @@ function initApi() {
   return mvcApi;
 }
 
-function getMnemonicWords() {
+// 生成助记词
+export function getMnemonicWords() {
   const mnemonic = Mnemonic.fromRandom();
   return mnemonic.toString().split(' ');
 }
 
-async function createAccount(message) {
-  const { mnemonicStr, derivationPath, alias, password } = message.data;
+// 创建账号
+export async function createAccount(message) {
+  const { mnemonicStr, derivationPath, alias, password, email, phone } = message.data;
   const mnemonic = Mnemonic.fromString(mnemonicStr);
   const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
   const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey; // 0/0地址
@@ -33,10 +39,11 @@ async function createAccount(message) {
   const wif = privateKey.toString();
   const xpub = HDPrivateKey.xpubkey;
   const xprv = HDPrivateKey.xprivkey;
+  const timestamp = Date.now();
 
-  const hasOne = await select(xprv);
+  let hasOne = await select(xprv);
   if (!hasOne) {
-    await create({
+    hasOne = {
       address,
       wif,
       mnemonicStr,
@@ -44,39 +51,39 @@ async function createAccount(message) {
       password,
       xpub,
       xprv,
-    });
+      email,
+      phone,
+      timestamp,
+      userMetaIdInfo: null,
+    };
+    await create(hasOne);
   }
 
-  return {
-    address,
-    wif,
-    mnemonicStr,
-    alias,
-    password,
-    xpub,
-    xprv,
-  };
+  return hasOne;
 }
 
-async function getBalance(message) {
+// 获取余额
+export async function getBalance(message) {
   const { address } = message.data;
   let { pendingBalance, balance } = await mvcApi.getBalance(address);
   return balance + pendingBalance;
 }
 
-async function getUnspents(message) {
+// 获取utxo
+export async function getUnspents(message) {
   const { address } = message.data;
   return await mvcApi.getUnspents(address);
 }
 
-async function sendAmount(message) {
+// 发送
+export async function sendAmount(message) {
   const { sendAmount, sendAddress, wif, address } = message.data;
   const utxos = await mvcApi.getUnspents(address);
   const tx = new mvc.Transaction();
   const privateKeys = [];
   // add input
   utxos.forEach((utxo) => {
-    tx.addInput(
+    tx.asendAmountddInput(
       new mvc.Transaction.Input.PublicKeyHash({
         output: new mvc.Transaction.Output({
           script: mvc.Script.buildPublicKeyHashOut(new mvc.Address(address)),
@@ -111,20 +118,23 @@ async function sendAmount(message) {
   return await mvcApi.broadcast(tx.serialize(true));
 }
 
-async function updateFeeb(message) {
+// 更新费率
+export async function updateFeeb(message) {
   const { feeb: reqFeeb } = message.data;
   feeb = reqFeeb;
 }
 
-async function getFeeb(message) {
+// 获取费率
+export async function getFeeb(message) {
   return feeb;
 }
 
-async function countFee(message) {
+// 计算上链费
+export async function countFee(message) {
   const { sendAmount, sendAddress, wif, address, unspents } = message.data;
-  let utxos
+  let utxos;
   if (unspents) {
-    utxos = unspents
+    utxos = unspents;
   } else {
     utxos = await mvcApi.getUnspents(address);
   }
@@ -162,13 +172,16 @@ async function countFee(message) {
   return fee;
 }
 
-async function getAccount(message) {
+// 查询账号
+export async function getAccount(message) {
   const { xprv } = message.data || {};
   return await select(xprv || undefined);
 }
 
-async function restoreAccount(message) {
-  const { mnemonicStr, derivationPath, restoreType, privateKey: restorePrivateKey } = message.data;
+// 恢复账号
+export async function restoreAccount(message) {
+  const { mnemonicStr, derivationPath, restoreType, xprv: restorePrivateKey } = message.data;
+  const timestamp = Date.now();
   let obj;
   // 使用助记词恢复
   if (restoreType === 0) {
@@ -188,39 +201,49 @@ async function restoreAccount(message) {
       password: null,
       xpub,
       xprv,
+      email: null,
+      phone: null,
+      timestamp,
+      userMetaIdInfo: null,
     };
   }
   // 使用私钥恢复
-  if (restoreType === 1) {
-    const HDPrivateKey = mvc.HDPrivateKey.fromString(restorePrivateKey);
-    const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
-    const wif = privateKey.toString();
-    const address = privateKey.toAddress().toString();
-    const xpub = HDPrivateKey.xpubkey;
-    const xprv = HDPrivateKey.xprivkey;
-
-    obj = {
-      address,
-      wif,
-      mnemonicStr: null,
-      alias: null,
-      password: null,
-      xpub,
-      xprv,
-    };
-  }
+  // if (restoreType === 1) {
+  //   const HDPrivateKey = mvc.HDPrivateKey.fromString(restorePrivateKey);
+  //   const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
+  //   const wif = privateKey.toString();
+  //   const address = privateKey.toAddress().toString();
+  //   const xpub = HDPrivateKey.xpubkey;
+  //   const xprv = HDPrivateKey.xprivkey;
+  //
+  //   obj = {
+  //     address,
+  //     wif,
+  //     mnemonicStr: null,
+  //     alias: null,
+  //     password: null,
+  //     xpub,
+  //     xprv,
+  //     email: null,
+  //     phone: null,
+  //     timestamp,
+  //   };
+  // }
 
   const hasOne = await select(obj.xprv);
   if (!hasOne) {
     await create(obj);
+    return obj;
+  } else {
+    return hasOne;
   }
-
-  return obj;
 }
 
-async function updateAccount(message) {
-  const { privateKey, password, alias } = message.data;
-  const hasOne = await select(privateKey);
+// 更新账号
+export async function updateAccount(message) {
+  const { xprv, password, alias, email, phone } = message.data;
+  const timestamp = Date.now();
+  const hasOne = await select(xprv);
   if (!hasOne) {
     throw new Error('account is not exist');
   }
@@ -228,27 +251,84 @@ async function updateAccount(message) {
     ...hasOne,
     password,
     alias,
+    email,
+    phone,
+    timestamp,
   };
   await update(updateObj);
   return updateObj;
 }
 
-async function checkOrCreateMetaId(message) {
-  const { address, wif, mnemonicStr, alias, password, xpub, xprv } = message;
-}
+// 检查创建metaId
+export async function checkOrCreateMetaId(message) {
+  const { xprv } = message.data;
+  const hasOne = await select(xprv);
+  if (!hasOne) {
+    throw new Error('this account is not exist');
+  }
+  const { address, email, phone, alias, timestamp, userMetaIdInfo } = hasOne;
 
-export default {
-  initApi,
-  getMnemonicWords,
-  createAccount,
-  getBalance,
-  sendAmount,
-  getAccount,
-  updateAccount,
-  restoreAccount,
-  updateFeeb,
-  getFeeb,
-  checkOrCreateMetaId,
-  countFee,
-  getUnspents,
-};
+  // 10分钟内的新建忽略校验
+  if (userMetaIdInfo && timestamp && timestamp + 600000 >= Date.now()) {
+    return;
+  }
+
+  // 预设值
+  const userInfo = {
+    email: email || 'no-name@some.com',
+    phone: phone || '12345678901',
+    name: alias || 'no-name',
+  };
+  const HDPrivateKey = mvc.HDPrivateKey.fromString(xprv);
+
+  // 检查是否有metaid
+  const { code: metaIdCode, result: metaIdResult } = await getMetaIdByZeroAddress({
+    data: JSON.stringify({ zeroAddress: address }),
+  }).catch((err) => {
+    return {
+      code: 10000,
+      error: 'error',
+      msg: 'error',
+      result: null,
+    };
+  });
+  if (metaIdCode !== 200 || !metaIdResult) {
+    const userMetaIdInfoRes = await initMetaId(mvcApi, HDPrivateKey, userInfo, feeb).catch((err) => {
+      console.log(err);
+      return null;
+    });
+    hasOne.userMetaIdInfo = userMetaIdInfoRes;
+    hasOne.timestamp = Date.now();
+    await update(hasOne);
+    return hasOne;
+  }
+
+  // 检查节点
+  const { code: didCode, result: didResult } = await getShowDIDUserInfo({
+    data: JSON.stringify({
+      rootTxId: metaIdResult.rootTxId,
+    }),
+  }).catch((err) => {
+    return {
+      code: 10000,
+      error: 'error',
+      msg: 'error',
+      result: null,
+    };
+  });
+  if (didCode !== 200 || !didResult) {
+    const userMetaIdInfoRes = await repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, {
+      code: didCode,
+      result: didResult,
+      rootTxId: metaIdResult.rootTxId,
+    }).catch((err) => {
+      console.log(err);
+      return null;
+    });
+    hasOne.userMetaIdInfo = userMetaIdInfoRes;
+    hasOne.timestamp = Date.now();
+    await update(hasOne);
+    return hasOne;
+  }
+  return hasOne;
+}

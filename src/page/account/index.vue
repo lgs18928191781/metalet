@@ -33,6 +33,12 @@
           <mo-form-item :label="$t('account.alias')">
             <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="alias" />
           </mo-form-item>
+          <mo-form-item :label="$t('account.email')">
+            <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="email" />
+          </mo-form-item>
+          <mo-form-item :label="$t('account.phone')">
+            <mo-input :placeholder="$t('pleaseInput') + $t('optional')" v-model="phone" />
+          </mo-form-item>
           <mo-form-item submitItem style="text-align: center">
             <mo-button @click="createAccount">{{ $t('submit') }}</mo-button>
           </mo-form-item>
@@ -61,7 +67,7 @@
           </template>
           <template v-if="restoreType === 1">
             <mo-form-item :label="$t('account.privateKey')">
-              <mo-input v-model="privateKey" />
+              <mo-input v-model="xprv" />
             </mo-form-item>
           </template>
           <mo-form-item submitItem style="text-align: center">
@@ -88,11 +94,13 @@ export default {
       ],
       mnemonicWords: [],
       mnemonicStr: '',
-      privateKey: '',
+      xprv: '',
       derivationPath: "m/44'/10001'/0'",
       password: '',
       repeatPassword: '',
       alias: '',
+      email: '',
+      phone: '',
       restoreType: 0,
       restoreList: [
         {
@@ -122,6 +130,8 @@ export default {
         derivationPath: this.derivationPath,
         alias: this.alias,
         password: this.password,
+        email: this.email,
+        phone: this.phone,
       });
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
       this.setCurrentAccount(data);
@@ -135,7 +145,7 @@ export default {
       const { data } = await sendMessageFromExtPageToBackground('restoreAccount', {
         mnemonicStr: this.mnemonicStr,
         derivationPath: this.derivationPath,
-        privateKey: this.privateKey,
+        xprv: this.xprv,
         restoreType: this.restoreType,
       });
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
