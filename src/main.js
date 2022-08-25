@@ -8,24 +8,13 @@ import { initPlugin } from '@/plugin';
 import i18n from '@/i18n';
 import App from '@/App.vue';
 import { initClientName, computeHtmlFontSize, computeScreenSize } from '@/util';
-import { initExtPageMessageListener, sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
-
-// 实例化界面前先初始化数据
-async function initData(cb) {
-  const { data } = await sendMessageFromExtPageToBackground('getAccount');
-  store.dispatch('account/setAccountList', data);
-  const lastAccount = localStorage.getItem('account');
-  if (lastAccount && data.length) {
-    const hasAccount = data.find((v) => v.xprv === lastAccount);
-    if (hasAccount) {
-      store.dispatch('account/setCurrentAccount', hasAccount);
-    }
-  }
-  cb();
-}
+import { initExtPageMessageListener } from '@/util/chromeUtil';
+import { initData } from '@/initData';
+import { globalLoading } from '@/plugin/feedbackPlugins';
 
 // 加载vue app
-export async function loadApp(type) {
+export function loadApp(type) {
+  const loading = globalLoading({});
   // 初始化环境
   window._service_type_ = type;
   initExtPageMessageListener();
@@ -47,5 +36,6 @@ export async function loadApp(type) {
     app.use(router);
     app.use(i18n);
     app.mount('#root');
+    loading.close();
   });
 }

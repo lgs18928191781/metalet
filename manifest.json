@@ -2,7 +2,7 @@
   "name": "Metalet-mvc-wallet",
   "description": "A Browser Extension Wallet",
   "author": "showmoney",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "manifest_version": 3,
   "content_security_policy": {
     "extension_pages": "script-src 'self';object-src 'self';style-src 'unsafe-inline' 'self';"
@@ -11,7 +11,11 @@
     "https://api-mvc.metasv.com/",
     "http://api-mvc.metasv.com/",
     "https://www.showpay.top/",
-    "http://www.showpay.top/"
+    "http://www.showpay.top/",
+    "http://testmvc.showmoney.app/",
+    "https://testmvc.showmoney.app/",
+    "http://mvc.showmoney.app/",
+    "https://mvc.showmoney.app/"
   ],
   "permissions": [],
   "background": {

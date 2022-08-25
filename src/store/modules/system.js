@@ -12,6 +12,7 @@ export default {
   state: () => ({
     config,
     locale: lastLanguageCache,
+    networkType: 'main',
   }),
   mutations: {
     setConfig(state, payload) {
@@ -21,6 +22,9 @@ export default {
       state.locale = payload;
       localStorage.setItem('lang', payload);
     },
+    setNetworkType(state, payload) {
+      state.networkType = payload;
+    },
   },
   actions: {
     setConfig(context, payload) {
@@ -29,6 +33,9 @@ export default {
     setLocale(context, payload) {
       context.commit('setLocale', payload);
     },
+    setNetworkType(context, payload) {
+      context.commit('setNetworkType', payload);
+    },
   },
   getters: {
     config: (state) => {
@@ -36,6 +43,9 @@ export default {
     },
     locale: (state) => {
       return state.locale;
+    },
+    networkType: (state) => {
+      return state.networkType;
     },
   },
 };
