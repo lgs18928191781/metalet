@@ -37,9 +37,17 @@ export function getAddressUtxo(address) {
   });
 }
 
-export function getAddressBalance(address) {
+export function getTxIdRaw(txid) {
   return get({
-    url: `/address/${address}/balance`,
+    url: `/tx/${txid}/raw`,
     host: config.CONFIG_API_HOST,
+  });
+}
+
+export function uploadMetaIdRaw(data) {
+  return post({
+    url: `/metaid-base/v1/meta/upload/raw`,
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
+    data
   });
 }

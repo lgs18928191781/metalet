@@ -2,7 +2,7 @@ import Mnemonic from 'mvc-lib/mnemonic';
 import { Api, API_NET, API_TARGET, mvc } from '@/lib/meta-contract';
 import config, { changeNetworkType } from '@/config';
 import { create, select, update } from '@/util/db';
-import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
+import { getMetaIdByZeroAddress, getShowDIDUserInfo, uploadMetaIdRaw } from '@/api/common';
 import { initMetaId, repairMetaNode } from './helper';
 
 const metaSvAuthorization = config.CONFIG_METASV_AUTHORIZATION;
@@ -303,6 +303,10 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
+    await uploadMetaIdRaw({
+      type: 0,
+      raw: userMetaIdInfoRes.metaIdRaw
+    })
     return hasOne;
   }
 
@@ -327,6 +331,10 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
+    await uploadMetaIdRaw({
+      type: 0,
+      raw: userMetaIdInfoRes.metaIdRaw
+    })
     return hasOne;
   }
   return hasOne;

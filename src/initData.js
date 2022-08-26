@@ -1,8 +1,8 @@
-// 实例化界面前先初始化数据
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 import store from '@/store';
 
-export async function initData(cb) {
+// 实例化界面前先初始化数据
+export async function initData() {
   const { data: networkType} = await sendMessageFromExtPageToBackground('getNetwork');
   await store.dispatch('system/setNetworkType', networkType);
   const { data } = await sendMessageFromExtPageToBackground('getAccount');
@@ -15,5 +15,4 @@ export async function initData(cb) {
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', hasAccount);
     }
   }
-  cb();
 }

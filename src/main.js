@@ -1,5 +1,3 @@
-import '@/style/normalize.less';
-import '@/style/module.less';
 import { createApp } from 'vue';
 import router from '@/router';
 import store from '@/store';
@@ -19,15 +17,9 @@ export function loadApp(type) {
   window._service_type_ = type;
   initExtPageMessageListener();
   initClientName();
-  computeScreenSize();
-  computeHtmlFontSize();
-  window.onresize = () => {
-    computeHtmlFontSize();
-    computeScreenSize();
-  };
 
   // 初始化数据
-  initData(() => {
+  initData().finally(() => {
     // 挂载app
     const app = createApp(App);
     initPlugin(app);
@@ -37,5 +29,5 @@ export function loadApp(type) {
     app.use(i18n);
     app.mount('#root');
     loading.close();
-  });
+  })
 }

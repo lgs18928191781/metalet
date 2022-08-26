@@ -1,7 +1,7 @@
 import config from '@/config';
-import { getAddressUtxo, getInitSat } from '@/api/common';
+import { getAddressUtxo, getInitSat, getTxIdRaw } from '@/api/common';
 
-const { mvc } = require('/Users/leiwenwei/dev/meta-contract');
+const { mvc } = require('@/lib/meta-contract');
 const ECIES = require('mvc-lib/ecies');
 
 const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
@@ -133,6 +133,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     name: '',
     phone: '',
     email: '',
+    metaIdRaw: '',
   };
   const metaIdTag = config.networkType === 'test' ? 'testmetaid' : 'metaid';
 
@@ -151,6 +152,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then(async (res) => {
     userMetaIdInfo.metaId = res.id;
+    userMetaIdInfo.metaIdRaw = res.toString();
     await sleep();
     utxoTmp = await getUtxos(mvcApi, rootAddress.toString());
     for (let utxo of utxoTmp) {
@@ -419,6 +421,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
     name: '',
     phone: '',
     email: '',
+    metaIdRaw: '',
   };
   const metaIdTag = config.networkType === 'test' ? 'testmetaid' : 'metaid';
 
@@ -481,6 +484,11 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
         utxo.privateKey = infoPrivateKey.toString();
       }
     }
+  }
+
+  if (!userMetaIdInfo.metaIdRaw && userMetaIdInfo.metaId) {
+    const { hex } = await getTxIdRaw(userMetaIdInfo.metaId);
+    userMetaIdInfo.metaIdRaw = hex;
   }
 
   if (!userMetaIdInfo.protocolTxId) {
