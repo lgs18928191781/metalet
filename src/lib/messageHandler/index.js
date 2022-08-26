@@ -287,9 +287,7 @@ export async function checkOrCreateMetaId(message) {
   const HDPrivateKey = mvc.HDPrivateKey.fromString(xprv);
 
   // 检查是否有metaid
-  const { code: metaIdCode, result: metaIdResult } = await getMetaIdByZeroAddress({
-    data: JSON.stringify({ zeroAddress: address }),
-  }).catch((err) => {
+  const { code: metaIdCode, result: metaIdResult } = await getMetaIdByZeroAddress(address).catch((err) => {
     return {
       code: 10000,
       error: 'error',
@@ -309,11 +307,7 @@ export async function checkOrCreateMetaId(message) {
   }
 
   // 检查节点
-  const { code: didCode, result: didResult } = await getShowDIDUserInfo({
-    data: JSON.stringify({
-      rootTxId: metaIdResult.rootTxId,
-    }),
-  }).catch((err) => {
+  const { code: didCode, result: didResult } = await getShowDIDUserInfo(metaIdResult.rootTxId).catch((err) => {
     return {
       code: 10000,
       error: 'error',

@@ -8,19 +8,17 @@ export function getExchangeRate() {
   });
 }
 
-export function getMetaIdByZeroAddress(data) {
-  return post({
-    url: '/serviceapi/api/v1/metago/getMetaIdByZoreAddress',
+export function getMetaIdByZeroAddress(zeroAddress) {
+  return get({
+    url: `/metaid-base/v1/meta/root/${zeroAddress}`,
     host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
-    data,
   });
 }
 
-export function getShowDIDUserInfo(data) {
-  return post({
-    url: '/serviceapi/api/v1/metago/getShowDIDUserInfo',
+export function getShowDIDUserInfo(rootTxId) {
+  return get({
+    url: `/metaid-base/v1/meta/user/${rootTxId}`,
     host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
-    data,
   });
 }
 

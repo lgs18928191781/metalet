@@ -1,7 +1,6 @@
 // 实例化界面前先初始化数据
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 import store from '@/store';
-import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
 
 export async function initData(cb) {
   const { data: networkType} = await sendMessageFromExtPageToBackground('getNetwork');
