@@ -303,10 +303,12 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
-    await uploadMetaIdRaw({
-      type: 0,
-      raw: userMetaIdInfoRes.metaIdRaw
-    })
+    if (userMetaIdInfoRes?.metaIdRaw) {
+      await uploadMetaIdRaw({
+        type: 0,
+        raw: userMetaIdInfoRes.metaIdRaw,
+      });
+    }
     return hasOne;
   }
 
@@ -331,10 +333,12 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
-    await uploadMetaIdRaw({
-      type: 0,
-      raw: userMetaIdInfoRes.metaIdRaw
-    })
+    if (userMetaIdInfoRes?.metaIdRaw) {
+      await uploadMetaIdRaw({
+        type: 0,
+        raw: userMetaIdInfoRes.metaIdRaw,
+      });
+    }
     return hasOne;
   }
   return hasOne;
