@@ -112,7 +112,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
   if (pendingBalance + balance < 2000) {
     await getInitSat({
       address: rootAddress.toString(),
-      amount: 2000,
+      xpub: HDPrivateKey.xpubkey.toString(),
     });
     await sleep();
   }
@@ -399,7 +399,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
   if (pendingBalance + balance < 2000) {
     await getInitSat({
       address: rootAddress.toString(),
-      amount: 2000,
+      xpub: HDPrivateKey.xpubkey.toString(),
     });
     await sleep();
   }

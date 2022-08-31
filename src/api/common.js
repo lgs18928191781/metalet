@@ -23,10 +23,10 @@ export function getShowDIDUserInfo(rootTxId) {
 }
 
 export function getInitSat(data) {
-  return get({
-    url: '/getInitSat',
-    host: 'http://127.0.0.1:9999',
-    params: data,
+  return post({
+    url: '/nodemvc/api/v1/pri/wallet/sendInitSatsForMetaSV',
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
+    data,
   });
 }
 
@@ -48,6 +48,6 @@ export function uploadMetaIdRaw(data) {
   return post({
     url: `/metaid-base/v1/meta/upload/raw`,
     host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
-    data
+    data,
   });
 }
