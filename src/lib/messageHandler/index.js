@@ -86,7 +86,7 @@ export async function sendAmount(message) {
   const privateKeys = [];
   // add input
   utxos.forEach((utxo) => {
-    tx.asendAmountddInput(
+    tx.addInput(
       new mvc.Transaction.Input.PublicKeyHash({
         output: new mvc.Transaction.Output({
           script: mvc.Script.buildPublicKeyHashOut(new mvc.Address(address)),
