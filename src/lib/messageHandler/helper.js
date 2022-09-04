@@ -122,7 +122,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
   for (let utxo of utxoTmp) {
     utxo.privateKey = rootPrivateKey.toString();
   }
-  console.log(utxoTmp);
 
   // 假设对象(最后返回这对象)
   const { name, email, phone } = userInfo;
@@ -160,8 +159,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     }
   });
 
-  console.log(utxoTmp);
-
   // 创建protocol节点
   await createNode({
     mvcApi,
@@ -181,8 +178,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
       utxo.privateKey = rootPrivateKey.toString();
     }
   });
-
-  console.log(utxoTmp);
 
   // 创建info节点
   await createNode({
@@ -204,8 +199,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     }
   });
 
-  console.log(utxoTmp);
-
   // 创建name节点
   await createNode({
     mvcApi,
@@ -226,8 +219,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
       utxo.privateKey = infoPrivateKey.toString();
     }
   });
-
-  console.log(utxoTmp);
 
   // 创建email节点
   await createNode({
@@ -251,8 +242,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     }
   });
 
-  console.log(utxoTmp);
-
   // 创建phone节点
   await createNode({
     mvcApi,
@@ -270,7 +259,6 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     userMetaIdInfo.phone = res.id;
   });
 
-  console.log(userMetaIdInfo);
   return userMetaIdInfo;
 }
 
@@ -292,13 +280,9 @@ export async function createNode({
   changeAddress = '',
   feeb = 0.5,
 }) {
-  console.log(nodeName);
   const nodeKeyPath = getKeyPathByNodeName(nodeName);
-  console.log('nodeKeyPath', nodeKeyPath);
   const nodeAddres = getPathAddress(HDPrivateKey, nodeKeyPath).toString();
-  console.log('nodeAddres', nodeAddres.toString());
   const nodePrivateKey = getPathPrivateKey(HDPrivateKey, nodeKeyPath);
-  console.log('nodePrivateKey', nodePrivateKey.toString());
   const nodePublicKey = getPathPublicKey(HDPrivateKey, nodeKeyPath);
 
   if (encrypt === 1) {
@@ -317,8 +301,6 @@ export async function createNode({
     dataType,
     encoding,
   ];
-
-  console.log(scriptPlayload);
 
   const tx = new mvc.Transaction();
   // add input
@@ -358,7 +340,6 @@ export async function createNode({
   const unlockSize = tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
   let fee = Math.ceil((tx.toBuffer().length + unlockSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb);
   const fee2 = Math.ceil((utxos.length * 148 + 34 + 10) * feeb);
-  console.log('fee', fee, fee2);
   tx.fee(Math.max(fee, fee2));
 
   // add change
@@ -368,7 +349,6 @@ export async function createNode({
   tx.sign(_privateKeys);
 
   const res = await mvcApi.broadcast(tx.toString());
-  console.log('txID', res);
   if (!res) {
     throw 'broadcast error';
   }
@@ -409,8 +389,6 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
   for (let utxo of utxoTmp) {
     utxo.privateKey = rootPrivateKey.toString();
   }
-
-  console.log(utxoTmp);
 
   // 假设对象(最后返回这对象)
   const { name, email, phone } = userInfo;
@@ -513,8 +491,6 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
     });
   }
 
-  console.log(utxoTmp);
-
   if (!userMetaIdInfo.infoTxId) {
     // 创建info节点
     await createNode({
@@ -536,8 +512,6 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       }
     });
   }
-
-  console.log(utxoTmp);
 
   if (!userMetaIdInfo.name) {
     // 创建name节点
@@ -561,8 +535,6 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       }
     });
   }
-
-  console.log(utxoTmp);
 
   if (!userMetaIdInfo.email) {
     // 创建email节点
@@ -588,8 +560,6 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
     });
   }
 
-  console.log(utxoTmp);
-
   if (!userMetaIdInfo.phone) {
     // 创建phone节点
     await createNode({
@@ -609,6 +579,5 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
     });
   }
 
-  console.log(userMetaIdInfo);
   return userMetaIdInfo;
 }

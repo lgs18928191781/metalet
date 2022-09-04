@@ -209,7 +209,7 @@ module.exports = (startEnv, argv) => {
     },
     // 开发环境配置
     devServer: {
-      port: 1234,
+      // port: 1234,
       open: ['/popup.html'],
       historyApiFallback: true,
       allowedHosts: 'all',

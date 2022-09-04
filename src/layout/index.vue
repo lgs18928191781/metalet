@@ -20,7 +20,6 @@
 import { mapGetters, mapActions } from 'vuex';
 import i18n from '@/i18n';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
-import { changeNetwork } from '@/lib/messageHandler';
 
 export default {
   name: 'layout',

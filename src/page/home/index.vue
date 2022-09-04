@@ -22,15 +22,15 @@
     <!-- tab1 - wallet -->
     <template v-if="curTab === 0">
       <div class="action-card">
-        <mo-card class="item" @click="handleOpenReceiveDialog">
+        <mo-card class="item one-raw" @click="handleOpenReceiveDialog">
           <img src="/public/img/icon-qrcode.svg" />
           <span>{{ $t('home.receive') }}</span>
         </mo-card>
-        <mo-card class="item" @click="handleOpenSendDialog">
+        <mo-card class="item one-raw" @click="handleOpenSendDialog">
           <img src="/public/img/icon-transfer.svg" />
           <span>{{ $t('home.send') }}</span>
         </mo-card>
-        <mo-card class="item" @click="handleOpenHistory">
+        <mo-card class="item one-raw" @click="handleOpenHistory">
           <img src="/public/img/icon-history.svg" />
           <span>{{ $t('home.history') }}</span>
         </mo-card>
@@ -38,12 +38,26 @@
     </template>
     <!-- tab1 - token -->
     <template v-if="curTab === 1">
-      <div class="coming-soon">
-        <img src="/public/img/icon-empty.svg" />
-        <p>{{ $t('comingSoon') }}</p>
+      <div class="action-card">
+        <div class="top-ctrl">
+          <mo-button round @click="handleOpenTokenDialog('ft')">Add</mo-button>
+        </div>
+        <div class="list">
+          <template v-for="(item, index) in ftList">
+            <mo-card>{{ item }}</mo-card>
+          </template>
+        </div>
+      </div>
+      <div class="action-card">
+        <mo-button round @click="handleOpenTokenDialog('nft')">Add</mo-button>
+        <div class="list">
+          <template v-for="(item, index) in nftList">
+            <mo-card>{{ item }}</mo-card>
+          </template>
+        </div>
       </div>
     </template>
-    <!-- tab1 - others -->
+    <!-- tab1 - news -->
     <template v-if="curTab === 2">
       <div class="coming-soon">
         <img src="/public/img/icon-empty.svg" />
@@ -52,6 +66,7 @@
     </template>
   </div>
 
+  <!-- 接收弹窗 -->
   <mo-dialog v-model="showReceiveDialog" class="page-dialog">
     <h1 class="mo-sub-title">{{ $t('home.receiveDialogTitle') }}</h1>
     <img :src="qrcodeUrl" class="qrcode" />
@@ -61,6 +76,7 @@
     </div>
   </mo-dialog>
 
+  <!-- 发送弹窗 -->
   <mo-dialog class="page-dialog" v-model="showSendDialog" @onClose="handleCloseSendDialog">
     <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }}</h1>
     <mo-form>
@@ -93,8 +109,25 @@
       <!--        <div class="txt-hide mo-text dark">{{ $filter.satoshisToSpace(sendAmount + fee) }} SPACE</div>-->
       <!--      </mo-form-item>-->
       <mo-form-item submitItem style="text-align: center">
-        <mo-button simple @click.stop="handleCloseSendDialog">{{ $t('cancel') }}</mo-button>
+        <mo-button simple @click="handleCloseSendDialog">{{ $t('cancel') }}</mo-button>
         <mo-button @click="handleSubmitSend">{{ $t('submit') }}</mo-button>
+      </mo-form-item>
+    </mo-form>
+  </mo-dialog>
+
+  <!-- 增加ft或nft -->
+  <mo-dialog v-model="showTokenDialog" class="page-dialog">
+    <h1 class="mo-sub-title">{{ $t('home.addTokenInfo') }}</h1>
+    <mo-form>
+      <mo-form-item :label="$t('home.genesis')">
+        <mo-input :placeholder="$t('pleaseInput')" />
+      </mo-form-item>
+      <mo-form-item :label="$t('home.codehash')">
+        <mo-input :placeholder="$t('pleaseInput')" />
+      </mo-form-item>
+      <mo-form-item submitItem style="text-align: center">
+        <mo-button simple @click="handleCloseTokenDialog">{{ $t('cancel') }}</mo-button>
+        <mo-button @click="handleSubmitTokenAdd">{{ $t('submit') }}</mo-button>
       </mo-form-item>
     </mo-form>
   </mo-dialog>
@@ -113,6 +146,8 @@ export default {
     ...mapGetters({
       account: 'account/currentAccount',
       locale: 'system/locale',
+      ftList: 'token/ftList',
+      nftList: 'token/nftList',
     }),
     rateUnit() {
       return this.locale === 'en' ? 'USD' : 'CNY';
@@ -127,16 +162,19 @@ export default {
       qrcodeUrl: '',
       showReceiveDialog: false,
       showSendDialog: false,
+      showTokenDialog: false,
       clipboard: undefined,
       tabList: [
         { label: i18n('home.wallet'), name: 0 },
         { label: i18n('home.token'), name: 1 },
-        { label: i18n('home.others'), name: 2 },
+        { label: i18n('home.news'), name: 2 },
       ],
       curTab: 0,
       inputAmountTimer: undefined,
       fee: 0,
       unspents: [],
+      tokenGenesis: '',
+      tokenCodehash: '',
     };
   },
   beforeUnmount() {
@@ -148,6 +186,7 @@ export default {
     this.initClipboard();
   },
   methods: {
+    ...mapActions('token', ['addFt', 'addNft', 'removeFt', 'removeNft']),
     initClipboard() {
       this.clipboard = new ClipboardJS('.btn');
 
@@ -207,13 +246,13 @@ export default {
       this.sendAmount = undefined;
     },
     async handleSubmitSend() {
-      const satoshi = spaceTosatoshis(+this.sendAmount).toNumber();
       if (!this.sendAddress) {
         return this.$toast({ message: i18n('home.pleaseInputAddress') });
       }
       if (!this.sendAmount) {
         return this.$toast({ message: i18n('home.pleaseInputAmount') });
       }
+      const satoshi = spaceTosatoshis(+this.sendAmount).toNumber();
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
@@ -239,12 +278,22 @@ export default {
             sendAmount: this.sendAmount,
             sendAddress: this.sendAddress,
             wif: this.account.wif,
-            unspents: this.unspents
+            unspents: this.unspents,
           });
-          console.log(data);
           this.fee = data;
         }
       }, 1000);
+    },
+    handleOpenTokenDialog(type) {
+      this.showTokenDialog = true;
+    },
+    handleCloseTokenDialog() {
+      this.showTokenDialog = false;
+      this.tokenGenesis = '';
+      this.tokenCodehash = '';
+    },
+    handleSubmitTokenAdd() {
+      this.handleCloseTokenDialog();
     },
   },
 };

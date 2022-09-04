@@ -110,8 +110,6 @@ export async function sendAmount(message) {
   const unlockSize = tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
   let fee = Math.ceil((tx.toBuffer().length + unlockSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb);
   const fee2 = Math.ceil((utxos.length * 148 + 34 + 10) * feeb);
-  console.log('fee', fee);
-  console.log('fee2', fee2);
   fee = Math.max(fee, fee2);
   tx.fee(fee);
   tx.change(new mvc.Address(address));
@@ -170,8 +168,6 @@ export async function countFee(message) {
   const unlockSize = tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
   let fee = Math.ceil((tx.toBuffer().length + unlockSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb);
   const fee2 = Math.ceil((utxos.length * 148 + 34 + 10) * feeb);
-  console.log('fee', fee);
-  console.log('fee2', fee2);
   fee = Math.max(fee, fee2);
   return fee;
 }

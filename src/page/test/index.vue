@@ -4,6 +4,16 @@
   <mo-button @click="showLoading">loading</mo-button>
   <mo-button @click="getFeeb">getFeeb</mo-button>
   <mo-button @click="createAccount">createAccount</mo-button>
+  <hr>
+  <mo-card>
+    <template #header>
+      <div class="title">Tokens</div>
+      <div class="ctrl">
+        <i class="add"></i>
+      </div>
+    </template>
+    12312323
+  </mo-card>
 </template>
 
 <script>

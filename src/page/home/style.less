@@ -94,13 +94,20 @@
 
   .action-card {
     margin-top: 36px;
-    .item {
+    & > .item {
       cursor: pointer;
       transition: var(--transition);
-      display: flex;
-      align-items: center;
+
       &:hover {
         box-shadow: var(--box-shadow);
+      }
+    }
+
+    .one-raw {
+      display: flex;
+      align-items: center;
+
+      &:hover {
         img {
           filter: brightness(1);
         }

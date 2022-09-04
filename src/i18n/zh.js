@@ -63,6 +63,7 @@ export default {
     wallet: '钱包',
     token: '令牌',
     others: '其他',
+    news: '新闻',
     pleaseInputAddress: '请输入地址',
     pleaseInputAmount: '请输入数目',
     amountMoreThan2000: '数目必须大于2000SATS',
