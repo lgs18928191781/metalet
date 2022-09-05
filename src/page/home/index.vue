@@ -85,7 +85,7 @@
                 </div>
                 <div class="info">
                   <div class="name txt-hide">{{ item.genesis }}</div>
-                  <div class="name txt-hide">{{ item.codeHash }}</div>
+                  <!--<div class="name txt-hide">{{ item.codeHash }}</div>-->
                 </div>
                 <div class="num">{{ item.count }}/{{ item.tokenSupply }}</div>
                 <div class="ctrl">
