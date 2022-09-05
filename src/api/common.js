@@ -51,3 +51,17 @@ export function uploadMetaIdRaw(data) {
     data,
   });
 }
+
+export function getFtBalance(address) {
+  return get({
+    url: `/sensible/ft/address/${address}/balance`,
+    host: config.CONFIG_API_HOST,
+  });
+}
+
+export function getNftSummary(address) {
+  return get({
+    url: `/sensible/nft/address/${address}/utxo`,
+    host: config.CONFIG_API_HOST,
+  });
+}

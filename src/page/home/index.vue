@@ -22,37 +22,50 @@
     <!-- tab1 - wallet -->
     <template v-if="curTab === 0">
       <div class="action-card">
-        <mo-card class="item one-raw" @click="handleOpenReceiveDialog">
-          <img src="/public/img/icon-qrcode.svg" />
-          <span>{{ $t('home.receive') }}</span>
+        <mo-card class="card-item" @click="handleOpenReceiveDialog">
+          <div class="one-raw">
+            <img src="/public/img/icon-qrcode.svg" />
+            <span>{{ $t('home.receive') }}</span>
+          </div>
         </mo-card>
-        <mo-card class="item one-raw" @click="handleOpenSendDialog">
-          <img src="/public/img/icon-transfer.svg" />
-          <span>{{ $t('home.send') }}</span>
+        <mo-card class="card-item" @click="handleOpenSendDialog">
+          <div class="one-raw">
+            <img src="/public/img/icon-transfer.svg" />
+            <span>{{ $t('home.send') }}</span>
+          </div>
         </mo-card>
-        <mo-card class="item one-raw" @click="handleOpenHistory">
-          <img src="/public/img/icon-history.svg" />
-          <span>{{ $t('home.history') }}</span>
+        <mo-card class="card-item" @click="handleOpenHistory">
+          <div class="one-raw">
+            <img src="/public/img/icon-history.svg" />
+            <span>{{ $t('home.history') }}</span>
+          </div>
         </mo-card>
       </div>
     </template>
     <!-- tab1 - token -->
     <template v-if="curTab === 1">
+      <!-- ft -->
       <div class="action-card">
-        <div class="top-ctrl">
-          <mo-button round @click="handleOpenTokenDialog('ft')">Add</mo-button>
-        </div>
+        <!--        <div class="top-ctrl">-->
+        <!--          <mo-button simple round @click="handleOpenTokenDialog('ft')">Add</mo-button>-->
+        <!--        </div>-->
         <div class="list">
-          <template v-for="(item, index) in ftList">
-            <mo-card>{{ item }}</mo-card>
-          </template>
-        </div>
-      </div>
-      <div class="action-card">
-        <mo-button round @click="handleOpenTokenDialog('nft')">Add</mo-button>
-        <div class="list">
-          <template v-for="(item, index) in nftList">
-            <mo-card>{{ item }}</mo-card>
+          <template v-for="(item, index) in ftInfoList" :key="index">
+            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item)">
+              <div class="info-row">
+                <div class="head">
+                  <img :src="item.logo" v-if="item && item.logo" />
+                  <i v-else>{{ (item && item.name && item.name[0]) || 'T' }}</i>
+                </div>
+                <div class="info">
+                  <div class="name">{{ item.name }}</div>
+                </div>
+                <div class="num">{{ item.amount }}</div>
+                <div class="ctrl">
+                  <i class="icon transfer"></i>
+                </div>
+              </div>
+            </mo-card>
           </template>
         </div>
       </div>
@@ -131,12 +144,29 @@
       </mo-form-item>
     </mo-form>
   </mo-dialog>
+
+  <!-- 转发ft或nft -->
+  <mo-dialog v-model="showTransferTokenDialog" class="page-dialog">
+    <h1 class="mo-sub-title">{{ $t('home.transferTokenInfo') }}</h1>
+    <mo-form>
+      <mo-form-item :label="$t('home.address')">
+        <mo-input :placeholder="$t('pleaseInput')" v-model="transferTokenAddress" />
+      </mo-form-item>
+      <mo-form-item :label="$t('home.amount')">
+        <mo-input :placeholder="$t('pleaseInput')" v-model="transferTokenAmount" />
+      </mo-form-item>
+      <mo-form-item submitItem style="text-align: center">
+        <mo-button simple @click="handleCloseTransferTokenDialog">{{ $t('cancel') }}</mo-button>
+        <mo-button @click="handleSubmitTransferToken">{{ $t('submit') }}</mo-button>
+      </mo-form-item>
+    </mo-form>
+  </mo-dialog>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { createQrCode, spaceTosatoshis } from '@/util';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
-import { getExchangeRate } from '@/api/common';
+import { getExchangeRate, getFtBalance } from '@/api/common';
 import ClipboardJS from 'clipboard';
 import i18n from '@/i18n';
 
@@ -175,6 +205,13 @@ export default {
       unspents: [],
       tokenGenesis: '',
       tokenCodehash: '',
+      tokenDialogType: '',
+      ftInfoList: [],
+      nftInfoList: [],
+      showTransferTokenDialog: false,
+      transferTokenAddress: '',
+      transferTokenAmount: '',
+      transferTokenItem: {},
     };
   },
   beforeUnmount() {
@@ -182,6 +219,7 @@ export default {
   },
   mounted() {
     this.fetchData();
+    this.fetchTokenInfo();
     this.drawQrCode();
     this.initClipboard();
   },
@@ -286,6 +324,7 @@ export default {
     },
     handleOpenTokenDialog(type) {
       this.showTokenDialog = true;
+      this.tokenDialogType = type;
     },
     handleCloseTokenDialog() {
       this.showTokenDialog = false;
@@ -293,7 +332,68 @@ export default {
       this.tokenCodehash = '';
     },
     handleSubmitTokenAdd() {
+      if (this.tokenDialogType === 'ft') {
+        this.addFt({
+          codehash: this.tokenCodehash,
+          genesis: this.tokenGenesis,
+        });
+      } else if (this.tokenDialogType === 'nft') {
+        this.addNft({
+          codehash: this.tokenCodehash,
+          genesis: this.tokenGenesis,
+        });
+      }
       this.handleCloseTokenDialog();
+    },
+    async fetchTokenInfo() {
+      getFtBalance(this.account.address).then((res) => {
+        const tokenMap = {};
+        if (res && Array.isArray(res) && res.length) {
+          for (let i of res) {
+            const key = i.codeHash + '|' + i.genesis;
+            const amount = i.unconfirmed + i.confirmed;
+            const name = i.name;
+            const symbol = i.symbol;
+            const decimal = i.decimal;
+            if (!tokenMap[key]) {
+              tokenMap[key] = {
+                codeHash: i.codeHash,
+                genesis: i.genesis,
+                amount,
+                name,
+                symbol,
+                decimal,
+              };
+            } else {
+              tokenMap[key].amount = tokenMap[key].amount + amount;
+            }
+          }
+        }
+        for (let key in tokenMap) {
+          const item = tokenMap[key];
+          if (item.amount > 0) {
+            this.ftInfoList.push(tokenMap[key]);
+          }
+        }
+      });
+    },
+    handleOpenTransferTokenDialog(item) {
+      this.showTransferTokenDialog = true;
+      this.transferTokenAddress = '';
+      this.transferTokenAmount = '';
+      this.transferTokenItem = item;
+    },
+    handleCloseTransferTokenDialog() {
+      this.showTransferTokenDialog = false;
+      this.transferTokenAddress = '';
+      this.transferTokenAmount = '';
+    },
+    async handleSubmitTransferToken() {
+      // const { data } = await sendMessageFromExtPageToBackground('getUnspents', {
+      //   address: this.account.address,
+      // });
+      this.handleCloseTransferTokenDialog();
+      this.fetchTokenInfo();
     },
   },
 };
