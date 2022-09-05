@@ -389,11 +389,14 @@ export default {
       this.transferTokenAmount = '';
     },
     async handleSubmitTransferToken() {
-      // const { data } = await sendMessageFromExtPageToBackground('getUnspents', {
-      //   address: this.account.address,
-      // });
+      const { data } = await sendMessageFromExtPageToBackground('getUnspents', {
+        address: this.account.address,
+        transferAddress: this.transferTokenAddress,
+        transferAmount: this.transferTokenAmount,
+        transferItem: this.transferTokenItem
+      });
       this.handleCloseTransferTokenDialog();
-      this.fetchTokenInfo();
+      await this.fetchTokenInfo();
     },
   },
 };

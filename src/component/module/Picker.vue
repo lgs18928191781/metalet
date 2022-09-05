@@ -72,7 +72,7 @@ export default {
     padding: 0;
     border-radius: var(--border-radius-more);
 
-    /deep/ .card-content {
+    :deep(.card-content) {
       padding: 0;
     }
 

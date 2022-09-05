@@ -1,7 +1,7 @@
 import config from '@/config';
 import { getAddressUtxo, getInitSat, getTxIdRaw } from '@/api/common';
 
-const { mvc } = require('@/lib/meta-contract');
+import { mvc } from '@/lib/meta-contract';
 const ECIES = require('mvc-lib/ecies');
 
 const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
