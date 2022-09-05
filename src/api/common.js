@@ -52,6 +52,13 @@ export function uploadMetaIdRaw(data) {
   });
 }
 
+export function uploadXpub(xPub) {
+  return get({
+    url: `/v1/meta/xpub/${xPub}`,
+    host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
+  });
+}
+
 export function getFtBalance(address) {
   return get({
     url: `/sensible/ft/address/${address}/balance`,
@@ -60,6 +67,13 @@ export function getFtBalance(address) {
 }
 
 export function getNftSummary(address) {
+  return get({
+    url: `/sensible/nft/address/${address}/summary`,
+    host: config.CONFIG_API_HOST,
+  });
+}
+
+export function getNftUtxo(address) {
   return get({
     url: `/sensible/nft/address/${address}/utxo`,
     host: config.CONFIG_API_HOST,

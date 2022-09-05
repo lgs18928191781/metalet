@@ -30,7 +30,7 @@ export default {
     },
     removeFt(state, payload) {
       if (typeof payload !== 'number') {
-        targetIndex = state.ftList.findIndex((v) => {
+        const targetIndex = state.ftList.findIndex((v) => {
           return v.codehash === payload || v.genesis === payload;
         });
         if (targetIndex > -1) {
@@ -56,7 +56,7 @@ export default {
     },
     removeNft(state, payload) {
       if (typeof payload !== 'number') {
-        targetIndex = state.nftList.findIndex((v) => {
+        const targetIndex = state.nftList.findIndex((v) => {
           return v.codehash === payload || v.genesis === payload;
         });
         if (targetIndex > -1) {

@@ -153,6 +153,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        overflow: hidden;
 
         .head {
           width: 80px;
@@ -169,20 +170,30 @@
             width: 100%;
             height: 100%;
             border-radius: 80px;
-            background-color: var(--border-color);
+            background-image: linear-gradient(30deg, #316dd8, #a59cff);
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: capitalize;
           }
         }
 
         .info {
           flex-grow: 1;
           margin: 0 20px;
+          overflow: hidden;
           .name {
             font-weight: bold;
             font-size: 32px;
+
+            &+.name {
+              font-size: 28px;
+              color: var(--second-text-color);
+              margin-top: 10px;
+            }
           }
         }
 
@@ -190,6 +201,8 @@
           margin: 0 20px;
           font-size: 28px;
           color: var(--second-text-color);
+          flex-shrink: 0;
+          padding: 0 20px;
         }
 
         .ctrl {
@@ -198,6 +211,7 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          flex-shrink: 0;
 
           .icon {
             width: 40px;

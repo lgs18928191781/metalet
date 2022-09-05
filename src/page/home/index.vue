@@ -44,21 +44,20 @@
     </template>
     <!-- tab1 - token -->
     <template v-if="curTab === 1">
-      <!-- ft -->
       <div class="action-card">
         <!--        <div class="top-ctrl">-->
         <!--          <mo-button simple round @click="handleOpenTokenDialog('ft')">Add</mo-button>-->
         <!--        </div>-->
         <div class="list">
           <template v-for="(item, index) in ftInfoList" :key="index">
-            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item)">
+            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'Token')">
               <div class="info-row">
                 <div class="head">
                   <img :src="item.logo" v-if="item && item.logo" />
                   <i v-else>{{ (item && item.name && item.name[0]) || 'T' }}</i>
                 </div>
                 <div class="info">
-                  <div class="name">{{ item.name }}</div>
+                  <div class="name txt-hide">{{ item.name }}</div>
                 </div>
                 <div class="num">{{ item.amount }}</div>
                 <div class="ctrl">
@@ -70,11 +69,32 @@
         </div>
       </div>
     </template>
-    <!-- tab1 - news -->
+    <!-- tab1 - nft -->
     <template v-if="curTab === 2">
-      <div class="coming-soon">
-        <img src="/public/img/icon-empty.svg" />
-        <p>{{ $t('comingSoon') }}</p>
+      <div class="action-card">
+        <!--        <div class="top-ctrl">-->
+        <!--          <mo-button simple round @click="handleOpenTokenDialog('nft')">Add</mo-button>-->
+        <!--        </div>-->
+        <div class="list">
+          <template v-for="(item, index) in nftInfoList" :key="index">
+            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'NFT')">
+              <div class="info-row">
+                <div class="head">
+                  <img :src="item.logo" v-if="item && item.logo" />
+                  <i v-else>{{ (item && item.genesis && item.genesis[0]) || 'N' }}</i>
+                </div>
+                <div class="info">
+                  <div class="name txt-hide">{{ item.genesis }}</div>
+                  <div class="name txt-hide">{{ item.codeHash }}</div>
+                </div>
+                <div class="num">{{ item.count }}/{{ item.tokenSupply }}</div>
+                <div class="ctrl">
+                  <i class="icon transfer"></i>
+                </div>
+              </div>
+            </mo-card>
+          </template>
+        </div>
       </div>
     </template>
   </div>
@@ -129,31 +149,31 @@
   </mo-dialog>
 
   <!-- 增加ft或nft -->
-  <mo-dialog v-model="showTokenDialog" class="page-dialog">
-    <h1 class="mo-sub-title">{{ $t('home.addTokenInfo') }}</h1>
-    <mo-form>
-      <mo-form-item :label="$t('home.genesis')">
-        <mo-input :placeholder="$t('pleaseInput')" />
-      </mo-form-item>
-      <mo-form-item :label="$t('home.codehash')">
-        <mo-input :placeholder="$t('pleaseInput')" />
-      </mo-form-item>
-      <mo-form-item submitItem style="text-align: center">
-        <mo-button simple @click="handleCloseTokenDialog">{{ $t('cancel') }}</mo-button>
-        <mo-button @click="handleSubmitTokenAdd">{{ $t('submit') }}</mo-button>
-      </mo-form-item>
-    </mo-form>
-  </mo-dialog>
+  <!--  <mo-dialog v-model="showTokenDialog" class="page-dialog">-->
+  <!--    <h1 class="mo-sub-title">{{ $t('home.addTokenInfo') }}</h1>-->
+  <!--    <mo-form>-->
+  <!--      <mo-form-item :label="$t('home.genesis')">-->
+  <!--        <mo-input :placeholder="$t('pleaseInput')" />-->
+  <!--      </mo-form-item>-->
+  <!--      <mo-form-item :label="$t('home.codehash')">-->
+  <!--        <mo-input :placeholder="$t('pleaseInput')" />-->
+  <!--      </mo-form-item>-->
+  <!--      <mo-form-item submitItem style="text-align: center">-->
+  <!--        <mo-button simple @click="handleCloseTokenDialog">{{ $t('cancel') }}</mo-button>-->
+  <!--        <mo-button @click="handleSubmitTokenAdd">{{ $t('submit') }}</mo-button>-->
+  <!--      </mo-form-item>-->
+  <!--    </mo-form>-->
+  <!--  </mo-dialog>-->
 
   <!-- 转发ft或nft -->
   <mo-dialog v-model="showTransferTokenDialog" class="page-dialog">
-    <h1 class="mo-sub-title">{{ $t('home.transferTokenInfo') }}</h1>
+    <h1 class="mo-sub-title">{{ $t('home.sendDialogTitle') }} ({{ tokenDialogType }})</h1>
     <mo-form>
-      <mo-form-item :label="$t('home.address')">
-        <mo-input :placeholder="$t('pleaseInput')" v-model="transferTokenAddress" />
+      <mo-form-item :label="$t('home.sendAddress')">
+        <mo-input :placeholder="$t('pleaseInput')" v-model="transferAddress" />
       </mo-form-item>
-      <mo-form-item :label="$t('home.amount')">
-        <mo-input :placeholder="$t('pleaseInput')" v-model="transferTokenAmount" />
+      <mo-form-item :label="$t('home.sendAmount')" v-if="tokenDialogType === 'Token'">
+        <mo-input :placeholder="$t('pleaseInput')" v-model="transferAmount" />
       </mo-form-item>
       <mo-form-item submitItem style="text-align: center">
         <mo-button simple @click="handleCloseTransferTokenDialog">{{ $t('cancel') }}</mo-button>
@@ -197,7 +217,7 @@ export default {
       tabList: [
         { label: i18n('home.wallet'), name: 0 },
         { label: i18n('home.token'), name: 1 },
-        { label: i18n('home.news'), name: 2 },
+        { label: i18n('home.nft'), name: 2 },
       ],
       curTab: 0,
       inputAmountTimer: undefined,
@@ -209,9 +229,9 @@ export default {
       ftInfoList: [],
       nftInfoList: [],
       showTransferTokenDialog: false,
-      transferTokenAddress: '',
-      transferTokenAmount: '',
-      transferTokenItem: {},
+      transferAddress: '',
+      transferAmount: '',
+      transferItem: {},
     };
   },
   beforeUnmount() {
@@ -322,81 +342,85 @@ export default {
         }
       }, 1000);
     },
-    handleOpenTokenDialog(type) {
-      this.showTokenDialog = true;
-      this.tokenDialogType = type;
-    },
-    handleCloseTokenDialog() {
-      this.showTokenDialog = false;
-      this.tokenGenesis = '';
-      this.tokenCodehash = '';
-    },
-    handleSubmitTokenAdd() {
-      if (this.tokenDialogType === 'ft') {
-        this.addFt({
-          codehash: this.tokenCodehash,
-          genesis: this.tokenGenesis,
-        });
-      } else if (this.tokenDialogType === 'nft') {
-        this.addNft({
-          codehash: this.tokenCodehash,
-          genesis: this.tokenGenesis,
-        });
-      }
-      this.handleCloseTokenDialog();
-    },
+    // 增加自定义的,暂时忽略
+    // handleOpenTokenDialog(type) {
+    //   this.showTokenDialog = true;
+    //   this.tokenDialogType = type;
+    // },
+    // handleCloseTokenDialog() {
+    //   this.showTokenDialog = false;
+    //   this.tokenGenesis = '';
+    //   this.tokenCodehash = '';
+    // },
+    // handleSubmitTokenAdd() {
+    //   if (this.tokenDialogType === 'ft') {
+    //     this.addFt({
+    //       codehash: this.tokenCodehash,
+    //       genesis: this.tokenGenesis,
+    //     });
+    //   } else if (this.tokenDialogType === 'nft') {
+    //     this.addNft({
+    //       codehash: this.tokenCodehash,
+    //       genesis: this.tokenGenesis,
+    //     });
+    //   }
+    //   this.handleCloseTokenDialog();
+    // },
     async fetchTokenInfo() {
-      getFtBalance(this.account.address).then((res) => {
-        const tokenMap = {};
-        if (res && Array.isArray(res) && res.length) {
-          for (let i of res) {
-            const key = i.codeHash + '|' + i.genesis;
-            const amount = i.unconfirmed + i.confirmed;
-            const name = i.name;
-            const symbol = i.symbol;
-            const decimal = i.decimal;
-            if (!tokenMap[key]) {
-              tokenMap[key] = {
-                codeHash: i.codeHash,
-                genesis: i.genesis,
-                amount,
-                name,
-                symbol,
-                decimal,
-              };
-            } else {
-              tokenMap[key].amount = tokenMap[key].amount + amount;
-            }
-          }
-        }
-        for (let key in tokenMap) {
-          const item = tokenMap[key];
-          if (item.amount > 0) {
-            this.ftInfoList.push(tokenMap[key]);
-          }
-        }
+      sendMessageFromExtPageToBackground('getFtList', {
+        address: this.account.address,
+        ftList: this.ftList,
+      }).then(({ data }) => {
+        this.ftInfoList = data || [];
+      });
+
+      sendMessageFromExtPageToBackground('getNftList', {
+        address: this.account.address,
+        nftList: this.nftList,
+      }).then(({ data }) => {
+        this.nftInfoList = data || [];
       });
     },
-    handleOpenTransferTokenDialog(item) {
+    handleOpenTransferTokenDialog(item, type) {
+      this.tokenDialogType = type;
       this.showTransferTokenDialog = true;
-      this.transferTokenAddress = '';
-      this.transferTokenAmount = '';
-      this.transferTokenItem = item;
+      this.transferAddress = '';
+      this.transferAmount = '';
+      this.transferItem = item;
     },
     handleCloseTransferTokenDialog() {
       this.showTransferTokenDialog = false;
-      this.transferTokenAddress = '';
-      this.transferTokenAmount = '';
+      this.transferAddress = '';
+      this.transferAmount = '';
     },
     async handleSubmitTransferToken() {
-      const { data } = await sendMessageFromExtPageToBackground('getUnspents', {
-        address: this.account.address,
-        transferAddress: this.transferTokenAddress,
-        transferAmount: this.transferTokenAmount,
-        transferItem: this.transferTokenItem
-      });
+      if (!this.transferAddress) {
+        return this.$toast({ message: i18n('home.pleaseInputAddress') });
+      }
+      if (this.tokenDialogType === 'Token' && !this.transferAmount) {
+        return this.$toast({ message: i18n('home.pleaseInputAmount') });
+      }
+      if (this.tokenDialogType === 'Token') {
+        const { data } = await sendMessageFromExtPageToBackground('transferFt', {
+          wif: this.account.wif,
+          transferAddress: this.transferAddress,
+          transferAmount: this.transferAmount,
+          transferItem: this.transferItem,
+        });
+      }
+      if (this.tokenDialogType === 'NFT') {
+        const { data } = await sendMessageFromExtPageToBackground('transferNft', {
+          wif: this.account.wif,
+          address: this.account.address,
+          transferAddress: this.transferAddress,
+          transferAmount: this.transferAmount,
+          transferItem: this.transferItem,
+        });
+      }
       this.handleCloseTransferTokenDialog();
+      this.$toast({ message: i18n('common.success') });
       await this.fetchTokenInfo();
+      await this.fetchData();
     },
   },
 };

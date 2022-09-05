@@ -303,6 +303,7 @@ export async function createNode({
   ];
 
   const tx = new mvc.Transaction();
+  tx.version = 10;
   // add input
   let _utxos = [];
   let _privateKeys = [];
@@ -432,6 +433,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
       userMetaIdInfo.infoTxId = targetOne.txid;
       // 把钱全部转到info节点下
       const tx = new mvc.Transaction();
+      tx.version = 10;
       // add input
       let _utxos = [];
       let _privateKeys = [];
