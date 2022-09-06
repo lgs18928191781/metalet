@@ -313,7 +313,7 @@ export async function checkOrCreateMetaId(message) {
     await update(hasOne);
     if (userMetaIdInfoRes?.metaIdRaw) {
       await uploadMetaIdRaw({
-        type: 0,
+        type: 13,
         raw: userMetaIdInfoRes.metaIdRaw,
       });
       await uploadXpub(xpub);
@@ -344,7 +344,7 @@ export async function checkOrCreateMetaId(message) {
     await update(hasOne);
     if (userMetaIdInfoRes?.metaIdRaw) {
       await uploadMetaIdRaw({
-        type: 0,
+        type: 13,
         raw: userMetaIdInfoRes.metaIdRaw,
       });
       await uploadXpub(xpub);
