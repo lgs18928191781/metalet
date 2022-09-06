@@ -1,11 +1,12 @@
-// 实例化界面前先初始化数据
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 import store from '@/store';
-import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
 
-export async function initData(cb) {
-  const { data: networkType} = await sendMessageFromExtPageToBackground('getNetwork');
+// 实例化界面前先初始化数据
+export async function initData() {
+  // 选择网络
+  const { data: networkType } = await sendMessageFromExtPageToBackground('getNetwork');
   await store.dispatch('system/setNetworkType', networkType);
+  // 获取并设置账号信息
   const { data } = await sendMessageFromExtPageToBackground('getAccount');
   await store.dispatch('account/setAccountList', data);
   const lastAccount = localStorage.getItem('account');
@@ -16,5 +17,9 @@ export async function initData(cb) {
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', hasAccount);
     }
   }
-  cb();
+  //初始化nft列表
+  const nftList = store.state.token.nftList;
+  if (nftList.length === 0) {
+    store.dispatch('token/addNft', { codehash: '62de3500752a71955c836b21d9fd94bc90fe24c2', genesis: 'system' });
+  }
 }

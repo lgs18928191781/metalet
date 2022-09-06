@@ -63,6 +63,7 @@ export default {
     wallet: 'Wallet',
     token: 'Token',
     others: 'Others',
+    nft: 'NFT',
     pleaseInputAddress: 'Please input address',
     pleaseInputAmount: 'Please input amount',
     amountMoreThan2000: 'Amount must more than 2000 SATS',

@@ -1,6 +1,11 @@
 <template>
-  <div class="mo-card" v-bind:="$attrs">
-    <slot></slot>
+  <div :class="className" v-bind:="$attrs">
+    <div class="card-header" v-if="hasHeader">
+      <slot name="header"></slot>
+    </div>
+    <div class="card-content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 <script>
@@ -16,13 +21,15 @@ export default {
     className() {
       return ['mo-card', this.shadow && 'shadow'];
     },
+    hasHeader() {
+      return !!this?.$slots?.header || false;
+    },
   },
 };
 </script>
 <style lang="less">
 .mo-card {
   background: #fff;
-  padding: 32px;
   border-radius: var(--border-radius);
   box-sizing: border-box;
 
@@ -32,6 +39,10 @@ export default {
 
   & + .mo-card {
     margin-top: 24px;
+  }
+
+  .card-content {
+    padding: 32px;
   }
 }
 </style>

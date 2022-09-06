@@ -1,8 +1,16 @@
 import Mnemonic from 'mvc-lib/mnemonic';
-import { Api, API_NET, API_TARGET, mvc } from '@/lib/meta-contract';
+import { Api, API_NET, API_TARGET, mvc, FtManager, NftManager } from '@/lib/meta-contract';
 import config, { changeNetworkType } from '@/config';
 import { create, select, update } from '@/util/db';
-import { getMetaIdByZeroAddress, getShowDIDUserInfo } from '@/api/common';
+import {
+  getFtBalance,
+  getMetaIdByZeroAddress,
+  getNftSummary,
+  getNftUtxo,
+  getShowDIDUserInfo,
+  uploadMetaIdRaw,
+  uploadXpub,
+} from '@/api/common';
 import { initMetaId, repairMetaNode } from './helper';
 
 const metaSvAuthorization = config.CONFIG_METASV_AUTHORIZATION;
@@ -10,6 +18,8 @@ const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
 const P2PKH_DUST_AMOUNT = 1;
 
 let mvcApi;
+let ft;
+let nft;
 let feeb = config.CONFIG_TX_FEEB;
 
 // 初始化api
@@ -83,10 +93,11 @@ export async function sendAmount(message) {
   const { sendAmount, sendAddress, wif, address } = message.data;
   const utxos = await mvcApi.getUnspents(address);
   const tx = new mvc.Transaction();
+  tx.version = 10;
   const privateKeys = [];
   // add input
   utxos.forEach((utxo) => {
-    tx.asendAmountddInput(
+    tx.addInput(
       new mvc.Transaction.Input.PublicKeyHash({
         output: new mvc.Transaction.Output({
           script: mvc.Script.buildPublicKeyHashOut(new mvc.Address(address)),
@@ -110,8 +121,6 @@ export async function sendAmount(message) {
   const unlockSize = tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
   let fee = Math.ceil((tx.toBuffer().length + unlockSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb);
   const fee2 = Math.ceil((utxos.length * 148 + 34 + 10) * feeb);
-  console.log('fee', fee);
-  console.log('fee2', fee2);
   fee = Math.max(fee, fee2);
   tx.fee(fee);
   tx.change(new mvc.Address(address));
@@ -143,6 +152,7 @@ export async function countFee(message) {
     utxos = await mvcApi.getUnspents(address);
   }
   const tx = new mvc.Transaction();
+  tx.version = 10;
   const privateKeys = [];
   // add input
   utxos.forEach((utxo) => {
@@ -170,8 +180,6 @@ export async function countFee(message) {
   const unlockSize = tx.inputs.filter((v) => v.output.script.isPublicKeyHashOut()).length * P2PKH_UNLOCK_SIZE;
   let fee = Math.ceil((tx.toBuffer().length + unlockSize + mvc.Transaction.CHANGE_OUTPUT_MAX_SIZE) * feeb);
   const fee2 = Math.ceil((utxos.length * 148 + 34 + 10) * feeb);
-  console.log('fee', fee);
-  console.log('fee2', fee2);
   fee = Math.max(fee, fee2);
   return fee;
 }
@@ -266,7 +274,7 @@ export async function updateAccount(message) {
 // 检查创建metaId
 export async function checkOrCreateMetaId(message) {
   initApi();
-  const { xprv } = message.data;
+  const { xprv, xpub } = message.data;
   const hasOne = await select(xprv);
   if (!hasOne) {
     throw new Error('this account is not exist');
@@ -287,9 +295,7 @@ export async function checkOrCreateMetaId(message) {
   const HDPrivateKey = mvc.HDPrivateKey.fromString(xprv);
 
   // 检查是否有metaid
-  const { code: metaIdCode, result: metaIdResult } = await getMetaIdByZeroAddress({
-    data: JSON.stringify({ zeroAddress: address }),
-  }).catch((err) => {
+  const { code: metaIdCode, result: metaIdResult } = await getMetaIdByZeroAddress(address).catch((err) => {
     return {
       code: 10000,
       error: 'error',
@@ -305,15 +311,18 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
+    if (userMetaIdInfoRes?.metaIdRaw) {
+      await uploadMetaIdRaw({
+        type: 13,
+        raw: userMetaIdInfoRes.metaIdRaw,
+      });
+      await uploadXpub(xpub);
+    }
     return hasOne;
   }
 
   // 检查节点
-  const { code: didCode, result: didResult } = await getShowDIDUserInfo({
-    data: JSON.stringify({
-      rootTxId: metaIdResult.rootTxId,
-    }),
-  }).catch((err) => {
+  const { code: didCode, result: didResult } = await getShowDIDUserInfo(metaIdResult.rootTxId).catch((err) => {
     return {
       code: 10000,
       error: 'error',
@@ -333,6 +342,13 @@ export async function checkOrCreateMetaId(message) {
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
+    if (userMetaIdInfoRes?.metaIdRaw) {
+      await uploadMetaIdRaw({
+        type: 13,
+        raw: userMetaIdInfoRes.metaIdRaw,
+      });
+      await uploadXpub(xpub);
+    }
     return hasOne;
   }
   return hasOne;
@@ -347,4 +363,115 @@ export async function changeNetwork(message) {
 // 获取当前网络
 export function getNetwork() {
   return config.networkType;
+}
+
+// 获取ft列表
+export async function getFtList(message) {
+  const { address } = message.data;
+  const res = await getFtBalance(address);
+  const tokenMap = {};
+  if (res && Array.isArray(res) && res.length) {
+    for (let i of res) {
+      const key = i.codeHash + '|' + i.genesis;
+      const amount = i.unconfirmed + i.confirmed;
+      const name = i.name;
+      const symbol = i.symbol;
+      const decimal = i.decimal;
+      if (!tokenMap[key]) {
+        tokenMap[key] = {
+          codeHash: i.codeHash,
+          genesis: i.genesis,
+          amount,
+          name,
+          symbol,
+          decimal,
+        };
+      } else {
+        tokenMap[key].amount = tokenMap[key].amount + amount;
+      }
+    }
+  }
+  let list = [];
+  for (let key in tokenMap) {
+    const item = tokenMap[key];
+    if (item.amount > 0) {
+      list.push(tokenMap[key]);
+    }
+  }
+  return list;
+}
+
+// 获取nft列表
+export async function getNftList(message) {
+  const { address, nftList } = message.data;
+  const res = await getNftSummary(address);
+  const finalList = [];
+  const codehashList = [];
+  for (let i of nftList) {
+    codehashList.push(i.codehash);
+  }
+  if (res && Array.isArray(res) && res.length) {
+    for (let i of res) {
+      if (codehashList.includes(i.codeHash)) {
+        finalList.push(i);
+      }
+    }
+  }
+  return finalList;
+}
+
+// transfer ft
+export async function transferFt(message) {
+  const { wif, transferAddress, transferAmount, transferItem } = message.data;
+  const { codeHash, genesis } = transferItem;
+  const ft = new FtManager({
+    network: API_NET.MAIN,
+    apiTarget: API_TARGET.MVC,
+    feeb: feeb,
+    purse: wif,
+  });
+  ft.api.authorize({
+    authorization: metaSvAuthorization,
+  });
+  const res = await ft.transfer({
+    senderWif: wif,
+    receivers: [
+      {
+        address: transferAddress,
+        amount: transferAmount,
+      },
+    ],
+    codehash: codeHash,
+    genesis,
+  });
+}
+
+// transfer nft
+export async function transferNft(message) {
+  const { wif, address, transferAddress, transferAmount, transferItem } = message.data;
+  const { codeHash, genesis } = transferItem;
+  const senderNftUtxos = await getNftUtxo(address);
+  if (senderNftUtxos && senderNftUtxos.length) {
+    const findOne = senderNftUtxos.find((v) => {
+      return v.codeHash === codeHash && v.genesis === genesis;
+    });
+    if (findOne) {
+      const nft = new NftManager({
+        network: API_NET.MAIN,
+        apiTarget: API_TARGET.MVC,
+        feeb: feeb,
+        purse: wif,
+      });
+      nft.api.authorize({
+        authorization: metaSvAuthorization,
+      });
+      const res = await nft.transfer({
+        genesis,
+        codehash: codeHash,
+        receiverAddress: transferAddress,
+        senderPrivateKey: wif,
+        tokenIndex: findOne.tokenIndex
+      })
+    }
+  }
 }

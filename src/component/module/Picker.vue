@@ -72,6 +72,10 @@ export default {
     padding: 0;
     border-radius: var(--border-radius-more);
 
+    :deep(.card-content) {
+      padding: 0;
+    }
+
     &.top {
       bottom: 0;
       border-top-left-radius: 0;
@@ -84,12 +88,12 @@ export default {
       border-bottom-right-radius: 0;
     }
 
-    & > .list {
-      & > .item {
+    .list {
+      .item {
         text-align: center;
         cursor: pointer;
         padding: 36px;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--second-border-color);
         transition: var(--transition);
 
         &:hover {
