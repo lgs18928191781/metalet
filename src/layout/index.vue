@@ -24,7 +24,7 @@ import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 export default {
   name: 'layout',
   computed: {
-    ...mapGetters('system', ['config', 'locale']),
+    ...mapGetters('system', ['config', 'locale', 'networkType']),
     ...mapGetters('user', ['user']),
     appLogo() {
       return this.config?.CONFIG_APP_LOGO || '';
@@ -41,6 +41,7 @@ export default {
       showPicker: false,
       pickerList: [
         { label: i18n('menu.editAccount'), name: 'editAccount' },
+        { label: () => `${i18n('menu.changeNetwork')}: ${this.networkType === 'main' ? 'test' : 'main'}`, name: 'changeNetwork' },
         { label: i18n('menu.changeLang'), name: 'changeLang' },
         { label: i18n('menu.logout'), name: 'logout' },
       ],
@@ -55,7 +56,7 @@ export default {
     handleOpenPicker() {
       this.showPicker = true;
     },
-    handlePickerItemClick(item) {
+    async handlePickerItemClick(item) {
       switch (item.name) {
         case 'editAccount': {
           this.$router.push({
@@ -73,6 +74,14 @@ export default {
         case 'changeLang': {
           this.setLocale(this.locale === 'en' ? 'zh' : 'en');
           window.location.reload(true);
+          break;
+        }
+        case 'changeNetwork': {
+          await sendMessageFromExtPageToBackground('changeNetwork', {
+            networkType: this.networkType === 'main' ? 'test' : 'main',
+          });
+          window.location.reload(true);
+          break;
         }
       }
     },

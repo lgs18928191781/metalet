@@ -40,6 +40,7 @@ module.exports = (startEnv, argv) => {
     target: 'web',
     devtool,
     entry: {
+      startUp: './src/startUp.js',
       background: './src/background.js',
       options: './src/options.js',
       popup: './src/popup.js',
@@ -161,7 +162,8 @@ module.exports = (startEnv, argv) => {
         },
         minify: isProd,
         excludeChunks: ['background'],
-        chunks: ['popup'],
+        scriptLoading: 'blocking',
+        chunks: ['startUp', 'popup'],
       }),
       new HtmlWebpackPlugin({
         template: './options.ejs',
@@ -173,7 +175,8 @@ module.exports = (startEnv, argv) => {
         },
         minify: isProd,
         excludeChunks: ['background'],
-        chunks: ['options'],
+        scriptLoading: 'blocking',
+        chunks: ['startUp', 'options'],
       }),
       // 提取css
       new MiniCssExtractPlugin({
@@ -206,7 +209,7 @@ module.exports = (startEnv, argv) => {
     },
     // 开发环境配置
     devServer: {
-      port: 1234,
+      // port: 1234,
       open: ['/popup.html'],
       historyApiFallback: true,
       allowedHosts: 'all',

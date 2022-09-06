@@ -3,6 +3,17 @@
   <mo-button @click="showToast2">toast2</mo-button>
   <mo-button @click="showLoading">loading</mo-button>
   <mo-button @click="getFeeb">getFeeb</mo-button>
+  <mo-button @click="createAccount">createAccount</mo-button>
+  <hr>
+  <mo-card>
+    <template #header>
+      <div class="title">Tokens</div>
+      <div class="ctrl">
+        <i class="add"></i>
+      </div>
+    </template>
+    12312323
+  </mo-card>
 </template>
 
 <script>
@@ -41,6 +52,19 @@ export default {
         wif: this.currentAccount.wif,
       });
       console.log(data);
+    },
+    async createAccount() {
+      const { data: words } = await sendMessageFromExtPageToBackground('getMnemonicWords');
+      const { data } = await sendMessageFromExtPageToBackground('createAccount', {
+        mnemonicStr: words.join(' '),
+        derivationPath: "m/44'/10001'/0'",
+        alias: '123',
+        password: '456',
+        email: '789',
+        phone: '000',
+      });
+      const res = await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
+      console.log(res);
     },
   },
 };

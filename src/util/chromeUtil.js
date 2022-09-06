@@ -67,7 +67,11 @@ export function sendMessageFromExtPageToBackground(type, data = null) {
   return new Promise((resolve, reject) => {
     const clientId = window.name;
     const time = Date.now();
-    chrome?.runtime?.sendMessage({ type, data, clientId, time });
+    if (chrome?.runtime?.sendMessage) {
+      chrome?.runtime?.sendMessage({ type, data, clientId, time });
+    } else {
+      throw new Error('send message unSupport')
+    }
     const funcId = `${clientId}_${type}_${time}`;
 
     initExtPageMessageListener.msgMap[funcId] = (finalResult) => {

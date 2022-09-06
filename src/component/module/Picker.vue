@@ -7,7 +7,7 @@
           <div v-if="list && list.length" class="list">
             <template v-for="item in list">
               <div class="item" @click="handleClick(item)">
-                <span>{{ item.label }}</span>
+                <span>{{ labelToText(item.label) }}</span>
               </div>
             </template>
           </div>
@@ -46,6 +46,12 @@ export default {
       this.$emit('onClose');
       this.$emit('update:modelValue', false);
     },
+    labelToText(label) {
+      if (typeof label === 'function') {
+        return label();
+      }
+      return label;
+    },
   },
 };
 </script>
@@ -66,6 +72,10 @@ export default {
     padding: 0;
     border-radius: var(--border-radius-more);
 
+    :deep(.card-content) {
+      padding: 0;
+    }
+
     &.top {
       bottom: 0;
       border-top-left-radius: 0;
@@ -78,12 +88,12 @@ export default {
       border-bottom-right-radius: 0;
     }
 
-    & > .list {
-      & > .item {
+    .list {
+      .item {
         text-align: center;
         cursor: pointer;
         padding: 36px;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--second-border-color);
         transition: var(--transition);
 
         &:hover {

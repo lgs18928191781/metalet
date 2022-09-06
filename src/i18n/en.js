@@ -33,6 +33,8 @@ export default {
     password: 'Password',
     password_2: 'Repeat Password',
     alias: 'Alias',
+    email: 'Email',
+    phone: 'Phone',
     submit: 'Submit',
     restoreType: 'Restore Type',
     restoreType_1: 'Restore from Mnemonic',
@@ -61,6 +63,7 @@ export default {
     wallet: 'Wallet',
     token: 'Token',
     others: 'Others',
+    nft: 'NFT',
     pleaseInputAddress: 'Please input address',
     pleaseInputAmount: 'Please input amount',
     amountMoreThan2000: 'Amount must more than 2000 SATS',
@@ -74,5 +77,6 @@ export default {
     editAccount: 'Edit Account',
     logout: 'Logout',
     changeLang: 'Change Language',
+    changeNetwork: 'Change Network',
   },
 };
