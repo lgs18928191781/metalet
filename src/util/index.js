@@ -116,24 +116,25 @@ export function createQrCode(text) {
 
 // 检查网络
 export async function checkNetwork() {
-  const mainIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST)
-    .then(() => true)
-    .catch((err) => {
-      console.log('main network can not use');
-      return false;
-    });
-  const testIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST_TEST)
-    .then(() => true)
-    .catch((err) => {
-      console.log('test network can not use');
-      return false;
-    });
-
-  if (mainIsOk) {
-    return 'main';
-  } else if (testIsOk) {
-    return 'test';
-  } else {
-    return 'main';
-  }
+  // const mainIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST)
+  //   .then(() => true)
+  //   .catch((err) => {
+  //     console.log('main network can not use');
+  //     return false;
+  //   });
+  // const testIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST_TEST)
+  //   .then(() => true)
+  //   .catch((err) => {
+  //     console.log('test network can not use');
+  //     return false;
+  //   });
+  //
+  // if (mainIsOk) {
+  //   return 'main';
+  // } else if (testIsOk) {
+  //   return 'test';
+  // } else {
+  //   return 'main';
+  // }
+  return 'test';
 }

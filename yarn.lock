@@ -1556,9 +1556,9 @@ ajv@^8.0.0, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-ansi-html-community@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npmmirror.com/ansi-html-community/-/ansi-html-community-0.0.8.tgz#69fbc4d6ccbe383f9736934ae34c3f8290f1bf41"
+ansi-html-community@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.npmmirror.com/ansi-html-community/-/ansi-html-community-0.0.9.tgz#69fbc4d6ccbe383f9736934ae34c3f8290f1bf41"
   integrity sha512-1APHAyr3+PCamwNw3bXCPp4HFLONZt/yIH0sZp0/469KWNTEy+qN5jQ3GVX6DMZ1UXAi34yVwtTeaG/HpBuuzw==
 
 ansi-regex@^2.0.0:
@@ -5470,7 +5470,7 @@ webpack-dev-server@^4.10.0:
     "@types/serve-static" "^1.13.10"
     "@types/sockjs" "^0.3.33"
     "@types/ws" "^8.5.1"
-    ansi-html-community "^0.0.8"
+    ansi-html-community "^0.0.9"
     bonjour-service "^1.0.11"
     chokidar "^3.5.3"
     colorette "^2.0.10"

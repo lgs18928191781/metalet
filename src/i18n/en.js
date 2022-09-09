@@ -9,6 +9,8 @@ export default {
   fail: 'Fail',
   copy: 'Copy',
   comingSoon: 'Coming Soon',
+  and: 'and',
+  to: 'to',
   login: {
     welcome: 'Welcome to',
     welcome_2: 'Metalet will help you connect to the blockchain.',
@@ -72,6 +74,7 @@ export default {
     unit: 'unit:(SPACE)',
     fee: 'Fee',
     total: 'Total',
+    confirmToSend: 'Are you confirm to send',
   },
   menu: {
     editAccount: 'Edit Account',

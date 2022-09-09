@@ -317,15 +317,23 @@ export default {
       if (satoshi + this.fee >= this.balance) {
         return this.$toast({ message: i18n('home.amountNotEnough') });
       }
-      const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
-        wif: this.account.wif,
-        sendAddress: this.sendAddress,
-        sendAmount: satoshi,
-        address: this.account.address,
+      // const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
+      //   wif: this.account.wif,
+      //   sendAddress: this.sendAddress,
+      //   sendAmount: satoshi,
+      //   address: this.account.address,
+      // });
+      // this.$toast({ message: i18n('home.paySuccess') });
+      // this.handleCloseSendDialog();
+      // await this.fetchData();
+      this.$router.push({
+        path: '/order',
+        query: {
+          type: 'send',
+          sendAddress: this.sendAddress,
+          sendAmount: satoshi,
+        },
       });
-      this.$toast({ message: i18n('home.paySuccess') });
-      this.handleCloseSendDialog();
-      await this.fetchData();
     },
     handleAmountInput(e) {
       clearTimeout(this.inputAmountTimer);
@@ -399,6 +407,15 @@ export default {
       }
       if (this.tokenDialogType === 'Token' && !this.transferAmount) {
         return this.$toast({ message: i18n('home.pleaseInputAmount') });
+      }
+      const flag = await this.$alert({
+        message: i18n('home.confirmToSend'),
+        cancelBtn: true,
+      })
+        .then(() => true)
+        .catch(() => false);
+      if (!flag) {
+        return;
       }
       if (this.tokenDialogType === 'Token') {
         const { data } = await sendMessageFromExtPageToBackground('transferFt', {

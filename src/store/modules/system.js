@@ -12,7 +12,7 @@ export default {
   state: () => ({
     config,
     locale: lastLanguageCache,
-    networkType: 'main',
+    networkType: 'test',
   }),
   mutations: {
     setConfig(state, payload) {

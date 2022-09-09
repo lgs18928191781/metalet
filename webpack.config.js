@@ -45,6 +45,7 @@ module.exports = (startEnv, argv) => {
       options: './src/options.js',
       popup: './src/popup.js',
       contentScript: './src/contentScript.js',
+      metalet: './src/metalet.js',
     },
     output: {
       path: outputPath,

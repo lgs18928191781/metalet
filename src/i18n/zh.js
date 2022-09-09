@@ -9,6 +9,8 @@ export default {
   fail: '失败',
   copy: '复制',
   comingSoon: '敬请期待',
+  and: '和',
+  to: '给',
   login: {
     welcome: '欢迎使用',
     welcome_2: 'Metalet是一个帮助你连接到区块链的工具.',
@@ -72,6 +74,7 @@ export default {
     unit: '单位:(SPACE)',
     fee: '上链费',
     total: '总计',
+    confirmToSend: '是否确认转账',
   },
   menu: {
     editAccount: '编辑账号',

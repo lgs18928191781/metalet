@@ -54,7 +54,7 @@ export function uploadMetaIdRaw(data) {
 
 export function uploadXpub(xPub) {
   return get({
-    url: `/v1/meta/xpub/${xPub}`,
+    url: `/metaid-base/v1/meta/xpub/${xPub}`,
     host: config.networkType === 'test' ? config.CONFIG_API_SHOWMONEY_HOST_TEST : config.CONFIG_API_SHOWMONEY_HOST,
   });
 }

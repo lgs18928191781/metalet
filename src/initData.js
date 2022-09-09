@@ -15,6 +15,7 @@ export async function initData() {
     if (hasAccount) {
       await store.dispatch('account/setCurrentAccount', hasAccount);
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', hasAccount);
+      sendMessageFromExtPageToBackground('saveCurrentAccount', hasAccount);
     }
   }
   //初始化nft列表
