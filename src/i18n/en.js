@@ -6,6 +6,7 @@ export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
   success: 'Success',
+  transfer: 'Transfer',
   fail: 'Fail',
   copy: 'Copy',
   comingSoon: 'Coming Soon',
@@ -89,5 +90,6 @@ export default {
     to: 'To',
     sendAmount: 'Send Amount',
     fee: 'Fee',
+    balance: 'Balance',
   },
 };

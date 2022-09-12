@@ -6,6 +6,7 @@ export default {
   confirm: '确认',
   cancel: '取消',
   success: '成功',
+  transfer: '转账',
   fail: '失败',
   copy: '复制',
   comingSoon: '敬请期待',
@@ -89,5 +90,6 @@ export default {
     to: '收款账户',
     sendAmount: '交易金额',
     fee: '小费',
+    balance: '余额',
   },
 };

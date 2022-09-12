@@ -5,7 +5,7 @@
       <template v-if="orderStep === 0">
         <h1 class="mo-title" style="text-align: center">{{ $t('order.orderTransfer') }}</h1>
         <hr class="mo-divider" />
-        <mo-form inline label-width="120px">
+        <mo-form>
           <mo-form-item :label="$t('order.from')">
             <div class="txt-hide">{{ account.address }}</div>
           </mo-form-item>
@@ -33,25 +33,28 @@
       </template>
       <!-- success -->
       <template v-else-if="orderStep === 1">
-        <h1>success</h1>
-        <div class="info">
-          <div class="row">
-            <label></label>
-            <div class="content"></div>
-          </div>
-          <div class="row">
-            <label></label>
-            <div class="content"></div>
-          </div>
-          <div class="row">
-            <label></label>
-            <div class="content"></div>
-          </div>
-          <div class="row">
-            <label></label>
-            <div class="content"></div>
-          </div>
-        </div>
+        <img src="/public/img/icon-success.svg" class="success" />
+        <h1 class="success-title mo-title">{{ $t('transfer') }} {{ $t('success') }}</h1>
+        <hr class="mo-divider" />
+        <mo-form>
+          <mo-form-item :label="$t('order.sendAmount')">
+            <div class="txt-hide">
+              {{ $filter.satoshisToSpace(sendAmount) }}
+              SPACE
+            </div>
+          </mo-form-item>
+          <mo-form-item :label="$t('order.fee')">
+            <div>{{ $filter.satoshisToSpace(fee) }} SPACE</div>
+          </mo-form-item>
+          <hr class="mo-divider" />
+          <mo-form-item :label="$t('order.balance')">
+            <div>{{ $filter.satoshisToSpace(balance) }} SPACE</div>
+          </mo-form-item>
+          <hr class="mo-divider" />
+          <mo-form-item submitItem style="text-align: center">
+            <mo-button @click="handleCancel">{{ $t('confirm') }}</mo-button>
+          </mo-form-item>
+        </mo-form>
       </template>
       <!-- fail -->
       <template v-else-if="orderStep === -1"> </template>
@@ -81,10 +84,12 @@ export default {
     return {
       orderStep: 0, // 0:ready, 1:success
       fee: this.$route.query.fee || 0,
+      balance: 0,
     };
   },
-  mounted() {
+  created() {
     this.countFee();
+    this.getBalance();
   },
   methods: {
     async countFee() {
@@ -103,6 +108,12 @@ export default {
     handleCancel() {
       this.$router.push({ path: '/' });
     },
+    async getBalance() {
+      const { data } = await sendMessageFromExtPageToBackground('getBalance', {
+        address: this.account.address,
+      });
+      this.balance = data;
+    },
     async handleConfirm() {
       if (!this.sendAddress) {
         return this.$toast({ message: i18n('home.pleaseInputAddress') });
@@ -110,7 +121,8 @@ export default {
       if (!this.sendAmount) {
         return this.$toast({ message: i18n('home.pleaseInputAmount') });
       }
-      const satoshi = spaceTosatoshis(+this.sendAmount).toNumber();
+      const satoshi = +this.sendAmount;
+      console.log(satoshi);
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
@@ -127,7 +139,8 @@ export default {
         loading.close();
       });
       this.$toast({ message: i18n('home.paySuccess') });
-      this.$router.push({ path: '/success' });
+      await this.getBalance();
+      this.orderStep = 1;
     },
   },
 };
