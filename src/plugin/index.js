@@ -7,6 +7,7 @@ import Input from '@/component/module/Input.vue';
 import RadioGroup from '@/component/module/RadioGroup.vue';
 import Dialog from '@/component/module/Dialog.vue';
 import Picker from '@/component/module/Picker.vue';
+import Empty from '@/component/module/Empty.vue';
 import { toast, loading, alert } from './feedbackPlugins';
 
 export function initPlugin(app) {
@@ -19,6 +20,7 @@ export function initPlugin(app) {
   app.component(RadioGroup.name, RadioGroup);
   app.component(Dialog.name, Dialog);
   app.component(Picker.name, Picker);
+  app.component(Empty.name, Empty);
   app.use(toast);
   app.use(loading);
   app.use(alert);

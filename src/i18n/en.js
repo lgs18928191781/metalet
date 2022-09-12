@@ -9,6 +9,7 @@ export default {
   fail: 'Fail',
   copy: 'Copy',
   comingSoon: 'Coming Soon',
+  empty: 'Empty',
   and: 'and',
   to: 'to',
   login: {
@@ -81,5 +82,12 @@ export default {
     logout: 'Logout',
     changeLang: 'Change Language',
     changeNetwork: 'Change Network',
+  },
+  order: {
+    orderTransfer: 'Transfer Confirm',
+    from: 'From',
+    to: 'To',
+    sendAmount: 'Send Amount',
+    fee: 'Fee',
   },
 };

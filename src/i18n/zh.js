@@ -9,6 +9,7 @@ export default {
   fail: '失败',
   copy: '复制',
   comingSoon: '敬请期待',
+  empty: '暂无数据',
   and: '和',
   to: '给',
   login: {
@@ -81,5 +82,12 @@ export default {
     logout: '登出',
     changeLang: '切换语言',
     changeNetwork: '切换网络',
+  },
+  order: {
+    orderTransfer: '确认转账',
+    from: '付款账户',
+    to: '收款账户',
+    sendAmount: '交易金额',
+    fee: '小费',
   },
 };

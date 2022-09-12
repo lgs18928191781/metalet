@@ -75,7 +75,6 @@ export function sendMessageFromExtPageToBackground(
   clientId = window.name,
   from = 'extPage',
   to = 'background',
-  timeout = 6000
 ) {
   return new Promise((resolve, reject) => {
     const time = Date.now();
@@ -103,9 +102,5 @@ export function sendMessageFromExtPageToBackground(
       initExtPageMessageListener.msgMap[funcId] = null;
       delete initExtPageMessageListener.msgMap[funcId];
     };
-
-    setTimeout(() => {
-      reject();
-    }, timeout);
   });
 }
