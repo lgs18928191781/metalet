@@ -38,6 +38,7 @@ export function computeScreenSize() {
   const bodyHeight = body.clientHeight;
   if (height === 600 && height === htmlHeight && height === bodyHeight) {
     setTimeout(() => {
+      root.style.width = '375px';
       root.style.height = height + 'px';
       root.style.overflowX = 'hidden';
       root.style.overflowY = 'auto';
@@ -137,4 +138,27 @@ export async function checkNetwork() {
   //   return 'main';
   // }
   return 'test';
+}
+
+// sleep
+export function sleep(delay = 1000) {
+  return new Promise((r) => {
+    let timer = setTimeout(() => {
+      clearTimeout(timer);
+      r();
+    }, delay);
+  });
+}
+
+// checkReady
+export function checkReady(timeout = 10000) {
+  let starTime = Date.now();
+  return new Promise((r) => {
+    let timer = setInterval(() => {
+      if (global?._isReady || window?._isReady || Date.now() - starTime >= timeout) {
+        clearInterval(timer);
+        r();
+      }
+    }, 1000);
+  });
 }

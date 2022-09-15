@@ -3,7 +3,7 @@ import { ERR_CODE_ERR } from '@/constant/errCode';
 import { makeMessageResponse, openTab } from '@/util/chromeUtil';
 import { initDb } from '@/util/db';
 import * as messageMethods from '@/lib/messageHandler';
-import { checkNetwork } from '@/util';
+import { checkNetwork, checkReady } from '@/util';
 
 // 初始化
 global._isReady = false;
@@ -11,25 +11,31 @@ global._service_type_ = 'background';
 global.config = config;
 global.window = global;
 global.window.config = config;
-initDb();
-messageMethods.initApi();
 
-// 插件加载
-chrome.runtime.onInstalled.addListener((details) => {
-  console.info('runtime installed', details);
-  checkNetwork()
-    .then(async (res) => {
-      await changeNetworkType(res);
+function backgroundInit() {
+  Promise.all([initDb(), checkNetwork()])
+    .then(([res, networkType]) => {
+      return changeNetworkType(networkType);
     })
-    .finally(() => {
-      // 加载后打开popup页面
-      if (config.env === 'development') {
-        openTab('/popup.html');
-      }
+    .then(() => {
+      return messageMethods.initApi();
+    })
+    .then(() => {
       global._isReady = true;
     });
-});
+}
 
+backgroundInit();
+
+// 插件加载
+chrome.runtime.onInstalled.addListener(async (details) => {
+  console.info('runtime installed', details);
+  await checkReady();
+  // 加载后打开popup页面
+  if (config.env === 'development') {
+    openTab('/popup.html');
+  }
+});
 // 消息互通
 chrome.runtime.onMessage.addListener(messageProcessor);
 
@@ -58,6 +64,7 @@ async function messageProcessor(message, sender, sendResponse) {
 
 // 单个消息处理与响应
 async function responseOneMessage(message, sender, funcId, fromType) {
+  await checkReady();
   const { type, clientId, time } = message;
   let func;
   if (messageMethods[message.type]) {
