@@ -449,6 +449,7 @@ export async function transferFt(message) {
     codehash: codeHash,
     genesis,
   });
+  console.log(res);
 }
 
 // transfer nft
@@ -477,6 +478,7 @@ export async function transferNft(message) {
         senderPrivateKey: wif,
         tokenIndex: findOne.tokenIndex,
       });
+      console.log(res);
     }
   }
 }
