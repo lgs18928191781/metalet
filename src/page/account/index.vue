@@ -134,6 +134,7 @@ export default {
         phone: this.phone,
       });
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
+      sendMessageFromExtPageToBackground('saveCurrentAccount', data);
       this.setCurrentAccount(data);
       loading.close();
       this.$router.replace({
@@ -149,6 +150,7 @@ export default {
         restoreType: this.restoreType,
       });
       await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
+      sendMessageFromExtPageToBackground('saveCurrentAccount', data);
       this.setCurrentAccount(data);
       loading.close();
       this.$router.replace({

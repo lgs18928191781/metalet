@@ -4,7 +4,7 @@
   <mo-button @click="showLoading">loading</mo-button>
   <mo-button @click="getFeeb">getFeeb</mo-button>
   <mo-button @click="createAccount">createAccount</mo-button>
-  <hr>
+  <hr />
   <mo-card>
     <template #header>
       <div class="title">Tokens</div>

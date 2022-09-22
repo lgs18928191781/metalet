@@ -10,8 +10,13 @@
   </teleport>
 </template>
 <script>
+import Card from './Card.vue';
+
 export default {
   name: 'mo-dialog',
+  components: {
+    [Card.name]: Card,
+  },
   props: {
     width: {
       type: [String, Number],

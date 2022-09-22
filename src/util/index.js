@@ -38,6 +38,7 @@ export function computeScreenSize() {
   const bodyHeight = body.clientHeight;
   if (height === 600 && height === htmlHeight && height === bodyHeight) {
     setTimeout(() => {
+      root.style.width = '375px';
       root.style.height = height + 'px';
       root.style.overflowX = 'hidden';
       root.style.overflowY = 'auto';
@@ -116,24 +117,48 @@ export function createQrCode(text) {
 
 // 检查网络
 export async function checkNetwork() {
-  const mainIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST)
-    .then(() => true)
-    .catch((err) => {
-      console.log('main network can not use');
-      return false;
-    });
-  const testIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST_TEST)
-    .then(() => true)
-    .catch((err) => {
-      console.log('test network can not use');
-      return false;
-    });
+  // const mainIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST)
+  //   .then(() => true)
+  //   .catch((err) => {
+  //     console.log('main network can not use');
+  //     return false;
+  //   });
+  // const testIsOk = await fetch(config.CONFIG_API_SHOWMONEY_HOST_TEST)
+  //   .then(() => true)
+  //   .catch((err) => {
+  //     console.log('test network can not use');
+  //     return false;
+  //   });
+  //
+  // if (mainIsOk) {
+  //   return 'main';
+  // } else if (testIsOk) {
+  //   return 'test';
+  // } else {
+  //   return 'main';
+  // }
+  return 'test';
+}
 
-  if (mainIsOk) {
-    return 'main';
-  } else if (testIsOk) {
-    return 'test';
-  } else {
-    return 'main';
-  }
+// sleep
+export function sleep(delay = 1000) {
+  return new Promise((r) => {
+    let timer = setTimeout(() => {
+      clearTimeout(timer);
+      r();
+    }, delay);
+  });
+}
+
+// checkReady
+export function checkReady(timeout = 10000) {
+  let starTime = Date.now();
+  return new Promise((r) => {
+    let timer = setInterval(() => {
+      if (global?._isReady || window?._isReady || Date.now() - starTime >= timeout) {
+        clearInterval(timer);
+        r();
+      }
+    }, 1000);
+  });
 }

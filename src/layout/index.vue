@@ -41,7 +41,11 @@ export default {
       showPicker: false,
       pickerList: [
         { label: i18n('menu.editAccount'), name: 'editAccount' },
-        { label: () => `${i18n('menu.changeNetwork')}: ${this.networkType === 'main' ? 'test' : 'main'}`, name: 'changeNetwork' },
+        {
+          label: () =>
+            `${i18n('menu.changeNetwork')}: ${this.networkType} -> ${this.networkType === 'main' ? 'test' : 'main'}`,
+          name: 'changeNetwork',
+        },
         { label: i18n('menu.changeLang'), name: 'changeLang' },
         { label: i18n('menu.logout'), name: 'logout' },
       ],

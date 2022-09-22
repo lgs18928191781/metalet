@@ -10,14 +10,6 @@ export default [
     },
   },
   {
-    name: 'account',
-    path: '/account',
-    component: () => import('@/page/account/index.vue'),
-    meta: {
-      needAuth: false,
-    },
-  },
-  {
     name: 'layout',
     path: '/',
     component: Layout,
@@ -29,9 +21,23 @@ export default [
         meta: {},
       },
       {
+        name: 'account',
+        path: '/account',
+        component: () => import('@/page/account/index.vue'),
+        meta: {
+          needAuth: false,
+        },
+      },
+      {
         name: 'edit',
         path: '/edit',
         component: () => import('@/page/edit/index.vue'),
+        meta: {},
+      },
+      {
+        name: 'order',
+        path: '/order',
+        component: () => import('@/page/order/index.vue'),
         meta: {},
       },
       {

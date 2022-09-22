@@ -45,26 +45,28 @@
     <!-- tab1 - token -->
     <template v-if="curTab === 1">
       <div class="action-card">
-        <!--        <div class="top-ctrl">-->
-        <!--          <mo-button simple round @click="handleOpenTokenDialog('ft')">Add</mo-button>-->
-        <!--        </div>-->
         <div class="list">
-          <template v-for="(item, index) in ftInfoList" :key="index">
-            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'Token')">
-              <div class="info-row">
-                <div class="head">
-                  <img :src="item.logo" v-if="item && item.logo" />
-                  <i v-else>{{ (item && item.name && item.name[0]) || 'T' }}</i>
+          <template v-if="ftInfoList.length">
+            <template v-for="(item, index) in ftInfoList" :key="index">
+              <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'Token')">
+                <div class="info-row">
+                  <div class="head">
+                    <img :src="item.logo" v-if="item && item.logo" />
+                    <i v-else>{{ (item && item.name && item.name[0]) || 'T' }}</i>
+                  </div>
+                  <div class="info">
+                    <div class="name txt-hide">{{ item.name }}</div>
+                  </div>
+                  <div class="num">{{ item.amount }}</div>
+                  <div class="ctrl">
+                    <i class="icon transfer"></i>
+                  </div>
                 </div>
-                <div class="info">
-                  <div class="name txt-hide">{{ item.name }}</div>
-                </div>
-                <div class="num">{{ item.amount }}</div>
-                <div class="ctrl">
-                  <i class="icon transfer"></i>
-                </div>
-              </div>
-            </mo-card>
+              </mo-card>
+            </template>
+          </template>
+          <template v-else>
+            <mo-empty />
           </template>
         </div>
       </div>
@@ -72,29 +74,31 @@
     <!-- tab1 - nft -->
     <template v-if="curTab === 2">
       <div class="action-card">
-        <!--        <div class="top-ctrl">-->
-        <!--          <mo-button simple round @click="handleOpenTokenDialog('nft')">Add</mo-button>-->
-        <!--        </div>-->
-        <div class="list">
-          <template v-for="(item, index) in nftInfoList" :key="index">
-            <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'NFT')">
-              <div class="info-row">
-                <div class="head">
-                  <img :src="item.logo" v-if="item && item.logo" />
-                  <i v-else>{{ (item && item.genesis && item.genesis[0]) || 'N' }}</i>
+        <template v-if="nftInfoList.length">
+          <div class="list">
+            <template v-for="(item, index) in nftInfoList" :key="index">
+              <mo-card class="card-item" @click="handleOpenTransferTokenDialog(item, 'NFT')">
+                <div class="info-row">
+                  <div class="head">
+                    <img :src="item.logo" v-if="item && item.logo" />
+                    <i v-else>{{ (item && item.genesis && item.genesis[0]) || 'N' }}</i>
+                  </div>
+                  <div class="info">
+                    <div class="name txt-hide">{{ item.genesis }}</div>
+                    <!--<div class="name txt-hide">{{ item.codeHash }}</div>-->
+                  </div>
+                  <div class="num">{{ item.count }}/{{ item.tokenSupply }}</div>
+                  <div class="ctrl">
+                    <i class="icon transfer"></i>
+                  </div>
                 </div>
-                <div class="info">
-                  <div class="name txt-hide">{{ item.genesis }}</div>
-                  <!--<div class="name txt-hide">{{ item.codeHash }}</div>-->
-                </div>
-                <div class="num">{{ item.count }}/{{ item.tokenSupply }}</div>
-                <div class="ctrl">
-                  <i class="icon transfer"></i>
-                </div>
-              </div>
-            </mo-card>
-          </template>
-        </div>
+              </mo-card>
+            </template>
+          </div>
+        </template>
+        <template v-else>
+          <mo-empty />
+        </template>
       </div>
     </template>
   </div>
@@ -317,15 +321,24 @@ export default {
       if (satoshi + this.fee >= this.balance) {
         return this.$toast({ message: i18n('home.amountNotEnough') });
       }
-      const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
-        wif: this.account.wif,
-        sendAddress: this.sendAddress,
-        sendAmount: satoshi,
-        address: this.account.address,
+      // const { data } = await sendMessageFromExtPageToBackground('sendAmount', {
+      //   wif: this.account.wif,
+      //   sendAddress: this.sendAddress,
+      //   sendAmount: satoshi,
+      //   address: this.account.address,
+      // });
+      // this.$toast({ message: i18n('home.paySuccess') });
+      // this.handleCloseSendDialog();
+      // await this.fetchData();
+      this.$router.push({
+        path: '/order',
+        query: {
+          type: 'send',
+          sendAddress: this.sendAddress,
+          sendAmount: satoshi,
+          fee: this.fee,
+        },
       });
-      this.$toast({ message: i18n('home.paySuccess') });
-      this.handleCloseSendDialog();
-      await this.fetchData();
     },
     handleAmountInput(e) {
       clearTimeout(this.inputAmountTimer);
@@ -399,6 +412,15 @@ export default {
       }
       if (this.tokenDialogType === 'Token' && !this.transferAmount) {
         return this.$toast({ message: i18n('home.pleaseInputAmount') });
+      }
+      const flag = await this.$alert({
+        message: i18n('home.confirmToSend'),
+        cancelBtn: true,
+      })
+        .then(() => true)
+        .catch(() => false);
+      if (!flag) {
+        return;
       }
       if (this.tokenDialogType === 'Token') {
         const { data } = await sendMessageFromExtPageToBackground('transferFt', {

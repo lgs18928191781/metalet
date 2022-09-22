@@ -361,8 +361,13 @@ export async function changeNetwork(message) {
 }
 
 // 获取当前网络
-export function getNetwork() {
-  return config.networkType;
+export async function getNetwork() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(['networkType'], (res) => {
+      const resNetwork = (res && res.networkType) || res;
+      resolve(resNetwork);
+    });
+  });
 }
 
 // 获取ft列表
@@ -470,8 +475,27 @@ export async function transferNft(message) {
         codehash: codeHash,
         receiverAddress: transferAddress,
         senderPrivateKey: wif,
-        tokenIndex: findOne.tokenIndex
-      })
+        tokenIndex: findOne.tokenIndex,
+      });
     }
   }
+}
+
+// 保存当前账号
+export async function saveCurrentAccount(message) {
+  const { xprv } = message.data;
+  if (xprv) {
+    chrome.storage.sync.set({
+      currentAccount: message.data,
+    });
+  }
+}
+
+// 获取当前账号
+export async function getCurrentAccount(message) {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(['currentAccount'], (res) => {
+      resolve((res && res.currentAccount) || res);
+    });
+  });
 }
