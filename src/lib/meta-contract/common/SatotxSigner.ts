@@ -1,21 +1,21 @@
-import * as BN from '../bn.js'
-import { Net } from '../net'
+import * as BN from '../bn.js';
+import { Net } from '../net';
 type ResData = {
-  code: number
-  data: any
-  msg: string
-}
+  code: number;
+  data: any;
+  msg: string;
+};
 export type SignerConfig = {
-  satotxApiPrefix: string
-  satotxPubKey: string
-}
+  satotxApiPrefix: string;
+  satotxPubKey: string;
+};
 
 function fixApiPrefix(api: string) {
-  api = api.split(',')[0]
+  api = api.split(',')[0];
   if (api[api.length - 1] == '/') {
-    api = api.slice(0, api.length - 1)
+    api = api.slice(0, api.length - 1);
   }
-  return api
+  return api;
 }
 
 /**
@@ -24,20 +24,20 @@ function fixApiPrefix(api: string) {
  */
 
 export class SatotxSigner {
-  satotxApiPrefix?: string
-  satotxPubKey?: BN
+  satotxApiPrefix?: string;
+  satotxPubKey?: BN;
   constructor(satotxApiPrefix?: string, satotxPubKey?: string) {
     if (satotxApiPrefix) {
-      satotxApiPrefix = fixApiPrefix(satotxApiPrefix)
+      satotxApiPrefix = fixApiPrefix(satotxApiPrefix);
     }
-    this.satotxApiPrefix = satotxApiPrefix
+    this.satotxApiPrefix = satotxApiPrefix;
     if (satotxPubKey) {
-      this.satotxPubKey = BN.fromString(satotxPubKey, 16)
+      this.satotxPubKey = BN.fromString(satotxPubKey, 16);
     }
   }
 
   async getInfo(): Promise<{
-    pubKey: string
+    pubKey: string;
   }> {
     let _res = await Net.httpGet(
       `${this.satotxApiPrefix}`,
@@ -47,12 +47,12 @@ export class SatotxSigner {
           'Accept-Encoding': 'gzip',
         },
       }
-    )
-    const { code, msg, data } = _res as ResData
+    );
+    const { code, msg, data } = _res as ResData;
     if (code != 0) {
-      throw msg
+      throw msg;
     }
-    return data
+    return data;
   }
 
   /**
@@ -70,19 +70,19 @@ export class SatotxSigner {
     byTxId,
     byTxHex,
   }: {
-    index: number
-    txId: string
-    txHex: string
-    byTxId: string
-    byTxHex: string
+    index: number;
+    txId: string;
+    txHex: string;
+    byTxId: string;
+    byTxHex: string;
   }): Promise<{
-    txId: string
-    index: number
-    byTxId: string
-    sigBE: string
-    sigLE: string
-    padding: string
-    payload: string
+    txId: string;
+    index: number;
+    byTxId: string;
+    sigBE: string;
+    sigLE: string;
+    padding: string;
+    payload: string;
   }> {
     let _res = await Net.httpPost(
       `${this.satotxApiPrefix}/utxo-spend-by/${txId}/${index}/${byTxId}`,
@@ -95,13 +95,13 @@ export class SatotxSigner {
           'Accept-Encoding': 'gzip',
         },
       }
-    )
-    const { code, msg, data } = _res as ResData
+    );
+    const { code, msg, data } = _res as ResData;
     if (code != 0) {
-      throw msg
+      throw msg;
     }
 
-    return data
+    return data;
   }
 
   /**
@@ -110,22 +110,14 @@ export class SatotxSigner {
    * @param {Sha256} satotxData.txId 产生utxo的txid
    * @param {String} satotxData.txHex 产生utxo的rawtx
    */
-  async satoTxSigUTXO({
-    index,
-    txId,
-    txHex,
-  }: {
-    index: number
-    txId: string
-    txHex: string
-  }): Promise<{
-    txId: string
-    index: number
-    byTxId: string
-    sigBE: string
-    sigLE: string
-    padding: string
-    payload: string
+  async satoTxSigUTXO({ index, txId, txHex }: { index: number; txId: string; txHex: string }): Promise<{
+    txId: string;
+    index: number;
+    byTxId: string;
+    sigBE: string;
+    sigLE: string;
+    padding: string;
+    payload: string;
   }> {
     let _res = await Net.httpPost(
       `${this.satotxApiPrefix}/utxo/${txId}/${index}`,
@@ -137,12 +129,12 @@ export class SatotxSigner {
           'Accept-Encoding': 'gzip',
         },
       }
-    )
-    const { code, msg, data } = _res as ResData
+    );
+    const { code, msg, data } = _res as ResData;
     if (code != 0) {
-      throw msg
+      throw msg;
     }
-    return data
+    return data;
   }
 
   async satoTxSigUTXOSpendByUTXO({
@@ -153,26 +145,26 @@ export class SatotxSigner {
     byTxId,
     byTxHex,
   }: {
-    index: number
-    txId: string
-    txHex: string
-    byTxIndex: number
-    byTxId: string
-    byTxHex: string
+    index: number;
+    txId: string;
+    txHex: string;
+    byTxIndex: number;
+    byTxId: string;
+    byTxHex: string;
   }): Promise<{
-    txId: string
-    index: number
-    sigBE: string
-    sigLE: string
-    padding: string
-    payload: string
-    byTxId: string
-    byTxIndex: number
-    byTxSigBE: string
-    byTxSigLE: string
-    byTxPadding: string
-    byTxPayload: string
-    byTxScript: string
+    txId: string;
+    index: number;
+    sigBE: string;
+    sigLE: string;
+    padding: string;
+    payload: string;
+    byTxId: string;
+    byTxIndex: number;
+    byTxSigBE: string;
+    byTxSigLE: string;
+    byTxPadding: string;
+    byTxPayload: string;
+    byTxScript: string;
   }> {
     let _res = await Net.httpPost(
       `${this.satotxApiPrefix}/utxo-spend-by-utxo/${txId}/${index}/${byTxId}/${byTxIndex}`,
@@ -186,12 +178,12 @@ export class SatotxSigner {
           'Content-Encoding': 'gzip',
         },
       }
-    )
-    const { code, msg, data } = _res as ResData
+    );
+    const { code, msg, data } = _res as ResData;
     if (code != 0) {
-      throw msg
+      throw msg;
     }
 
-    return data
+    return data;
   }
 }

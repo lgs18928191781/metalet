@@ -364,7 +364,7 @@ export async function changeNetwork(message) {
 export async function getNetwork() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(['networkType'], (res) => {
-      const resNetwork = (res && res.networkType) || res
+      const resNetwork = (res && res.networkType) || res;
       resolve(resNetwork);
     });
   });

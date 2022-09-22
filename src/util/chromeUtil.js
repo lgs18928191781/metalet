@@ -74,7 +74,7 @@ export function sendMessageFromExtPageToBackground(
   data = null,
   clientId = window.name,
   from = 'extPage',
-  to = 'background',
+  to = 'background'
 ) {
   return new Promise((resolve, reject) => {
     const time = Date.now();

@@ -5,6 +5,7 @@
 *.md
 *.log
 *.lock
+*.scrypt
 dist/
 public/
 .gitignore

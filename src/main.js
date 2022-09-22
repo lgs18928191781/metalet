@@ -17,16 +17,18 @@ export function loadApp(type) {
   initClientName();
 
   // 初始化数据
-  initData().catch(err => {
-    console.error(err);
-  }).finally(() => {
-    // 挂载app
-    const app = createApp(App);
-    initPlugin(app);
-    app.use(filter);
-    app.use(store);
-    app.use(router);
-    app.use(i18n);
-    app.mount('#root');
-  })
+  initData()
+    .catch((err) => {
+      console.error(err);
+    })
+    .finally(() => {
+      // 挂载app
+      const app = createApp(App);
+      initPlugin(app);
+      app.use(filter);
+      app.use(store);
+      app.use(router);
+      app.use(i18n);
+      app.mount('#root');
+    });
 }

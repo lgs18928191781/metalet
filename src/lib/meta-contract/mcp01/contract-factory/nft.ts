@@ -1,6 +1,6 @@
-import * as BN from '../../bn.js'
-import * as mvc from '../../mvc'
-import { ContractAdapter } from '../../common/ContractAdapter'
+import * as BN from '../../bn.js';
+import * as mvc from '../../mvc';
+import { ContractAdapter } from '../../common/ContractAdapter';
 import {
   dummyAddress,
   dummyPadding,
@@ -11,10 +11,10 @@ import {
   dummySigBE,
   dummyTx,
   dummyTxId,
-} from '../../common/dummy'
-import { PROTO_TYPE } from '../../common/protoheader'
-import * as TokenUtil from '../../common/tokenUtil'
-import { PLACE_HOLDER_SIG } from '../../common/utils'
+} from '../../common/dummy';
+import { PROTO_TYPE } from '../../common/protoheader';
+import * as TokenUtil from '../../common/tokenUtil';
+import { PLACE_HOLDER_SIG } from '../../common/utils';
 import {
   buildContractClass,
   Bytes,
@@ -26,43 +26,43 @@ import {
   Sig,
   SigHashPreimage,
   toHex,
-} from '../../scryptlib'
-import * as nftProto from '../contract-proto/nft.proto'
-import { NFT_OP_TYPE } from '../contract-proto/nft.proto'
-import { ContractUtil } from '../contractUtil'
-import { NftSellFactory } from './nftSell'
-import { NftUnlockContractCheckFactory, NFT_UNLOCK_CONTRACT_TYPE } from './nftUnlockContractCheck'
+} from '../../scryptlib';
+import * as nftProto from '../contract-proto/nft.proto';
+import { NFT_OP_TYPE } from '../contract-proto/nft.proto';
+import { ContractUtil } from '../contractUtil';
+import { NftSellFactory } from './nftSell';
+import { NftUnlockContractCheckFactory, NFT_UNLOCK_CONTRACT_TYPE } from './nftUnlockContractCheck';
 
 export class Nft extends ContractAdapter {
   constuctParams: {
-    unlockContractCodeHashArray: Bytes[]
-  }
-  private _formatedDataPart: nftProto.FormatedDataPart
+    unlockContractCodeHashArray: Bytes[];
+  };
+  private _formatedDataPart: nftProto.FormatedDataPart;
 
   constructor(constuctParams: { unlockContractCodeHashArray: Bytes[] }) {
-    let desc = require('../contract-desc/nft_desc.json')
-    let ClassObj = buildContractClass(desc)
-    let contract = new ClassObj(constuctParams.unlockContractCodeHashArray)
-    super(contract)
+    let desc = require('../contract-desc/nft_desc.json');
+    let ClassObj = buildContractClass(desc);
+    let contract = new ClassObj(constuctParams.unlockContractCodeHashArray);
+    super(contract);
 
-    this.constuctParams = constuctParams
+    this.constuctParams = constuctParams;
   }
 
   clone() {
-    let contract = new Nft(this.constuctParams)
-    contract.setFormatedDataPart(this.getFormatedDataPart())
-    return contract
+    let contract = new Nft(this.constuctParams);
+    contract.setFormatedDataPart(this.getFormatedDataPart());
+    return contract;
   }
 
   public setFormatedDataPart(dataPart: nftProto.FormatedDataPart): void {
-    this._formatedDataPart = Object.assign({}, this._formatedDataPart, dataPart)
-    this._formatedDataPart.protoVersion = nftProto.PROTO_VERSION
-    this._formatedDataPart.protoType = PROTO_TYPE.NFT
-    super.setDataPart(toHex(nftProto.newDataPart(this._formatedDataPart)))
+    this._formatedDataPart = Object.assign({}, this._formatedDataPart, dataPart);
+    this._formatedDataPart.protoVersion = nftProto.PROTO_VERSION;
+    this._formatedDataPart.protoType = PROTO_TYPE.NFT;
+    super.setDataPart(toHex(nftProto.newDataPart(this._formatedDataPart)));
   }
 
   public getFormatedDataPart() {
-    return this._formatedDataPart
+    return this._formatedDataPart;
   }
 
   public unlock({
@@ -107,35 +107,35 @@ export class Nft extends ContractAdapter {
 
     operation,
   }: {
-    txPreimage: SigHashPreimage
-    prevouts: Bytes
+    txPreimage: SigHashPreimage;
+    prevouts: Bytes;
 
     // nft
-    prevNftInputIndex: number
-    prevNftAddress: Bytes
-    nftTxHeader: Bytes
-    nftTxInputProof: Bytes
-    prevNftTxProof: Bytes
-    genesisScript: Bytes
+    prevNftInputIndex: number;
+    prevNftAddress: Bytes;
+    nftTxHeader: Bytes;
+    nftTxInputProof: Bytes;
+    prevNftTxProof: Bytes;
+    genesisScript: Bytes;
 
     // contract
-    contractInputIndex: number
-    contractTxProof: Bytes
+    contractInputIndex: number;
+    contractTxProof: Bytes;
 
     // unlockCheck
-    amountCheckHashIndex: number
-    amountCheckInputIndex: number
-    amountcheckTxProof: Bytes
-    amountCheckScrypt: Bytes
+    amountCheckHashIndex: number;
+    amountCheckInputIndex: number;
+    amountcheckTxProof: Bytes;
+    amountCheckScrypt: Bytes;
 
-    senderPubKey?: PubKey //only transfer need
-    senderSig?: Sig // only transfer need
+    senderPubKey?: PubKey; //only transfer need
+    senderSig?: Sig; // only transfer need
 
-    receiverAddress?: Bytes // only transfer need
-    nftOutputSatoshis?: Int // only transfer need
-    opReturnScript?: Bytes // only transfer need
-    changeAddress?: Ripemd160 // only transfer need
-    changeSatoshis?: Int // only transfer need
+    receiverAddress?: Bytes; // only transfer need
+    nftOutputSatoshis?: Int; // only transfer need
+    opReturnScript?: Bytes; // only transfer need
+    changeAddress?: Ripemd160; // only transfer need
+    changeSatoshis?: Int; // only transfer need
 
     // checkInputIndex?: number //only unlockFromContract need
     // checkScriptTx?: Bytes //only unlockFromContract need
@@ -144,20 +144,20 @@ export class Nft extends ContractAdapter {
     // lockContractTx?: Bytes //only unlockFromContract need
     // lockContractTxOutIndex?: number //only unlockFromContract need
 
-    operation: NFT_OP_TYPE
+    operation: NFT_OP_TYPE;
   }) {
     if (!genesisScript) {
-      genesisScript = new Bytes('')
+      genesisScript = new Bytes('');
     }
 
     if (operation != NFT_OP_TYPE.TRANSFER) {
-      senderPubKey = new PubKey('00')
-      senderSig = new Sig('00')
-      receiverAddress = new Bytes('')
-      nftOutputSatoshis = new Int(0)
-      opReturnScript = new Bytes('')
-      changeAddress = new Ripemd160('00')
-      changeSatoshis = new Int(0)
+      senderPubKey = new PubKey('00');
+      senderSig = new Sig('00');
+      receiverAddress = new Bytes('');
+      nftOutputSatoshis = new Int(0);
+      opReturnScript = new Bytes('');
+      changeAddress = new Ripemd160('00');
+      changeSatoshis = new Int(0);
     }
 
     // if (operation != NFT_OP_TYPE.UNLOCK_FROM_CONTRACT) {
@@ -210,32 +210,32 @@ export class Nft extends ContractAdapter {
       // lockContractTxOutIndex,
 
       operation
-    ) as FunctionCall
+    ) as FunctionCall;
   }
 }
 
 export class NftFactory {
-  public static lockingScriptSize: number
+  public static lockingScriptSize: number;
 
   public static getLockingScriptSize() {
-    return this.lockingScriptSize
+    return this.lockingScriptSize;
   }
 
   public static createContract(unlockContractCodeHashArray: Bytes[], codehash?: string): Nft {
     return new Nft({
       unlockContractCodeHashArray,
-    })
+    });
   }
 
   public static getDummyInstance() {
-    let contract = this.createContract(ContractUtil.unlockContractCodeHashArray)
-    contract.setFormatedDataPart({})
-    return contract
+    let contract = this.createContract(ContractUtil.unlockContractCodeHashArray);
+    contract.setFormatedDataPart({});
+    return contract;
   }
 
   public static calLockingScriptSize() {
-    let contract = this.getDummyInstance()
-    return (contract.lockingScript as mvc.Script).toBuffer().length
+    let contract = this.getDummyInstance();
+    return (contract.lockingScript as mvc.Script).toBuffer().length;
   }
 
   public static calUnlockingScriptSize(
@@ -244,7 +244,7 @@ export class NftFactory {
     opreturnData: any,
     operation: NFT_OP_TYPE
   ): number {
-    return 10000
+    return 10000;
     // let opreturnScriptHex = ''
     // if (opreturnData) {
     //   let script = mvc.Script.buildSafeDataOut(opreturnData)

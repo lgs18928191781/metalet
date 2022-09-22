@@ -336,7 +336,7 @@ export default {
           type: 'send',
           sendAddress: this.sendAddress,
           sendAmount: satoshi,
-          fee: this.fee
+          fee: this.fee,
         },
       });
     },
