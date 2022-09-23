@@ -92,4 +92,7 @@ export default {
     fee: 'Fee',
     balance: 'Balance',
   },
+  connect: {
+    allow: 'Allow the website to access your account?',
+  },
 };

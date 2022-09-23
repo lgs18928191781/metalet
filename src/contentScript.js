@@ -11,13 +11,6 @@ const targetEle = document?.querySelector('head') || document?.querySelector('bo
 targetEle.append(script);
 
 // init event
-function customValid(message) {
-  const { from, to } = message.matchingData;
-  if (from !== 'background' || to !== 'contentScript') {
-    return false;
-  }
-}
-
 initExtPageMessageListener();
 window.addEventListener('message', async (e) => {
   try {

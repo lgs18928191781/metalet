@@ -92,4 +92,7 @@ export default {
     fee: '小费',
     balance: '余额',
   },
+  connect: {
+    allow: '是否允许该网站连接钱包?',
+  },
 };

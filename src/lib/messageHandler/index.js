@@ -18,8 +18,6 @@ const P2PKH_UNLOCK_SIZE = 1 + 1 + 71 + 1 + 33;
 const P2PKH_DUST_AMOUNT = 1;
 
 let mvcApi;
-let ft;
-let nft;
 let feeb = config.CONFIG_TX_FEEB;
 
 // 初始化api
@@ -45,8 +43,10 @@ export async function createAccount(message) {
   const mnemonic = Mnemonic.fromString(mnemonicStr);
   const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
   const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey; // 0/0地址
+  const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey;
   const address = privateKey.toAddress().toString();
   const wif = privateKey.toString();
+  const pubWif = publicKey.toString();
   const xpub = HDPrivateKey.xpubkey;
   const xprv = HDPrivateKey.xprivkey;
   const timestamp = Date.now();
@@ -56,6 +56,7 @@ export async function createAccount(message) {
     hasOne = {
       address,
       wif,
+      publicKey: pubWif,
       mnemonicStr,
       alias,
       password,
@@ -200,14 +201,17 @@ export async function restoreAccount(message) {
     const mnemonic = Mnemonic.fromString(mnemonicStr);
     const HDPrivateKey = mnemonic.toHDPrivateKey().deriveChild(derivationPath);
     const privateKey = HDPrivateKey.deriveChild(0).deriveChild(0).privateKey;
+    const publicKey = HDPrivateKey.deriveChild(0).deriveChild(0).publicKey;
     const address = privateKey.toAddress().toString();
     const wif = privateKey.toString();
+    const pubWif = publicKey.toString();
     const xpub = HDPrivateKey.xpubkey;
     const xprv = HDPrivateKey.xprivkey;
 
     obj = {
       address,
       wif,
+      publicKey: pubWif,
       mnemonicStr,
       alias: null,
       password: null,
@@ -497,7 +501,29 @@ export async function saveCurrentAccount(message) {
 export async function getCurrentAccount(message) {
   return new Promise((resolve) => {
     chrome.storage.sync.get(['currentAccount'], (res) => {
-      resolve((res && res.currentAccount) || res);
+      const account = (res && res.currentAccount) || res;
+      if (account && account.xprv) {
+        delete account.xprv;
+      }
+      if (account && account.wif) {
+        delete account.wif;
+      }
+      if (account && account.mnemonicStr) {
+        delete account.mnemonicStr;
+      }
+      resolve(account);
     });
   });
+}
+
+// 获取插件信息
+export async function getPluginInfo(message) {
+  return {
+    id: chrome.runtime.id,
+  };
+}
+
+// 连接钱包
+export async function connectWallet(message) {
+
 }

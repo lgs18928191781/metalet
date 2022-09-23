@@ -71,26 +71,13 @@ class Metalet {
     });
   }
 
-  async getResult(result) {
-    if (!result) {
-      throw new Error('the result is empty');
-    }
-    if (result instanceof Promise) {
-      result = await result.then((res) => res).catch((err) => err);
-    }
-    const { code, msg, data } = result;
-    if (code !== 0) {
-      throw new Error(msg);
-    }
-    return data;
-  }
-
   async getAccount() {
-    return this.sendMessage('getCurrentAccount');
+    const res = await this.sendMessage('getCurrentAccount');
+    return res.data;
   }
 
   async checkLogin() {
-    const currentAccount = await this.getResult(this.getAccount()).catch(() => false);
+    const currentAccount = await this.getAccount().catch(() => false);
     if (!currentAccount) {
       return false;
     }
@@ -101,13 +88,37 @@ class Metalet {
     if (address) {
       return this.sendMessage('getBalance', { address });
     }
-    const currentAccount = await this.getResult(this.getAccount());
-    return this.sendMessage('getBalance', { address: currentAccount.address });
+    const currentAccount = await this.getAccount();
+    const res = await this.sendMessage('getBalance', { address: currentAccount.address });
+    return res.data;
   }
 
   async getAddress() {
-    const currentAccount = await this.getResult(this.getAccount());
+    const currentAccount = await this.getAccount();
     return currentAccount.address;
+  }
+
+  async connectWallet() {
+    const res = await this.getPluginInfo('connectWallet');
+    const pluginId = res.id;
+    const url = `chrome-extension://${pluginId}/popup.html#/test`;
+    const openWindow = window.open(url);
+    openWindow.addEventListener('fuck', (e) => {
+      console.log(e);
+    });
+    openWindow.addEventListener('click', (e) => {
+      console.log(e);
+    });
+  }
+
+  async getPluginInfo() {
+    const res = await this.sendMessage('getPluginInfo');
+    return res.data;
+  }
+
+  async getPublicKey() {
+    const currentAccount = await this.getAccount();
+    return currentAccount.publicKey;
   }
 }
 

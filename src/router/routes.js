@@ -41,6 +41,14 @@ export default [
         meta: {},
       },
       {
+        name: 'connect',
+        path: '/connect',
+        component: () => import('@/page/connect/index.vue'),
+        meta: {
+          needAuth: false,
+        },
+      },
+      {
         name: 'test',
         path: '/test',
         component: () => import('@/page/test/index.vue'),
