@@ -122,7 +122,6 @@ export default {
         return this.$toast({ message: i18n('home.pleaseInputAmount') });
       }
       const satoshi = +this.sendAmount;
-      console.log(satoshi);
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }

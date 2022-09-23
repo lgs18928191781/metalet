@@ -36,7 +36,6 @@ class Metalet {
         if (e.data.matchingData.to !== 'injectClient' || e.data.matchingData.from !== 'contentScript') {
           return;
         }
-        console.info('injectClient page | message come', e);
         const { matchingData } = e.data;
         const { funcId } = matchingData;
         if (funcId in this.msgMap && typeof this.msgMap[funcId] === 'function') {
@@ -102,13 +101,6 @@ class Metalet {
     const res = await this.getPluginInfo('connectWallet');
     const pluginId = res.id;
     const url = `chrome-extension://${pluginId}/popup.html#/test`;
-    const openWindow = window.open(url);
-    openWindow.addEventListener('fuck', (e) => {
-      console.log(e);
-    });
-    openWindow.addEventListener('click', (e) => {
-      console.log(e);
-    });
   }
 
   async getPluginInfo() {

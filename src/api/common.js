@@ -79,3 +79,13 @@ export function getNftUtxo(address) {
     host: config.CONFIG_API_HOST,
   });
 }
+
+export function getXpubLiteBlance(xpub) {
+  return get({
+    url: `/xpubLite/${xpub}/balance`,
+    host: config.CONFIG_API_HOST,
+    headers: {
+      authorization: config.CONFIG_METASV_AUTHORIZATION,
+    },
+  });
+}

@@ -40,7 +40,6 @@ export function initExtPageMessageListener(customValidFunc) {
   }
 
   chrome?.runtime?.onMessage?.addListener((message, sender, sendResponse) => {
-    console.info('ext page | message come', message, sender);
     try {
       if (!message) {
         throw new Error('no response message');
@@ -102,5 +101,27 @@ export function sendMessageFromExtPageToBackground(
       initExtPageMessageListener.msgMap[funcId] = null;
       delete initExtPageMessageListener.msgMap[funcId];
     };
+  });
+}
+
+
+export function storageGet(key) {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(Array.isArray(key) ? key : [key], (res) => {
+      resolve(res);
+    });
+  });
+}
+
+export function storageSet(key, value) {
+  return new Promise((resolve) => {
+    chrome.storage.sync.set(
+      {
+        [key]: value,
+      },
+      () => {
+        resolve();
+      }
+    );
   });
 }

@@ -269,6 +269,7 @@ export default {
     async getBalance() {
       const { data } = await sendMessageFromExtPageToBackground('getBalance', {
         address: this.account.address,
+        xpub: this.account.xpub,
       });
       this.balance = data;
     },

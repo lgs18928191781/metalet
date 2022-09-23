@@ -49,6 +49,7 @@ export default {
     configurations: 'Configurations',
     feeb: 'Rate',
     language: 'Language',
+    publicKey: 'PublicKey',
   },
   error: {
     indexDbNotSupport: 'Your browser is not supprt indexDb, please update your browser',

@@ -49,6 +49,7 @@ export default {
     configurations: '配置',
     feeb: '费率',
     language: '语言',
+    publicKey: '公钥',
   },
   error: {
     indexDbNotSupport: '您的浏览器不支持indexDb, 请升级您的浏览器',

@@ -29,7 +29,6 @@ backgroundInit();
 
 // 插件加载
 chrome.runtime.onInstalled.addListener(async (details) => {
-  console.info('runtime installed', details);
   await checkReady();
   // 加载后打开popup页面
   if (config.env === 'development') {
@@ -46,7 +45,6 @@ async function messageProcessor(message, sender, sendResponse) {
     // ignore
     return;
   }
-  console.info('background service | message come', message, sender);
   const funcId = `${clientId}_${type}_${time}`;
 
   // extpage与background通信

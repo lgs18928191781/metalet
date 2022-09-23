@@ -2,6 +2,7 @@ import Mnemonic from 'mvc-lib/mnemonic';
 import { Api, API_NET, API_TARGET, mvc, FtManager, NftManager } from '@/lib/meta-contract';
 import config, { changeNetworkType } from '@/config';
 import { create, select, update } from '@/util/db';
+import { storageGet, storageSet } from '@/util/chromeUtil';
 import {
   getFtBalance,
   getMetaIdByZeroAddress,
@@ -10,6 +11,7 @@ import {
   getShowDIDUserInfo,
   uploadMetaIdRaw,
   uploadXpub,
+  getXpubLiteBlance,
 } from '@/api/common';
 import { initMetaId, repairMetaNode } from './helper';
 
@@ -76,9 +78,16 @@ export async function createAccount(message) {
 // 获取余额
 export async function getBalance(message) {
   initApi();
-  const { address } = message.data;
+  const { address, xpub } = message.data;
   let { pendingBalance, balance } = await mvcApi.getBalance(address);
-  return balance + pendingBalance;
+  let result = balance + pendingBalance;
+  if (xpub) {
+    const xpubRes = await getXpubLiteBlance(xpub)
+      .then((res) => res.balance)
+      .catch(() => 0);
+    result = Math.max(result, xpubRes);
+  }
+  return result;
 }
 
 // 获取utxo
@@ -287,7 +296,20 @@ export async function checkOrCreateMetaId(message) {
 
   // 10分钟内的新建忽略校验
   if (userMetaIdInfo && timestamp && timestamp + 600000 >= Date.now()) {
-    return;
+    return hasOne;
+  }
+  // 如果齐全
+  if (
+    userMetaIdInfo &&
+    userMetaIdInfo.email &&
+    userMetaIdInfo.infoTxId &&
+    userMetaIdInfo.metaId &&
+    userMetaIdInfo.metaIdRaw &&
+    userMetaIdInfo.name &&
+    userMetaIdInfo.phone &&
+    userMetaIdInfo.protocolTxId
+  ) {
+    return hasOne;
   }
 
   // 预设值
@@ -366,12 +388,9 @@ export async function changeNetwork(message) {
 
 // 获取当前网络
 export async function getNetwork() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(['networkType'], (res) => {
-      const resNetwork = (res && res.networkType) || res;
-      resolve(resNetwork);
-    });
-  });
+  const res = await storageGet('networkType');
+  const resNetwork = (res && res.networkType) || res;
+  return resNetwork;
 }
 
 // 获取ft列表
@@ -453,7 +472,7 @@ export async function transferFt(message) {
     codehash: codeHash,
     genesis,
   });
-  console.log(res);
+  return res;
 }
 
 // transfer nft
@@ -482,7 +501,7 @@ export async function transferNft(message) {
         senderPrivateKey: wif,
         tokenIndex: findOne.tokenIndex,
       });
-      console.log(res);
+      return res
     }
   }
 }
@@ -491,29 +510,24 @@ export async function transferNft(message) {
 export async function saveCurrentAccount(message) {
   const { xprv } = message.data;
   if (xprv) {
-    chrome.storage.sync.set({
-      currentAccount: message.data,
-    });
+    await storageSet('currentAccount', message.data);
   }
 }
 
 // 获取当前账号
 export async function getCurrentAccount(message) {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(['currentAccount'], (res) => {
-      const account = (res && res.currentAccount) || res;
-      if (account && account.xprv) {
-        delete account.xprv;
-      }
-      if (account && account.wif) {
-        delete account.wif;
-      }
-      if (account && account.mnemonicStr) {
-        delete account.mnemonicStr;
-      }
-      resolve(account);
-    });
-  });
+  const res = storageGet('currentAccount');
+  const account = (res && res.currentAccount) || res;
+  // if (account && account.xprv) {
+  //   delete account.xprv;
+  // }
+  // if (account && account.wif) {
+  //   delete account.wif;
+  // }
+  // if (account && account.mnemonicStr) {
+  //   delete account.mnemonicStr;
+  // }
+  return account;
 }
 
 // 获取插件信息
@@ -524,6 +538,4 @@ export async function getPluginInfo(message) {
 }
 
 // 连接钱包
-export async function connectWallet(message) {
-
-}
+export async function connectWallet(message) {}
