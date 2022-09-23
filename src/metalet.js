@@ -36,6 +36,7 @@ class Metalet {
         if (e.data.matchingData.to !== 'injectClient' || e.data.matchingData.from !== 'contentScript') {
           return;
         }
+        console.log('contentScript -> injectClient', e);
         const { matchingData } = e.data;
         const { funcId } = matchingData;
         if (funcId in this.msgMap && typeof this.msgMap[funcId] === 'function') {
@@ -70,37 +71,8 @@ class Metalet {
     });
   }
 
-  async getAccount() {
-    const res = await this.sendMessage('getCurrentAccount');
-    return res.data;
-  }
-
-  async checkLogin() {
-    const currentAccount = await this.getAccount().catch(() => false);
-    if (!currentAccount) {
-      return false;
-    }
-    return true;
-  }
-
-  async getBalance(address) {
-    if (address) {
-      return this.sendMessage('getBalance', { address });
-    }
-    const currentAccount = await this.getAccount();
-    const res = await this.sendMessage('getBalance', { address: currentAccount.address });
-    return res.data;
-  }
-
-  async getAddress() {
-    const currentAccount = await this.getAccount();
-    return currentAccount.address;
-  }
-
-  async connectWallet() {
-    const res = await this.getPluginInfo('connectWallet');
-    const pluginId = res.id;
-    const url = `chrome-extension://${pluginId}/popup.html#/test`;
+  addMsgFunc(funcId, func) {
+    this.msgMap[funcId] = func;
   }
 
   async getPluginInfo() {
@@ -108,9 +80,49 @@ class Metalet {
     return res.data;
   }
 
+  async checkLogin() {
+    const res = await this.sendMessage('checkIsLogin');
+    return res.data;
+  }
+
+  async getAccount() {
+    const res = await this.sendMessage('getCurrentAccount');
+    return res.data;
+  }
+
   async getPublicKey() {
-    const currentAccount = await this.getAccount();
-    return currentAccount.publicKey;
+    const res = await this.getAccount();
+    return res.publicKey;
+  }
+
+  async getAddress() {
+    const res = await this.getAccount();
+    return res.address;
+  }
+
+  async getBalance() {
+    const address = await this.getAddress();
+    const res = await this.sendMessage('getBalance', { address });
+    return res.data;
+  }
+
+  async connectWallet(origin = location.origin) {
+    const type = 'wattingConnect';
+    const clientId = this.clientId;
+    const time = Date.now();
+    const funcId = `${clientId}_${type}_${time}`;
+
+    await this.sendMessage('connectWallet', {
+      origin,
+      funcId,
+      type,
+      clientId,
+      time,
+    });
+
+    return new Promise((resolve) => {
+      this.msgMap[funcId] = (res) => resolve(res);
+    });
   }
 }
 

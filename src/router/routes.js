@@ -45,7 +45,6 @@ export default [
         path: '/connect',
         component: () => import('@/page/connect/index.vue'),
         meta: {
-          needAuth: false,
         },
       },
       {

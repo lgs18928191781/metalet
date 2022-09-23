@@ -2,7 +2,14 @@ import Mnemonic from 'mvc-lib/mnemonic';
 import { Api, API_NET, API_TARGET, mvc, FtManager, NftManager } from '@/lib/meta-contract';
 import config, { changeNetworkType } from '@/config';
 import { create, select, update } from '@/util/db';
-import { storageGet, storageSet } from '@/util/chromeUtil';
+import {
+  storageGet,
+  storageSet,
+  getChromePluginInfo,
+  makeMessageResponse,
+  getCurrentTab,
+  openWindow,
+} from '@/util/chromeUtil';
 import {
   getFtBalance,
   getMetaIdByZeroAddress,
@@ -501,7 +508,7 @@ export async function transferNft(message) {
         senderPrivateKey: wif,
         tokenIndex: findOne.tokenIndex,
       });
-      return res
+      return res;
     }
   }
 }
@@ -516,7 +523,7 @@ export async function saveCurrentAccount(message) {
 
 // 获取当前账号
 export async function getCurrentAccount(message) {
-  const res = storageGet('currentAccount');
+  const res = await storageGet('currentAccount');
   const account = (res && res.currentAccount) || res;
   // if (account && account.xprv) {
   //   delete account.xprv;
@@ -532,10 +539,54 @@ export async function getCurrentAccount(message) {
 
 // 获取插件信息
 export async function getPluginInfo(message) {
-  return {
-    id: chrome.runtime.id,
-  };
+  return getChromePluginInfo();
 }
 
 // 连接钱包
-export async function connectWallet(message) {}
+export async function connectWallet(message) {
+  const { origin, funcId, type, clientId, time } = message.data;
+  const { connectUrl } = getChromePluginInfo();
+  const curTab = await getCurrentTab();
+  const url = `${connectUrl}?origin=${encodeURIComponent(
+    origin
+  )}&funcId=${funcId}&time=${time}&clientId=${clientId}&type=${type}&tabId=${curTab.id}&windowId=${curTab.windowId}`;
+
+  setTimeout(() => {
+    openWindow(url, {
+      focused: true,
+      width: 375,
+      height: 667,
+      type: 'popup',
+    });
+  }, 0);
+}
+
+export async function connectWalletConfirm(message) {
+  const { origin, xprv, flag, funcId, type, clientId, time, tabId, windowId } = message.data;
+  const finalResult = makeMessageResponse(
+    {
+      type,
+      clientId,
+      time,
+      funcId,
+      from: 'background',
+      to: 'contentScript',
+    },
+    flag,
+    0,
+    'ok'
+  );
+  chrome.tabs.sendMessage(Number(tabId), finalResult);
+}
+
+// 检查是否已经连接
+export async function checkIsConnect(message) {}
+
+// 检查是否已经登陆
+export async function checkIsLogin(message) {
+  const res = await storageGet('currentAccount');
+  if (res && res.currentAccount && res.currentAccount.xprv) {
+    return true;
+  }
+  return false;
+}

@@ -20,7 +20,8 @@ window.addEventListener('message', async (e) => {
       // ignore
       return;
     }
-    const { type, data, clientId, time } = e.data;
+    console.log('injectClient -> contentScript', e);
+    const { type, data, clientId, time, specialNotSend } = e.data;
     const funcId = `${clientId}_${type}_${time}`;
     const res = await sendMessageFromExtPageToBackground(type, data, contentScriptId, 'contentScript');
     if (res && res.matchingData) {
