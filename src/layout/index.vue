@@ -4,6 +4,7 @@
       <router-link to="/" class="logo">
         <img :src="appLogo" v-if="appLogo" />
         <span>{{ appName }}</span>
+        <i>{{ networkType }}net</i>
       </router-link>
       <div class="more" @click="handleOpenPicker">
         <img src="/public/img/icon-more.svg" />
@@ -43,7 +44,7 @@ export default {
         { label: i18n('menu.editAccount'), name: 'editAccount' },
         {
           label: () =>
-            `${i18n('menu.changeNetwork')}: ${this.networkType} -> ${this.networkType === 'main' ? 'test' : 'main'}`,
+            `${i18n('menu.changeNetwork')}: ${this.networkType + 'net'} -> ${this.networkType === 'mainnet' ? 'testnet' : 'mainnet'}`,
           name: 'changeNetwork',
         },
         { label: i18n('menu.changeLang'), name: 'changeLang' },
@@ -81,8 +82,12 @@ export default {
           break;
         }
         case 'changeNetwork': {
+          const targetNetworkType = this.networkType === 'main' ? 'test' : 'main';
+          if (targetNetworkType === 'main') {
+            return this.$toast({ message: i18n('functionWillComingSoon') });
+          }
           await sendMessageFromExtPageToBackground('changeNetwork', {
-            networkType: this.networkType === 'main' ? 'test' : 'main',
+            networkType: targetNetworkType,
           });
           window.location.reload(true);
           break;
@@ -133,6 +138,15 @@ export default {
         font-size: 32px;
         font-weight: bold;
         font-family: 'Inter Black';
+      }
+
+      i {
+        margin-left: 16px;
+        font-size: 24px;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 2px 6px;
+        border-radius: 8px;
       }
     }
 

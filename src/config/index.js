@@ -13,6 +13,7 @@ export async function changeNetworkType(val) {
   if (chrome?.storage?.sync?.set) {
     await storageSet('networkType', val);
   }
+  return val
 }
 
 export default appConf;

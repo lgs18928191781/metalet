@@ -10,6 +10,7 @@ export default {
   fail: '失败',
   copy: '复制',
   comingSoon: '敬请期待',
+  functionWillComingSoon: '该功能即将上线,敬请期待',
   empty: '暂无数据',
   and: '和',
   to: '给',

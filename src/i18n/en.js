@@ -10,6 +10,7 @@ export default {
   fail: 'Fail',
   copy: 'Copy',
   comingSoon: 'Coming Soon',
+  functionWillComingSoon: 'The Function Will Coming Soon',
   empty: 'Empty',
   and: 'and',
   to: 'to',

@@ -1,4 +1,4 @@
-import { MVC } from './MVC';
+import { MVC } from './MVC'
 
 export enum API_NET {
   MAIN = 'mainnet',
@@ -10,134 +10,143 @@ export enum API_TARGET {
 }
 
 export type NonFungibleTokenUnspent = {
-  txId: string;
-  outputIndex: number;
-  tokenAddress: string;
-  tokenIndex: string;
-  metaTxId: string;
-  metaOutputIndex: number;
-};
+  txId: string
+  outputIndex: number
+  tokenAddress: string
+  tokenIndex: string
+  metaTxId: string
+  metaOutputIndex: number
+}
 
 export type FungibleTokenUnspent = {
-  txId: string;
-  outputIndex: number;
-  tokenAddress: string;
-  tokenAmount: string;
-};
+  txId: string
+  outputIndex: number
+  tokenAddress: string
+  tokenAmount: string
+}
 
 export type SA_utxo = {
-  txId: string;
-  outputIndex: number;
-  satoshis: number;
-  address: string;
-};
+  txId: string
+  outputIndex: number
+  satoshis: number
+  address: string
+}
 export type FungibleTokenSummary = {
-  codehash: string;
-  genesis: string;
-  sensibleId: string;
-  pendingBalance: string;
-  balance: string;
-  symbol: string;
-  decimal: number;
-};
+  codehash: string
+  genesis: string
+  sensibleId: string
+  pendingBalance: string
+  balance: string
+  symbol: string
+  decimal: number
+}
 
 export type NonFungibleTokenSummary = {
-  codehash: string;
-  genesis: string;
-  sensibleId: string;
-  count: string;
-  pendingCount: string;
-  metaTxId: string;
-  metaOutputIndex: number;
-  supply: string;
-};
+  codehash: string
+  genesis: string
+  sensibleId: string
+  count: string
+  pendingCount: string
+  metaTxId: string
+  metaOutputIndex: number
+  supply: string
+}
 
 export type FungibleTokenBalance = {
-  balance: string;
-  pendingBalance: string;
-  utxoCount: number;
-  decimal: number;
-};
+  balance: string
+  pendingBalance: string
+  utxoCount: number
+  decimal: number
+}
 
 export type NftSellUtxo = {
-  codehash: string;
-  genesis: string;
-  tokenIndex: string;
-  txId: string;
-  outputIndex: number;
-  sellerAddress: string;
-  satoshisPrice: number;
-};
+  codehash: string
+  genesis: string
+  tokenIndex: string
+  txId: string
+  outputIndex: number
+  sellerAddress: string
+  satoshisPrice: number
+}
 export type AuthorizationOption = {
   /**
    * should be provided in MetaSV
    */
-  authorization?: string;
+  authorization?: string
   /**
    * should be provided in MetaSV
    */
-  privateKey?: any;
-};
+  privateKey?: any
+}
 
 export type OutpointSpent = {
-  spentTxId: string;
-  spentInputIndex: number;
-};
+  spentTxId: string
+  spentInputIndex: number
+}
 export interface ApiBase {
-  authorize: (options: AuthorizationOption) => void;
-  getUnspents: (address: string) => Promise<SA_utxo[]>;
-  getRawTxData: (txid: string) => Promise<string>;
-  broadcast: (hex: string) => Promise<string>;
+  authorize: (options: AuthorizationOption) => void
+  getUnspents: (address: string) => Promise<SA_utxo[]>
+  getRawTxData: (txid: string) => Promise<string>
+  broadcast: (hex: string) => Promise<string>
   getFungibleTokenUnspents: (
     codehash: string,
     genesis: string,
     address: string,
     size?: number
-  ) => Promise<FungibleTokenUnspent[]>;
-  getFungibleTokenBalance: (codehash: string, genesis: string, address: string) => Promise<FungibleTokenBalance>;
-  getFungibleTokenSummary(address: string): Promise<FungibleTokenSummary[]>;
+  ) => Promise<FungibleTokenUnspent[]>
+  getFungibleTokenBalance: (
+    codehash: string,
+    genesis: string,
+    address: string
+  ) => Promise<FungibleTokenBalance>
+  getFungibleTokenSummary(address: string): Promise<FungibleTokenSummary[]>
   getNonFungibleTokenUnspents(
     codehash: string,
     genesis: string,
     address: string,
     cursor?: number,
     size?: number
-  ): Promise<NonFungibleTokenUnspent[]>;
+  ): Promise<NonFungibleTokenUnspent[]>
   getNonFungibleTokenUnspentDetail(
     codehash: string,
     genesis: string,
     tokenIndex: string
-  ): Promise<NonFungibleTokenUnspent>;
+  ): Promise<NonFungibleTokenUnspent>
 
-  getNonFungibleTokenSummary(address: string): Promise<NonFungibleTokenSummary[]>;
+  getNonFungibleTokenSummary(address: string): Promise<NonFungibleTokenSummary[]>
 
   getBalance(address: string): Promise<{
-    balance: number;
-    pendingBalance: number;
-  }>;
+    balance: number
+    pendingBalance: number
+  }>
 
-  getNftSellUtxo(codehash: string, genesis: string, tokenIndex: string): Promise<NftSellUtxo>;
+  getNftSellUtxo(codehash: string, genesis: string, tokenIndex: string): Promise<NftSellUtxo>
 
-  getNftSellList(codehash: string, genesis: string, cursor?: number, size?: number): Promise<NftSellUtxo[]>;
+  getNftSellList(
+    codehash: string,
+    genesis: string,
+    cursor?: number,
+    size?: number
+  ): Promise<NftSellUtxo[]>
 
-  getNftSellListByAddress(address: string, cursor?: number, size?: number): Promise<NftSellUtxo[]>;
+  getNftSellListByAddress(address: string, cursor?: number, size?: number): Promise<NftSellUtxo[]>
 
-  getOutpointSpent(txId: string, index: number): Promise<OutpointSpent>;
+  getOutpointSpent(txId: string, index: number): Promise<OutpointSpent>
 }
 
 export class Api implements ApiBase {
-  private apiTarget: API_TARGET;
-  private apiHandler: ApiBase;
+  private apiTarget: API_TARGET
+  private apiHandler: ApiBase
   constructor(apiNet: API_NET, apiTarget: API_TARGET = API_TARGET.MVC, serverBase?: string) {
     switch (apiTarget) {
       case API_TARGET.MVC: {
-        this.apiHandler = new MVC(apiNet, serverBase);
-        break;
+        this.apiHandler = new MVC(apiNet, serverBase)
+        break
       }
       default: {
         // this.apiHandler = new Sensible(apiTarget, apiNet, serverBase)
-        this.apiHandler = new MVC(apiNet, serverBase);
-        break;
+        this.apiHandler = new MVC(apiNet, serverBase)
+        break
       }
     }
   }
@@ -148,35 +157,40 @@ export class Api implements ApiBase {
    * @returns
    */
   authorize(options: AuthorizationOption) {
-    return this.apiHandler.authorize(options);
+    return this.apiHandler.authorize(options)
   }
 
   async getUnspents(address: string) {
-    return this.apiHandler.getUnspents(address);
+    return this.apiHandler.getUnspents(address)
   }
 
   async getBalance(address: string) {
-    let _res = await this.apiHandler.getBalance(address);
-    return { balance: _res.balance, pendingBalance: _res.pendingBalance };
+    let _res = await this.apiHandler.getBalance(address)
+    return { balance: _res.balance, pendingBalance: _res.pendingBalance }
   }
 
   async getRawTxData(txid: string) {
-    return this.apiHandler.getRawTxData(txid);
+    return this.apiHandler.getRawTxData(txid)
   }
 
   async broadcast(hex: string) {
-    return this.apiHandler.broadcast(hex);
+    return this.apiHandler.broadcast(hex)
   }
 
-  async getFungibleTokenUnspents(codehash: string, genesis: string, address: string, size?: number) {
-    return this.apiHandler.getFungibleTokenUnspents(codehash, genesis, address, size);
+  async getFungibleTokenUnspents(
+    codehash: string,
+    genesis: string,
+    address: string,
+    size?: number
+  ) {
+    return this.apiHandler.getFungibleTokenUnspents(codehash, genesis, address, size)
   }
   async getFungibleTokenBalance(codehash: string, genesis: string, address: string) {
-    return this.apiHandler.getFungibleTokenBalance(codehash, genesis, address);
+    return this.apiHandler.getFungibleTokenBalance(codehash, genesis, address)
   }
 
   async getFungibleTokenSummary(address: string) {
-    return this.apiHandler.getFungibleTokenSummary(address);
+    return this.apiHandler.getFungibleTokenSummary(address)
   }
   async getNonFungibleTokenUnspents(
     codehash: string,
@@ -185,29 +199,29 @@ export class Api implements ApiBase {
     cursor?: number,
     size?: number
   ) {
-    return this.apiHandler.getNonFungibleTokenUnspents(codehash, genesis, address, cursor, size);
+    return this.apiHandler.getNonFungibleTokenUnspents(codehash, genesis, address, cursor, size)
   }
   async getNonFungibleTokenUnspentDetail(codehash: string, genesis: string, tokenIndex: string) {
-    return this.apiHandler.getNonFungibleTokenUnspentDetail(codehash, genesis, tokenIndex);
+    return this.apiHandler.getNonFungibleTokenUnspentDetail(codehash, genesis, tokenIndex)
   }
 
   async getNonFungibleTokenSummary(address: string) {
-    return this.apiHandler.getNonFungibleTokenSummary(address);
+    return this.apiHandler.getNonFungibleTokenSummary(address)
   }
 
   async getNftSellUtxo(codehash: string, genesis: string, tokenIndex: string) {
-    return this.apiHandler.getNftSellUtxo(codehash, genesis, tokenIndex);
+    return this.apiHandler.getNftSellUtxo(codehash, genesis, tokenIndex)
   }
 
   async getNftSellList(codehash: string, genesis: string, cursor?: number, size?: number) {
-    return this.apiHandler.getNftSellList(codehash, genesis, cursor, size);
+    return this.apiHandler.getNftSellList(codehash, genesis, cursor, size)
   }
 
   async getNftSellListByAddress(address: string, cursor?: number, size?: number) {
-    return this.apiHandler.getNftSellListByAddress(address, cursor, size);
+    return this.apiHandler.getNftSellListByAddress(address, cursor, size)
   }
 
   async getOutpointSpent(txId: string, index: number) {
-    return this.apiHandler.getOutpointSpent(txId, index);
+    return this.apiHandler.getOutpointSpent(txId, index)
   }
 }

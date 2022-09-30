@@ -17,8 +17,8 @@ function backgroundInit() {
     .then(([res, networkType]) => {
       return changeNetworkType(networkType);
     })
-    .then(() => {
-      return messageMethods.initApi();
+    .then((networkType) => {
+      return messageMethods.initApi(networkType);
     })
     .then(() => {
       global._isReady = true;

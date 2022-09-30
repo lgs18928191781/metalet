@@ -33,14 +33,14 @@ export function getInitSat(data) {
 export function getAddressUtxo(address) {
   return get({
     url: `/address/${address}/utxo`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
   });
 }
 
 export function getTxIdRaw(txid) {
   return get({
     url: `/tx/${txid}/raw`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
   });
 }
 
@@ -62,28 +62,28 @@ export function uploadXpub(xPub) {
 export function getFtBalance(address) {
   return get({
     url: `/sensible/ft/address/${address}/balance`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
   });
 }
 
 export function getNftSummary(address) {
   return get({
     url: `/sensible/nft/address/${address}/summary`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
   });
 }
 
 export function getNftUtxo(address) {
   return get({
     url: `/sensible/nft/address/${address}/utxo`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
   });
 }
 
 export function getXpubLiteBlance(xpub) {
   return get({
     url: `/xpubLite/${xpub}/balance`,
-    host: config.CONFIG_API_HOST,
+    host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
     headers: {
       authorization: config.CONFIG_METASV_AUTHORIZATION,
     },

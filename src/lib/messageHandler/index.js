@@ -30,9 +30,16 @@ let mvcApi;
 let feeb = config.CONFIG_TX_FEEB;
 
 // 初始化api
-export function initApi() {
+export function initApi(networkType = config.networkType) {
   if (!mvcApi) {
-    mvcApi = new Api(API_NET.MAIN, API_TARGET.MVC);
+    if (networkType === 'test') {
+      mvc.Networks.defaultNetwork = mvc.Networks.testnet;
+      mvcApi = new Api(API_NET.TEST, API_TARGET.MVC);
+    } else {
+      mvc.Networks.defaultNetwork = mvc.Networks.mainnet;
+      mvcApi = new Api(API_NET.MAIN, API_TARGET.MVC);
+    }
+    
     mvcApi.authorize({
       authorization: metaSvAuthorization,
     });
