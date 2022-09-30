@@ -77,13 +77,13 @@ export default {
       return this.$route.query.sendAddress;
     },
     sendAmount() {
-      return this.$route.query.sendAmount;
+      return Number(this.$route.query.sendAmount) || 0;
     },
   },
   data() {
     return {
       orderStep: 0, // 0:ready, 1:success
-      fee: this.$route.query.fee || 0,
+      fee: Number(this.$route.query.fee) || 0,
       balance: 0,
     };
   },
@@ -125,6 +125,7 @@ export default {
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
+      console.log(satoshi, this.fee, this.balance);
       if (satoshi + this.fee >= this.balance) {
         return this.$toast({ message: i18n('home.amountNotEnough') });
       }
