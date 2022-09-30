@@ -14,6 +14,7 @@ export default {
   empty: '暂无数据',
   and: '和',
   to: '给',
+  loading: '加载中',
   login: {
     welcome: '欢迎使用',
     welcome_2: 'Metalet是一个帮助你连接到区块链的工具.',

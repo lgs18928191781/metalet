@@ -14,6 +14,7 @@ export default {
   empty: 'Empty',
   and: 'and',
   to: 'to',
+  loading: 'loading',
   login: {
     welcome: 'Welcome to',
     welcome_2: 'Metalet will help you connect to the blockchain.',
