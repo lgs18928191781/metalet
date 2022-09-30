@@ -243,7 +243,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-    this.fetchTokenInfo();
     this.drawQrCode();
     this.initClipboard();
   },
@@ -264,6 +263,7 @@ export default {
       const loading = this.$loading();
       // await this.getExchangeRate();
       await this.getBalance();
+      await this.fetchTokenInfo();
       loading.close();
     },
     async getBalance() {
