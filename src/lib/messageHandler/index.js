@@ -39,7 +39,7 @@ export function initApi(networkType = config.networkType) {
       mvc.Networks.defaultNetwork = mvc.Networks.mainnet;
       mvcApi = new Api(API_NET.MAIN, API_TARGET.MVC);
     }
-    
+
     mvcApi.authorize({
       authorization: metaSvAuthorization,
     });
@@ -134,6 +134,14 @@ export async function sendAmount(message) {
     );
     privateKeys.push(mvc.PrivateKey.fromString(wif));
   });
+  // // add opreturn
+  // tx.addOutput(
+  //   new mvc.Transaction.Output({
+  //     script: mvc.Script.buildDataOut(sendAddress),
+  //     satoshis: 0,
+  //   })
+  // );
+
   // add output
   tx.addOutput(
     new mvc.Transaction.Output({

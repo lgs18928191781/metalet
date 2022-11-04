@@ -270,7 +270,7 @@ export async function createNode({
   metanetName = 'mvc',
   nodeName = '',
   metaIdTag = 'metaid',
-  appId = 'NULL',
+  appId = 'WalletTag:Metalet',
   encrypt = 0,
   version = '1.0.1',
   data = 'NULL',
@@ -289,7 +289,7 @@ export async function createNode({
     data = eciesEncryptData(data, nodePrivateKey, nodePublicKey).toString('hex');
   }
 
-  const scriptPlayload = [
+  const scriptPayload = [
     metanetName,
     nodePublicKey.toString(),
     parentTxId,
@@ -320,10 +320,10 @@ export async function createNode({
   tx.from(_utxos);
 
   // add output
-  if (scriptPlayload) {
+  if (scriptPayload) {
     tx.addOutput(
       new mvc.Transaction.Output({
-        script: mvc.Script.buildSafeDataOut(scriptPlayload),
+        script: mvc.Script.buildSafeDataOut(scriptPayload),
         satoshis: 0,
       })
     );
