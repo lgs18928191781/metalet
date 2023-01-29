@@ -44,7 +44,9 @@ export default {
         { label: i18n('menu.editAccount'), name: 'editAccount' },
         {
           label: () =>
-            `${i18n('menu.changeNetwork')}: ${this.networkType + 'net'} -> ${this.networkType === 'mainnet' ? 'testnet' : 'mainnet'}`,
+            `${i18n('menu.changeNetwork')}: ${this.networkType + 'net'} -> ${
+              this.networkType === 'main' ? 'testnet' : 'mainnet'
+            }`,
           name: 'changeNetwork',
         },
         { label: i18n('menu.changeLang'), name: 'changeLang' },

@@ -4,7 +4,7 @@ const appConf = {
   env: process.env.env,
   mode: process.env.mode,
   version: process.env.version,
-  networkType: 'test',
+  networkType: process.env.CONFIG_NETWORK_TYPE,
   ...process.env.appEnv,
 };
 
@@ -13,7 +13,7 @@ export async function changeNetworkType(val) {
   if (chrome?.storage?.sync?.set) {
     await storageSet('networkType', val);
   }
-  return val
+  return val;
 }
 
 export default appConf;

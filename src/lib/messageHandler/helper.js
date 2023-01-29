@@ -125,6 +125,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
 
   // 假设对象(最后返回这对象)
   const { name, email, phone } = userInfo;
+  let sendRawTxList = [];
   let userMetaIdInfo = {
     metaId: '',
     protocolTxId: '',
@@ -150,8 +151,10 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     utxos: utxoTmp,
     feeb,
   }).then(async (res) => {
+    console.log('resres321', res);
     userMetaIdInfo.metaId = res.id;
     userMetaIdInfo.metaIdRaw = res.toString();
+    sendRawTxList.push(res.toString());
     await sleep();
     utxoTmp = await getUtxos(mvcApi, rootAddress.toString());
     for (let utxo of utxoTmp) {
@@ -172,6 +175,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then(async (res) => {
     userMetaIdInfo.protocolTxId = res.id;
+    sendRawTxList.push(res.toString());
     await sleep();
     utxoTmp = await getUtxos(mvcApi, rootAddress.toString());
     for (let utxo of utxoTmp) {
@@ -192,6 +196,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then(async (res) => {
     userMetaIdInfo.infoTxId = res.id;
+    sendRawTxList.push(res.toString());
     await sleep();
     utxoTmp = await getUtxos(mvcApi, infoAddress.toString());
     for (let utxo of utxoTmp) {
@@ -213,6 +218,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then(async (res) => {
     userMetaIdInfo.name = res.id;
+    sendRawTxList.push(res.toString());
     await sleep();
     utxoTmp = await getUtxos(mvcApi, infoAddress.toString());
     for (let utxo of utxoTmp) {
@@ -235,6 +241,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then(async (res) => {
     userMetaIdInfo.email = res.id;
+    sendRawTxList.push(res.toString());
     await sleep();
     utxoTmp = await getUtxos(mvcApi, infoAddress.toString());
     for (let utxo of utxoTmp) {
@@ -257,9 +264,10 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     feeb,
   }).then((res) => {
     userMetaIdInfo.phone = res.id;
+    sendRawTxList.push(res.toString());
   });
 
-  return userMetaIdInfo;
+  return { userMetaIdInfo, sendRawTxList };
 }
 
 // 创建节点

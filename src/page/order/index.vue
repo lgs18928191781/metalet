@@ -66,7 +66,7 @@ import { mapGetters } from 'vuex';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 import i18n from '@/i18n';
 import { spaceTosatoshis } from '@/util';
-
+import { Decimal } from 'decimal.js';
 export default {
   name: 'page-order',
   computed: {
@@ -126,7 +126,9 @@ export default {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
       console.log(satoshi, this.fee, this.balance);
-      if (satoshi + this.fee >= this.balance) {
+      if (
+        new Decimal(satoshi).add(new Decimal(this.fee).toNumber()).toNumber() >= new Decimal(this.balance).toNumber()
+      ) {
         return this.$toast({ message: i18n('home.amountNotEnough') });
       }
       const loading = this.$loading();

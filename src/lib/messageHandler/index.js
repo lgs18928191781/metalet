@@ -352,20 +352,24 @@ export async function checkOrCreateMetaId(message) {
     };
   });
   if (metaIdCode !== 200 || !metaIdResult) {
-    const userMetaIdInfoRes = await initMetaId(mvcApi, HDPrivateKey, userInfo, feeb).catch((err) => {
+    const { sendRawTxList, userMetaIdInfoRes } = await initMetaId(mvcApi, HDPrivateKey, userInfo, feeb).catch((err) => {
       console.log(err);
       return null;
     });
     hasOne.userMetaIdInfo = userMetaIdInfoRes;
     hasOne.timestamp = Date.now();
     await update(hasOne);
-    if (userMetaIdInfoRes?.metaIdRaw) {
-      await uploadMetaIdRaw({
-        type: 13,
-        raw: userMetaIdInfoRes.metaIdRaw,
-      });
+
+    if (sendRawTxList.length) {
+      for (let i = 0; i <= sendRawTxList.length; i++) {
+        await uploadMetaIdRaw({
+          type: 13,
+          raw: sendRawTxList[i],
+        });
+      }
       await uploadXpub(xpub);
     }
+
     return hasOne;
   }
 
