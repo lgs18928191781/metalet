@@ -263,6 +263,7 @@ export async function initMetaId(mvcApi, HDPrivateKey, userInfo, feeb) {
     changeAddress: rootAddress.toString(),
     feeb,
   }).then((res) => {
+    console.log('初始化PHONE', res);
     userMetaIdInfo.phone = res.id;
     sendRawTxList.push(res.toString());
   });
@@ -571,6 +572,7 @@ export async function repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, didCh
   }
 
   if (!userMetaIdInfo.phone) {
+    console.log('userMetaIdInfo.phone is null', 123);
     // 创建phone节点
     await createNode({
       mvcApi,

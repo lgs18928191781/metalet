@@ -42,13 +42,13 @@ export default {
       showPicker: false,
       pickerList: [
         { label: i18n('menu.editAccount'), name: 'editAccount' },
-        {
-          label: () =>
-            `${i18n('menu.changeNetwork')}: ${this.networkType + 'net'} -> ${
-              this.networkType === 'main' ? 'testnet' : 'mainnet'
-            }`,
-          name: 'changeNetwork',
-        },
+        // {
+        //   label: () =>
+        //     `${i18n('menu.changeNetwork')}: ${this.networkType + 'net'} -> ${
+        //       this.networkType === 'main' ? 'testnet' : 'mainnet'
+        //     }`,
+        //   name: 'changeNetwork',
+        // },
         { label: i18n('menu.changeLang'), name: 'changeLang' },
         { label: i18n('menu.logout'), name: 'logout' },
       ],
@@ -85,9 +85,9 @@ export default {
         }
         case 'changeNetwork': {
           const targetNetworkType = this.networkType === 'main' ? 'test' : 'main';
-          if (targetNetworkType === 'main') {
-            return this.$toast({ message: i18n('functionWillComingSoon') });
-          }
+          // if (targetNetworkType === 'main') {
+          //   return this.$toast({ message: i18n('functionWillComingSoon') });
+          // }
           await sendMessageFromExtPageToBackground('changeNetwork', {
             networkType: targetNetworkType,
           });

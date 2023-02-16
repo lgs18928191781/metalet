@@ -80,7 +80,7 @@
 </template>
 <script>
 import i18n from '@/i18n';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { sendMessageFromExtPageToBackground } from '@/util/chromeUtil';
 
 export default {
@@ -117,14 +117,19 @@ export default {
   created() {
     this.getMnemonicWords();
   },
+  computed: {
+    ...mapGetters('system', ['config', 'locale', 'networkType']),
+  },
   methods: {
     ...mapActions('account', ['setCurrentAccount']),
     async getMnemonicWords() {
       const { data } = await sendMessageFromExtPageToBackground('getMnemonicWords');
+
       this.mnemonicWords = data;
     },
     async createAccount() {
       const loading = this.$loading({});
+
       const { data } = await sendMessageFromExtPageToBackground('createAccount', {
         mnemonicStr: this.mnemonicWords.join(' '),
         derivationPath: this.derivationPath,
@@ -133,7 +138,8 @@ export default {
         email: this.email,
         phone: this.phone,
       });
-      await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
+      //屏蔽生成metaid
+      // await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
       sendMessageFromExtPageToBackground('saveCurrentAccount', data);
       this.setCurrentAccount(data);
       loading.close();
@@ -143,19 +149,27 @@ export default {
     },
     async restoreAccount() {
       const loading = this.$loading({});
-      const { data } = await sendMessageFromExtPageToBackground('restoreAccount', {
-        mnemonicStr: this.mnemonicStr,
-        derivationPath: this.derivationPath,
-        xprv: this.xprv,
-        restoreType: this.restoreType,
-      });
-      await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
-      sendMessageFromExtPageToBackground('saveCurrentAccount', data);
-      this.setCurrentAccount(data);
-      loading.close();
-      this.$router.replace({
-        path: '/',
-      });
+
+      try {
+        console.log('this.derivationPath', this.mnemonicWords.join(' '));
+        const { data } = await sendMessageFromExtPageToBackground('restoreAccount', {
+          mnemonicStr: this.mnemonicStr,
+          derivationPath: this.derivationPath,
+          xprv: this.xprv,
+          restoreType: this.restoreType,
+        });
+
+        // await sendMessageFromExtPageToBackground('checkOrCreateMetaId', data);
+        sendMessageFromExtPageToBackground('saveCurrentAccount', data);
+        this.setCurrentAccount(data);
+        loading.close();
+        this.$router.replace({
+          path: '/',
+        });
+      } catch (error) {
+        loading.close();
+        this.$toast({ message: i18n('home.mnemonicInputFail') });
+      }
     },
   },
 };

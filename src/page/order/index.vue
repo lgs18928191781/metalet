@@ -27,7 +27,7 @@
           <hr class="mo-divider" />
           <mo-form-item submitItem style="text-align: center">
             <mo-button simple @click="handleCancel">{{ $t('cancel') }}</mo-button>
-            <mo-button @click="handleConfirm">{{ $t('confirm') }}</mo-button>
+            <mo-button :disabled="allowSubmit" @click="handleConfirm">{{ $t('confirm') }}</mo-button>
           </mo-form-item>
         </mo-form>
       </template>
@@ -79,6 +79,11 @@ export default {
     sendAmount() {
       return Number(this.$route.query.sendAmount) || 0;
     },
+    allowSubmit() {
+      if (this.balance > 0) {
+        return false;
+      } else return true;
+    },
   },
   data() {
     return {
@@ -91,6 +96,7 @@ export default {
     this.countFee();
     this.getBalance();
   },
+
   methods: {
     async countFee() {
       if (this.fee > 0) {
@@ -125,7 +131,7 @@ export default {
       if (satoshi < 2000) {
         return this.$toast({ message: i18n('home.amountMoreThan2000') });
       }
-      console.log(satoshi, this.fee, this.balance);
+      console.log('余额', satoshi, this.fee, this.balance);
       if (
         new Decimal(satoshi).add(new Decimal(this.fee).toNumber()).toNumber() >= new Decimal(this.balance).toNumber()
       ) {

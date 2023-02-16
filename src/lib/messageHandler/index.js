@@ -382,6 +382,7 @@ export async function checkOrCreateMetaId(message) {
       result: null,
     };
   });
+  console.log('did', didCode, didResult);
   if (didCode !== 200 || !didResult) {
     const userMetaIdInfoRes = await repairMetaNode(mvcApi, HDPrivateKey, userInfo, feeb, {
       code: didCode,

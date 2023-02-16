@@ -60,24 +60,34 @@ export function uploadXpub(xPub) {
 }
 
 export function getFtBalance(address) {
-  return get({
-    url: `/sensible/ft/address/${address}/balance`,
+  const params = {
+    url:
+      config.networkType === 'test'
+        ? `/contract/ft/address/${address}/balance`
+        : `/contract/ft/address/${address}/balance`,
     host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
-  });
+  };
+  return get(params);
 }
 
 export function getNftSummary(address) {
-  return get({
-    url: `/sensible/nft/address/${address}/summary`,
+  const params = {
+    url:
+      config.networkType === 'test'
+        ? `/contract/nft/address/${address}/summary`
+        : `/contract/nft/address/${address}/summary`,
     host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
-  });
+  };
+  return get(params);
 }
 
 export function getNftUtxo(address) {
-  return get({
-    url: `/sensible/nft/address/${address}/utxo`,
+  const params = {
+    url:
+      config.networkType === 'test' ? `/contract/nft/address/${address}/utxo` : `/contract/nft/address/${address}/utxo`,
     host: config.networkType === 'test' ? config.CONFIG_API_HOST_TEST : config.CONFIG_API_HOST,
-  });
+  };
+  return get(params);
 }
 
 export function getXpubLiteBlance(xpub) {
