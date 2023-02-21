@@ -129,7 +129,6 @@ export default {
     },
     async createAccount() {
       const loading = this.$loading({});
-
       const { data } = await sendMessageFromExtPageToBackground('createAccount', {
         mnemonicStr: this.mnemonicWords.join(' '),
         derivationPath: this.derivationPath,

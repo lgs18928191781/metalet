@@ -41,7 +41,6 @@ chrome.runtime.onMessage.addListener(messageProcessor);
 // 处理消息
 async function messageProcessor(message, sender, sendResponse) {
   const { type, clientId, time, from, to } = message;
-
   if (to !== 'background') {
     // ignore
     return;

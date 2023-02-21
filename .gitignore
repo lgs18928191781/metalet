@@ -29,5 +29,3 @@ pnpm-debug.log*
 /artifacts
 .browserslistrc
 .eslintrc.js
-
-yarn.lock

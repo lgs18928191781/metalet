@@ -44,8 +44,7 @@ export default [
         name: 'connect',
         path: '/connect',
         component: () => import('@/page/connect/index.vue'),
-        meta: {
-        },
+        meta: {},
       },
       {
         name: 'test',

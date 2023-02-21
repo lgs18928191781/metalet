@@ -96,7 +96,6 @@ export default {
     this.countFee();
     this.getBalance();
   },
-
   methods: {
     async countFee() {
       if (this.fee > 0) {
